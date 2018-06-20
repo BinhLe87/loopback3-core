@@ -13,7 +13,9 @@
     },
     "helmet#xssFilter": {},
     "helmet#frameguard": {
-      "params": { "action": "deny" }
+      "params": {
+        "action": "deny"
+      }
     },
     "helmet#hsts": {
       "params": {
@@ -40,9 +42,16 @@
   },
   "files": {},
   "final": {
+    "./middleware/error-logger": {},
     "loopback#urlNotFound": {}
   },
   "final:after": {
-    "strong-error-handler": {}
+    "strong-error-handler": {
+      "debug": "true",
+      "log": "true",
+      "safeFields": [
+        "errorCode"
+      ]
+    }
   }
 }
