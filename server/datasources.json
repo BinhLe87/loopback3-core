@@ -2,5 +2,15 @@
   "db": {
     "name": "db",
     "connector": "memory"
+  },
+  "cc_mysql": {
+    "host": "127.0.0.1",
+    "port": 3306,
+    "url": "mysql://root@127.0.0.1:3306/couchingcloud",
+    "database": "couchingcloud",
+    "password": "",
+    "name": "cc_mysql",
+    "user": "root",
+    "connector": "mysql"
   }
 }
