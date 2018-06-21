@@ -7,9 +7,9 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "start": "node .",
-    "start-watch": "nodemon .",
-    "debug": "nodemon --inspect-brk .",
+    "start": "NODE_ENV=development node .",
+    "start-watch": "NODE_ENV=development nodemon .",
+    "debug": "NODE_ENV=development nodemon --inspect-brk .",
     "posttest": "npm run lint && nsp check"
   },
   "dependencies": {
