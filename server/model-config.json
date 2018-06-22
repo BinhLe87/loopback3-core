@@ -34,5 +34,26 @@
   "Role": {
     "dataSource": "db",
     "public": false
+  },
+  "library": {
+    "dataSource": "cc_mysql",
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "create": true,
+          "find": true
+        }
+      }
+    }
+  },
+  "program": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
+  "workbook": {
+    "dataSource": "cc_mysql",
+    "public": true
   }
 }
