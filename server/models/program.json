@@ -1,0 +1,30 @@
+{
+  "name": "program",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "BelongsToIntegrityCheck": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "library": {
+      "type": "belongsTo",
+      "model": "library"
+    },
+    "workbooks": {
+      "type": "hasMany",
+      "model": "workbook"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

@@ -1,0 +1,26 @@
+{
+  "name": "library",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "Timestamp": true,
+    "BelongsToIntegrityCheck": true
+  },
+  "properties": {
+    "name": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "programs": {
+      "type": "hasMany",
+      "model": "program"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
