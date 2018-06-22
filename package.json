@@ -1,5 +1,5 @@
 {
-  "name": "cc-automated-push-content",
+  "name": "apc",
   "version": "1.0.0",
   "main": "server/server.js",
   "engines": {
@@ -9,19 +9,29 @@
     "lint": "eslint .",
     "start": "NODE_ENV=development node .",
     "start-watch": "NODE_ENV=development nodemon .",
-    "debug": "NODE_ENV=development nodemon --inspect-brk .",
+    "debug": "NODE_ENV=development nodemon --inspect .",
+    "postdebug": "node server/debug/debug_exec.js",
     "posttest": "npm run lint && nsp check"
   },
+  "config": {
+
+    "debug_api": "aaa" 
+  },
   "dependencies": {
+    "bluebird": "^3.5.1",
     "compression": "^1.0.3",
     "cors": "^2.5.2",
+    "debug": "^3.1.0",
     "helmet": "^3.10.0",
+    "include-all": "^4.0.3",
+    "lodash": "^4.17.10",
     "loopback": "^3.19.0",
     "loopback-boot": "^2.6.5",
     "loopback-component-explorer": "^6.0.0",
     "loopback-connector-mysql": "^2.4.1",
     "serve-favicon": "^2.0.1",
-    "strong-error-handler": "^2.0.0"
+    "strong-error-handler": "^2.0.0",
+    "utils-error-to-json": "^1.0.0"
   },
   "devDependencies": {
     "eslint": "^3.17.1",
