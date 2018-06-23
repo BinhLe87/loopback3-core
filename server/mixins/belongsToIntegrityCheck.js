@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var Promise = require('bluebird');
 var myErrors = require('../errors');
+const HttpErrors = require('http-errors');
 
 var checkBelongsToIntegrity = function (ctx, next) {
 
@@ -38,16 +39,18 @@ var checkBelongsToIntegrity = function (ctx, next) {
 
         Promise.all(promiseArray).then(error_messages => {
 
-            let myError = new myErrors.InvalidValueOfForeignKeyError('');
+            let myError = new HttpErrors.BadRequest();
+            myError.data = '';
+
             for (let error_message of error_messages) {
 
                 if (error_message) {
 
-                    myError.message += error_message + '; ';
+                    myError.data += error_message + '; ';
                 }
             }
 
-            if (!_.isEmpty(myError.message)) {
+            if (!_.isEmpty(myError.data)) {
                return next(myError);
             }
 

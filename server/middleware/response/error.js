@@ -21,7 +21,7 @@ module.exports = function () {
 
     return function responseErrorHandler(err, req, res, next) {
 
-        var statusCode = err.code ? err.code : 500
+        var statusCode = err.status ? err.status : 500
 
         var body = err;
         if (process.env.NODE_ENV === 'production') {
