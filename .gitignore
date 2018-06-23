@@ -20,3 +20,9 @@ npm-debug.log
 
 #documentation/reference files
 docs
+
+#contains class for experiment purpose
+demo
+
+#logs files
+logs
