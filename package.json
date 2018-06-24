@@ -7,7 +7,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "start": "NODE_ENV=development node .",
+    "start": "NODE_ENV=development nodemon .",
     "start-watch": "NODE_ENV=development nodemon .",
     "debug": "NODE_ENV=development nodemon --inspect-brk .",
     "postdebug": "node server/debug/debug_exec.js",

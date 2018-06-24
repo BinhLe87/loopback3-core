@@ -36,7 +36,7 @@ module.exports = function () {
                 status: "error",
                 code: statusCode,
                 message: err.message || "",
-                data: err.data || {}
+                data: err.data || err.stack || {}
             }
         )
     }
