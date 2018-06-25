@@ -7,15 +7,14 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "start": "NODE_ENV=development node .",
+    "start": "NODE_ENV=development nodemon .",
     "start-watch": "NODE_ENV=development nodemon .",
-    "debug": "NODE_ENV=development nodemon --inspect .",
+    "debug": "NODE_ENV=development nodemon --inspect-brk .",
     "postdebug": "node server/debug/debug_exec.js",
     "posttest": "npm run lint && nsp check"
   },
   "config": {
-
-    "debug_api": "aaa" 
+    "debug_api": "aaa"
   },
   "dependencies": {
     "bluebird": "^3.5.1",
@@ -23,7 +22,9 @@
     "cors": "^2.5.2",
     "debug": "^3.1.0",
     "helmet": "^3.10.0",
+    "http-errors": "^1.6.3",
     "include-all": "^4.0.3",
+    "joi": "^13.4.0",
     "lodash": "^4.17.10",
     "loopback": "^3.19.0",
     "loopback-boot": "^2.6.5",
@@ -31,7 +32,9 @@
     "loopback-connector-mysql": "^2.4.1",
     "serve-favicon": "^2.0.1",
     "strong-error-handler": "^2.0.0",
-    "utils-error-to-json": "^1.0.0"
+    "utils-error-to-json": "^1.0.0",
+    "winston": "^3.0.0",
+    "winston-daily-rotate-file": "^3.2.3"
   },
   "devDependencies": {
     "eslint": "^3.17.1",
