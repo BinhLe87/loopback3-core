@@ -10,7 +10,8 @@
       "loopback/common/mixins",
       "loopback/server/mixins",
       "../common/mixins",
-      "./mixins"
+      "./mixins",
+      "../node_modules/loopback-ds-timestamp-mixin"
     ]
   },
   "User": {
@@ -37,15 +38,7 @@
   },
   "library": {
     "dataSource": "cc_mysql",
-    "public": true,
-    "options": {
-      "remoting": {
-        "sharedMethods": {
-          "create": true,
-          "find": true
-        }
-      }
-    }
+    "public": true
   },
   "program": {
     "dataSource": "cc_mysql",
@@ -54,5 +47,9 @@
   "workbook": {
     "dataSource": "cc_mysql",
     "public": true
+  },
+  "library_program": {
+    "dataSource": "cc_mysql",
+    "public": false
   }
 }

@@ -6,7 +6,8 @@
     "validateUpsert": true
   },
   "mixins": {
-    "BelongsToIntegrityCheck": true
+    "TimeStamp": true,
+    "BelongsToIntegrityCheck": false
   },
   "properties": {
     "name": {
@@ -16,9 +17,11 @@
   },
   "validations": [],
   "relations": {
-    "library": {
-      "type": "belongsTo",
-      "model": "library"
+    "libraries": {
+      "type": "hasMany",
+      "model": "library",
+      "foreignKey": "programId",
+      "through": "library_program"
     },
     "workbooks": {
       "type": "hasMany",
