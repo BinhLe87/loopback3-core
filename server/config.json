@@ -1,7 +1,7 @@
 {
   "restApiRoot": "/api",
   "host": "0.0.0.0",
-  "port": 3000,
+  "port": 8080,
   "remoting": {
     "context": false,
     "rest": {
@@ -17,6 +17,15 @@
       "extended": true,
       "limit": "100kb"
     },
-    "cors": false
+    "cors": false,
+    "sharedMethods": {
+      "*": false,
+      "find": true,
+      "findById": true,
+      "create": true,
+      "deleteById": true,
+      "patchOrCreate": true,
+      "count": true
+    }
   }
 }
