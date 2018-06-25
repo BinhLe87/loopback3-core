@@ -59,9 +59,9 @@ var checkBelongsToIntegrity = function (ctx, next) {
 
             next(err);
         });
-
-
     }
+
+    next();
 }
 
 module.exports = function (Model, options) {
