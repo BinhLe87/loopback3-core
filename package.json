@@ -7,7 +7,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "start": "NODE_ENV=development nodemon .",
+    "start": "NODE_ENV=development node .",
     "start-watch": "NODE_ENV=development nodemon .",
     "debug": "NODE_ENV=development nodemon --inspect-brk .",
     "postdebug": "node server/debug/debug_exec.js",
@@ -21,6 +21,7 @@
     "compression": "^1.0.3",
     "cors": "^2.5.2",
     "debug": "^3.1.0",
+    "dotenv": "^6.0.0",
     "helmet": "^3.10.0",
     "http-errors": "^1.6.3",
     "include-all": "^4.0.3",
