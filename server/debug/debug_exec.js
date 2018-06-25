@@ -6,7 +6,7 @@ var commands = {
     get_programs: `curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ \ 
  "name": "program_1", \ 
  "libraryId": "200" \ 
- }' 'http://localhost:3000/api/programs'`,
+ }' 'http://localhost:8080/api/programs'`,
 }
 
 

@@ -17,6 +17,15 @@
       "extended": true,
       "limit": "100kb"
     },
-    "cors": false
+    "cors": false,
+    "sharedMethods": {
+      "*": false,
+      "find": true,
+      "findById": true,
+      "create": true,
+      "deleteById": true,
+      "patchOrCreate": true,
+      "count": true
+    }
   }
 }

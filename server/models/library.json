@@ -6,8 +6,8 @@
     "validateUpsert": true
   },
   "mixins": {
-    "Timestamp": true,
-    "BelongsToIntegrityCheck": true
+    "TimeStamp": true,
+    "BelongsToIntegrityCheck": false
   },
   "properties": {
     "name": {
@@ -21,7 +21,9 @@
   "relations": {
     "programs": {
       "type": "hasMany",
-      "model": "program"
+      "model": "program",
+      "foreignKey": "libraryId",
+      "through": "library_program"
     }
   },
   "acls": [],

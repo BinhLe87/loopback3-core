@@ -4,7 +4,9 @@ var loopback = require('loopback');
 var boot = require('loopback-boot');
 
 var app = module.exports = loopback();
+const dotenv = require('dotenv').config(); 
 var logger = require('./config/winston');
+
 
 app.logger = logger;
 
@@ -19,7 +21,6 @@ app.start = function() {
       console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
     }
 
-    
   });
 };
 
