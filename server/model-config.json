@@ -51,5 +51,41 @@
   "library_program": {
     "dataSource": "cc_mysql",
     "public": false
+  },
+  "program_workbook": {
+    "dataSource": "cc_mysql",
+    "public": false
+  },
+  "chapter": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
+  "workbook_chapter": {
+    "dataSource": "cc_mysql",
+    "public": false
+  },
+  "page": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
+  "chapter_page": {
+    "dataSource": "cc_mysql",
+    "public": false
+  },
+  "item": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
+  "page_item": {
+    "dataSource": "cc_mysql",
+    "public": false
+  },
+  "user": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
+  "library_user": {
+    "dataSource": "cc_mysql",
+    "public": false
   }
 }

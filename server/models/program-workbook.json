@@ -1,5 +1,5 @@
 {
-  "name": "library_program",
+  "name": "program_workbook",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -11,15 +11,15 @@
   "properties": {},
   "validations": [],
   "relations": {
-    "library": {
-      "type": "belongsTo",
-      "model": "library",
-      "foreignKey": "libraryId"
-    },
     "program": {
       "type": "belongsTo",
       "model": "program",
       "foreignKey": "programId"
+    },
+    "workbook": {
+      "type": "belongsTo",
+      "model": "workbook",
+      "foreignKey": "workbookId"
     }
   },
   "acls": [],

@@ -1,12 +1,9 @@
 {
-  "name": "library_program",
+  "name": "library_user",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
-  },
-  "mixins": {
-    "TimeStamp": true
   },
   "properties": {},
   "validations": [],
@@ -15,11 +12,11 @@
       "type": "belongsTo",
       "model": "library",
       "foreignKey": "libraryId"
-    },
-    "program": {
+    }, 
+    "user": {
       "type": "belongsTo",
-      "model": "program",
-      "foreignKey": "programId"
+      "model": "user",
+      "foreignKey": "userId"
     }
   },
   "acls": [],

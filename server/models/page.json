@@ -1,5 +1,6 @@
 {
-  "name": "program",
+  "name": "page",
+  "plural": "pages",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -17,17 +18,17 @@
   },
   "validations": [],
   "relations": {
-    "libraries": {
+    "chapters": {
       "type": "hasMany",
-      "model": "library",
-      "foreignKey": "programId",
-      "through": "library_program"
+      "model": "chapter",
+      "foreignKey": "pageId",
+      "through": "chapter_page"
     },
-    "workbooks": {
+    "items": {
       "type": "hasMany",
-      "model": "workbook",
-      "foreignKey": "programId",
-      "through": "program_workbook"
+      "model": "item",
+      "foreignKey": "pageId",
+      "through": "page_item"
     }
   },
   "acls": [],

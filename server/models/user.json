@@ -1,18 +1,18 @@
 {
-  "name": "program",
+  "name": "user",
+  "plural": "users",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
-  "mixins": {
-    "TimeStamp": true,
-    "BelongsToIntegrityCheck": false
-  },
   "properties": {
     "name": {
       "type": "string",
       "required": true
+    },
+    "role": {
+      "type": "string"
     }
   },
   "validations": [],
@@ -20,14 +20,8 @@
     "libraries": {
       "type": "hasMany",
       "model": "library",
-      "foreignKey": "programId",
-      "through": "library_program"
-    },
-    "workbooks": {
-      "type": "hasMany",
-      "model": "workbook",
-      "foreignKey": "programId",
-      "through": "program_workbook"
+      "foreignKey": "userId",
+      "through": "library_user"
     }
   },
   "acls": [],
