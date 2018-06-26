@@ -18,6 +18,7 @@
             "processId": "${command:PickProcess}",
             "restart": true,
             "protocol": "inspector",
+            "port": 9230
         },
     ]
 }
