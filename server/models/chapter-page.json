@@ -1,25 +1,26 @@
 {
-  "name": "library_program",
+  "name": "chapter_page",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "mixins": {
-    "TimeStamp": true
+    "TimeStamp": true,
+    "BelongsToIntegrityCheck": false
   },
   "properties": {},
   "validations": [],
   "relations": {
-    "library": {
+    "chapter": {
       "type": "belongsTo",
-      "model": "library",
-      "foreignKey": "libraryId"
+      "model": "chapter",
+      "foreignKey": "chapterId"
     },
-    "program": {
+    "page": {
       "type": "belongsTo",
-      "model": "program",
-      "foreignKey": "programId"
+      "model": "page",
+      "foreignKey": "pageId"
     }
   },
   "acls": [],

@@ -1,6 +1,6 @@
 {
-  "name": "library",
-  "plural": "libraries",
+  "name": "item",
+  "plural": "items",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -17,27 +17,25 @@
         "unique": true
       }
     },
-    "createdBy": {
+    "type": {
       "type": "string",
-      "description": "To distinguish who created this library, ex: system or user"
+      "required": true
     },
-    "owner": {
-      "type": {}
+    "attributes": {
+      "type": "object",
+      "description": [
+        "Contain a variety of attributes depend on item type",
+        "Ex: With `formatted text` type, attributes are padding, background colour, etc."
+      ]
     }
   },
   "validations": [],
   "relations": {
-    "programs": {
+    "pages": {
       "type": "hasMany",
-      "model": "program",
-      "foreignKey": "libraryId",
-      "through": "library_program"
-    },
-    "users": {
-      "type": "hasMany",
-      "model": "user",
-      "foreignKey": "libraryId",
-      "through": "library_user"
+      "model": "page",
+      "foreignKey": "itemId",
+      "through": "page_item"
     }
   },
   "acls": [],

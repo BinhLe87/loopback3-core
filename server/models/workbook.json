@@ -5,9 +5,39 @@
   "options": {
     "validateUpsert": true
   },
-  "properties": {},
+  "mixins": {
+    "TimeStamp": true,
+    "BelongsToIntegrityCheck": false
+  },
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "author": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    }
+  },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "programs": {
+      "type": "hasMany",
+      "model": "program",
+      "foreignKey": "workbookId",
+      "through": "program_workbook"
+    },
+    "chapters": {
+      "type": "hasMany",
+      "model": "chapter",
+      "foreignKey": "workbookId",
+      "through": "workbook_chapter"
+    }
+  },
   "acls": [],
   "methods": {}
 }

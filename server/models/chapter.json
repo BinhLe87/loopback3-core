@@ -1,5 +1,6 @@
 {
-  "name": "program",
+  "name": "chapter",
+  "plural": "chapters",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -12,22 +13,24 @@
   "properties": {
     "name": {
       "type": "string",
-      "required": true
+      "index": {
+        "unique": true
+      }
     }
   },
   "validations": [],
   "relations": {
-    "libraries": {
-      "type": "hasMany",
-      "model": "library",
-      "foreignKey": "programId",
-      "through": "library_program"
-    },
     "workbooks": {
       "type": "hasMany",
       "model": "workbook",
-      "foreignKey": "programId",
-      "through": "program_workbook"
+      "foreignKey": "chapterId",
+      "through": "workbook_chapter"
+    },
+    "pages": {
+      "type": "hasMany",
+      "model": "page",
+      "foreignKey": "chapterId",
+      "through": "chapter_page"
     }
   },
   "acls": [],
