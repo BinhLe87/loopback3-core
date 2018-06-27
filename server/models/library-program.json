@@ -2,6 +2,17 @@
   "name": "library_program",
   "base": "PersistedModel",
   "idInjection": true,
+  "indexes": {
+    "library_program_idx": {
+      "keys": {
+        "libraryId": 1,
+        "programId": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
   "options": {
     "validateUpsert": true
   },

@@ -84,7 +84,15 @@
     "dataSource": "cc_mysql",
     "public": true
   },
-  "library_user": {
+  "user_program": {
+    "dataSource": "cc_mysql",
+    "public": false
+  },
+  "attribute": {
+    "dataSource": "cc_mysql",
+    "public": false
+  },
+  "item_attribute_value": {
     "dataSource": "cc_mysql",
     "public": false
   }

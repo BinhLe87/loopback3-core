@@ -37,7 +37,7 @@
       "type": "hasMany",
       "model": "user",
       "foreignKey": "libraryId",
-      "through": "library_user"
+      "through": "user_program"
     }
   },
   "acls": [],

@@ -3,6 +3,16 @@
   "plural": "items",
   "base": "PersistedModel",
   "idInjection": true,
+  "indexes": {
+    "name_idx": {
+      "keys": {
+        "name": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
   "options": {
     "validateUpsert": true
   },
@@ -12,21 +22,12 @@
   },
   "properties": {
     "name": {
-      "type": "string",
-      "index": {
-        "unique": true
-      }
+      "type": "string"
     },
     "type": {
       "type": "string",
-      "required": true
-    },
-    "attributes": {
-      "type": "object",
-      "description": [
-        "Contain a variety of attributes depend on item type",
-        "Ex: With `formatted text` type, attributes are padding, background colour, etc."
-      ]
+      "required": true,
+      "description": ["may be a formatted text, questions, audio player, video player, etc."]
     }
   },
   "validations": [],
@@ -36,6 +37,12 @@
       "model": "page",
       "foreignKey": "itemId",
       "through": "page_item"
+    },
+    "attributes": {
+      "type": "hasMany",
+      "model": "attribute",
+      "foreignKey": "itemId",
+      "through": "item_attribute_value"
     }
   },
   "acls": [],

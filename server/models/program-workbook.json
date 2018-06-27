@@ -2,6 +2,17 @@
   "name": "program_workbook",
   "base": "PersistedModel",
   "idInjection": true,
+  "indexes": {
+    "program_workbook_idx": {
+      "keys": {
+        "programId": 1,
+        "workbookId": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
   "options": {
     "validateUpsert": true
   },

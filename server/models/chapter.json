@@ -16,6 +16,10 @@
       "index": {
         "unique": true
       }
+    },
+    "is_visible": {
+      "type": "boolean",
+      "default": 1
     }
   },
   "validations": [],
