@@ -1,0 +1,51 @@
+{
+  "name": "user_program",
+  "description": [
+    "contains list of program that user has signed-up",
+    "the value of libraryId can be changed later, ex: in case the user move program to his own library"
+  ],
+  "base": "PersistedModel",
+  "idInjection": true,
+  "indexes": {
+    "lib_program_user_idx": {
+      "keys": {
+        "libraryId": 1,
+        "programId": 1,
+        "userId": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "display_index": {
+      "type": "number",
+      "description": "the display order index of the program in libary",
+      "default": "0"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "library": {
+      "type": "belongsTo",
+      "model": "library",
+      "foreignKey": "libraryId"
+    },
+    "program": {
+      "type": "belongsTo",
+      "model": "program",
+      "foreignKey": "programId"
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

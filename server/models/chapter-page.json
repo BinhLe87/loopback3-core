@@ -2,6 +2,17 @@
   "name": "chapter_page",
   "base": "PersistedModel",
   "idInjection": true,
+  "indexes": {
+    "chapter_page_idx": {
+      "keys": {
+        "chapterId": 1,
+        "pageId": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
   "options": {
     "validateUpsert": true
   },

@@ -1,0 +1,32 @@
+{
+  "name": "attribute",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "attr_type": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": 1
+    }
+  },
+  "validations": [],
+  "relations": {
+    "items": {
+      "type": "hasMany",
+      "model": "item",
+      "foreignKey": "attributeId",
+      "through": "item_attribute_value"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

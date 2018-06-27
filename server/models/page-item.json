@@ -2,6 +2,17 @@
   "name": "page_item",
   "base": "PersistedModel",
   "idInjection": true,
+  "indexes": {
+    "page_item_idx": {
+      "keys": {
+        "pageId": 1,
+        "itemId": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
   "options": {
     "validateUpsert": true
   },

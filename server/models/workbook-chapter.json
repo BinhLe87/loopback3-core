@@ -2,6 +2,17 @@
   "name": "workbook_chapter",
   "base": "PersistedModel",
   "idInjection": true,
+  "indexes": {
+    "workbook_chapter_idx": {
+      "keys": {
+        "workbookId": 1,
+        "chapterId": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
   "options": {
     "validateUpsert": true
   },
