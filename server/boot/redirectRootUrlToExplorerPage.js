@@ -1,3 +1,6 @@
+var errorLogger = require('../helpers/errorLogger');
+
+
 module.exports = function redirectRootUrlToExplorerPage(app) {
 
     app.get('/', function (req, res, next) {
