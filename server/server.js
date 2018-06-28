@@ -5,7 +5,7 @@ var boot = require('loopback-boot');
 
 var app = module.exports = loopback();
 const dotenv = require('dotenv').config(); 
-var logger = require('./config/winston');
+var logger = require('../server/helpers/errorLogger');
 
 
 app.logger = logger;
