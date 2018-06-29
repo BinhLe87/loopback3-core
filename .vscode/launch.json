@@ -14,11 +14,13 @@
         {
             "type": "node",
             "request": "attach",
-            "name": "Node: Nodemon",
+            "name": "Nodemon APC",
+            "stopOnEntry": false,
             "processId": "${command:PickProcess}",
             "restart": true,
             "protocol": "inspector",
-            "port": 9230
+            "port": 9230,
+            "trace": "verbose"
         },
     ]
 }
