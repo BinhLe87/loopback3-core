@@ -70,12 +70,12 @@ class ErrorLogger {
     generateErrorMessage(error = {}, classNameOccurError) {
 
         var error_message = (_.isEmpty(classNameOccurError) ? '' : (path.basename(classNameOccurError) + ": "))
-            + this.parseErrorObjectToWriteLog(error);
+            + this.parseErrorObjectToString(error);
 
         return error_message;
     }
 
-    parseErrorObjectToWriteLog(error) {
+    parseErrorObjectToString(error) {
 
         try {
             var parsedErrString = '';
