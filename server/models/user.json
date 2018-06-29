@@ -17,12 +17,6 @@
   },
   "validations": [],
   "relations": {
-    "libraries": {
-      "type": "hasMany",
-      "model": "library",
-      "foreignKey": "userId",
-      "through": "library_user"
-    }
   },
   "acls": [],
   "methods": {}

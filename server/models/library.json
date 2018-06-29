@@ -32,12 +32,6 @@
       "model": "program",
       "foreignKey": "libraryId",
       "through": "library_program"
-    },
-    "users": {
-      "type": "hasMany",
-      "model": "user",
-      "foreignKey": "libraryId",
-      "through": "user_program"
     }
   },
   "acls": [],
