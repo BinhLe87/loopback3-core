@@ -82,7 +82,7 @@ class ErrorLogger {
 
             if (error instanceof Error) {
 
-                parsedErrString = errorToJSON(error);
+                parsedErrString =  JSON.stringify(errorToJSON(error));
             } else if (typeof error == 'object') {
 
                 parsedErrString = JSON.stringify(error);
