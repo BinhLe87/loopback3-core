@@ -1,6 +1,3 @@
-
-var errorToJSON = require('utils-error-to-json');
-
 /**
  * Generic Error Handler / Classifier
  *
@@ -39,7 +36,7 @@ module.exports = function () {
                 status: "error",
                 code: statusCode,
                 message: err.message || "",
-                data: errorToJSON(err.data || err.stack || {})
+                data: err.data || err.stack || {}
             }
         )
     }
