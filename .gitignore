@@ -30,5 +30,5 @@ logs
 #files only for local environments
 /server/datasources.local.json
 
-#upload files
+#uploads dir
 upload

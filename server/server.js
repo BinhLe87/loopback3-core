@@ -5,10 +5,14 @@ var boot = require('loopback-boot');
 
 var app = module.exports = loopback();
 const dotenv = require('dotenv').config(); 
-var logger = require('../server/helpers/errorLogger');
+var { logger } = require('../server/errors/errorLogger');
 
 
 app.logger = logger;
+//An instance of logger class can be accessed via the global `logger` variable.
+global.logger = logger;
+
+
 
 app.start = function() {
   // start the web server

@@ -42,7 +42,6 @@
   },
   "files": {},
   "final": {
-    "./middleware/error-logger": {},
     "loopback#urlNotFound": {}
   },
   "final:after": {
