@@ -1,5 +1,5 @@
 'use strict';
-var uploadItemController = require('../controllers/uploadItem');
+var uploadItemController = require('../controllers/item/uploadItem');
 
 module.exports = function(server) {
   // Install a `/` route that returns server status
@@ -7,7 +7,7 @@ module.exports = function(server) {
   var router = server.loopback.Router();
   var restApiRoot = server.get('restApiRoot');
 
-  router.post(`${restApiRoot}/uploadItem`, uploadItemController);
+  router.post(`${restApiRoot}/item/upload`, uploadItemController);
 
   server.use(router);
 };

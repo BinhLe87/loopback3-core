@@ -16,6 +16,15 @@
       "required": true
     }
   },
+  "scope": {
+
+    "limit": 1,
+    "order": "createdAt DESC",
+    "where": {
+      "is_active": 1,
+      "name": "page_1"
+    }
+  },
   "validations": [],
   "relations": {
     "chapters": {

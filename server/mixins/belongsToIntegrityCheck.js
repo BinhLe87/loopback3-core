@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 var Promise = require('bluebird');
-var myErrors = require('../errors');
 const HttpErrors = require('http-errors');
 
 var checkBelongsToIntegrity = function (ctx, next) {

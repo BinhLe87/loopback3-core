@@ -20,6 +20,7 @@
     "bluebird": "^3.5.1",
     "compression": "^1.0.3",
     "cors": "^2.5.2",
+    "cross-env": "^5.2.0",
     "debug": "^3.1.0",
     "dotenv": "^6.0.0",
     "formidable": "^1.2.1",
@@ -37,7 +38,6 @@
     "moment": "^2.22.2",
     "serve-favicon": "^2.0.1",
     "strong-error-handler": "^2.0.0",
-    "utils-error-to-json": "^1.0.0",
     "winston": "^3.0.0",
     "winston-daily-rotate-file": "^3.2.3"
   },
