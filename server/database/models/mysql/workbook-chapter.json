@@ -11,6 +11,16 @@
       "options": {
         "unique": true
       }
+    },
+    "chapter_display_idx": {
+      "keys": {
+        "workbookId": 1,
+        "chapterId": 1,
+        "chapter_display_index": 1
+      },
+      "options": {
+        "unique": true
+      }
     }
   },
   "options": {
@@ -19,7 +29,12 @@
   "mixins": {
     "TimeStamp": true
   },
-  "properties": {},
+  "properties": {
+    "chapter_display_index": {
+      "type": "number",
+      "default": 0
+    }
+  },
   "validations": [],
   "relations": {
     "workbook": {
