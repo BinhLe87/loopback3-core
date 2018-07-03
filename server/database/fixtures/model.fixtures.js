@@ -45,7 +45,7 @@ function generateModelData(numberRecordsWillGenerate = 0, model, fields) {
         let record = {};
          _.forOwn(fields, function (field_faker_type, field_name) {
 
-            record[field_name] = field_faker_type;
+             record[field_name] = (typeof field_faker_type == 'function' ? field_faker_type() : field_faker_type);
         })
 
         model.create(record, function (err, result) {
