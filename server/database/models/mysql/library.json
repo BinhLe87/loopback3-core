@@ -22,7 +22,7 @@
       "description": "To distinguish who created this library, ex: system or user"
     },
     "owner": {
-      "type": {}
+      "type": "string"
     }
   },
   "validations": [],
