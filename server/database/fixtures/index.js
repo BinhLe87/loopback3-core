@@ -5,69 +5,93 @@ const faker = require('faker/locale/en_US');
 
 
 const NUMBER_RECORDS = process.env.NUMBER_RECORDS;
-if(_.isEmpty(NUMBER_RECORDS)) {
+if (_.isEmpty(NUMBER_RECORDS)) {
 
     throw new Error('Error: Not passed node variable NUMBER_RECORDS')
 }
 
 require('./model.fixtures')(NUMBER_RECORDS, 'user', {
     name: faker.name.findName,
-    role: faker.random.arrayElement(['admin', 'editor'])
+    role: {
+        func: faker.random.arrayElement,
+        args: ['admin', 'editor']
+    }
 });
 
-// require('./model.fixtures')(NUMBER_RECORDS, 'library', {
-//     name: faker.lorem.sentence,
-//     createdBy: faker.random.arrayElement(['user', 'system']),
-//     owner: faker.random.number({ min: 1, max: 20 })
-// });
+require('./model.fixtures')(NUMBER_RECORDS, 'library', {
+    name: { func: faker.lorem.words, args: 7 },
+    createdBy: {
+        func: faker.random.arrayElement,
+        args: ['user', 'system']
+    },
+    owner: {
+        func: faker.random.number,
+        args: { min: 1, max: 20 }
+    }
+});
 
-// require('./model.fixtures')(NUMBER_RECORDS, 'program', {
-//     name: faker.lorem.sentence
-// });
+require('./model.fixtures')(NUMBER_RECORDS, 'program', {
+    name: { func: faker.lorem.words, args: 7 }
+});
 
-// require('./many-to-many.fixtures')(NUMBER_RECORDS, 'library', 'program', 'library_program');
+require('./many-to-many.fixtures')(NUMBER_RECORDS, 'library', 'program', 'library_program');
 
-// require('./many-to-many.fixtures')(NUMBER_RECORDS, 'user', 'program', 'user_program');
+require('./many-to-many.fixtures')(NUMBER_RECORDS, 'user', 'program', 'user_program');
 
-// require('./model.fixtures')(NUMBER_RECORDS, 'workbook', {
-//     title: faker.lorem.sentence,
-//     author: faker.name.findName,
-//     description: faker.lorem.paragraph,
-//     price: faker.commerce.price
-// });
+require('./model.fixtures')(NUMBER_RECORDS, 'workbook', {
+    title: { func: faker.lorem.words, args: 7 },
+    author: faker.name.findName,
+    description: faker.lorem.paragraph,
+    price: faker.commerce.price
+});
 
-// require('./many-to-many.fixtures')(NUMBER_RECORDS, 'program', 'workbook', 'program_workbook');
+require('./many-to-many.fixtures')(NUMBER_RECORDS, 'program', 'workbook', 'program_workbook');
 
-// require('./model.fixtures')(NUMBER_RECORDS, 'chapter', {
-//     name: faker.lorem.sentence,
-//     is_visible: faker.random.arrayElement([0, 1])
-// });
+require('./model.fixtures')(NUMBER_RECORDS, 'chapter', {
+    name: { func: faker.lorem.words, args: 7 },
+    is_visible: {
+        func: faker.random.arrayElement,
+        args: [0, 1]
+    }
+});
 
-// require('./many-to-many.fixtures')(NUMBER_RECORDS, 'workbook', 'chapter', 'workbook_chapter', {
-//     fields: {
-//         chapter_display_index: faker.random.number({ min: 1, max: 5 })
-//     }
-// })
+require('./many-to-many.fixtures')(NUMBER_RECORDS, 'workbook', 'chapter', 'workbook_chapter', {
+    fields: {
+        chapter_display_index: {
+            func: faker.random.number,
+            args: { min: 1, max: 5 }
+        }
+    }
+})
 
-// require('./model.fixtures')(NUMBER_RECORDS, 'page', {
-//     name: faker.lorem.words(7)
-// });
+require('./model.fixtures')(NUMBER_RECORDS, 'page', {
+    name: { func: faker.lorem.words, args: 7 }
+});
 
-// require('./many-to-many.fixtures')(NUMBER_RECORDS, 'chapter', 'page', 'chapter_page');
+require('./many-to-many.fixtures')(NUMBER_RECORDS, 'chapter', 'page', 'chapter_page');
 
-// require('./model.fixtures')(NUMBER_RECORDS, 'item', {
-//     name: faker.lorem.sentence,
-//     type: faker.random.arrayElement([1, 2, 3, 4, 5])
-// });
+require('./model.fixtures')(NUMBER_RECORDS, 'item', {
+    name: { func: faker.lorem.words, args: 7 },
+    type: {
+        func: faker.random.arrayElement,
+        args: [1, 2, 3, 4, 5]
+    }
+});
 
-// require('./many-to-many.fixtures')(NUMBER_RECORDS, 'page', 'item', 'page_item');
+require('./many-to-many.fixtures')(NUMBER_RECORDS, 'page', 'item', 'page_item');
 
-// //attribute for item type is formatted text
-// require('./model.fixtures')(NUMBER_RECORDS, 'attribute', {
-//     name: faker.random.arrayElement(['padding', 'background_color', 'align', 'margin']),
-//     attr_type: 'text',
-//     is_active: faker.random.arrayElement[0, 1]
-// });
+//attribute for item type is formatted text
+require('./model.fixtures')(NUMBER_RECORDS, 'attribute', {
+    name: {
+        func: faker.random.arrayElement,
+        args: ['padding', 'background_color', 'align', 'margin']
+    },
+    attr_type: 'text',
+    is_active: {
+        func: faker.random.arrayElement,
+        args: [0, 1]
+    }
+});
 
 
 

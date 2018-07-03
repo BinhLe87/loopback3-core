@@ -7,6 +7,7 @@ const debug = require('debug')(path.basename(__filename));
 const util = require('util');
 const Promise = require('bluebird');
 const _ = require('lodash');
+const fixtures_util = require('./util.fixtures');
 
 /**
  *Generate fake data for many-to-many relationship between sourceModel and destinationModel
@@ -79,10 +80,15 @@ async function generateManyToManyData(numberRecordsWillGenerate = 0, sourceModel
         record[`${destinationModel.name}Id`] = faker.random.number({ min: 1, max: maxIdDestinationModel });
 
         //add other fields
-        _.forOwn(options.fields, function (field_faker_type, field_name) {
+        let otherFields = {};
+        try {
+            otherFields = fixtures_util.parseRecordFields(options.fields);
+        } catch (e) {
+            debug(e);
+            throw e;
+        }
 
-            record[field_name] = field_faker_type;
-        })
+        Object.assign(record, otherFields);
 
         joinModel.create(record, function (err, result) {
 
