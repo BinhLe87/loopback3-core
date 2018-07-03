@@ -1,9 +1,9 @@
 'use strict';
 const Promise = require('bluebird');
 
-module.exports = function(server) {
+module.exports = function (server) {
 
-    Promise.each(server.models(), function(model) {
+    Promise.each(server.models(), function (model) {
 
         if (model.dataSource) {
 
@@ -11,8 +11,12 @@ module.exports = function(server) {
 
             if (autoupdate) {
 
-                return autoupdate.call(model.dataSource, model.modelName);
+                return autoupdate.call(model.dataSource, model.modelName).catch(err => {
+
+                    server.logger.error(err);
+                });
             }
         }
+
     });
 }

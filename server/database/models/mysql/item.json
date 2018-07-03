@@ -1,0 +1,50 @@
+{
+  "name": "item",
+  "plural": "items",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "indexes": {
+    "name_idx": {
+      "keys": {
+        "name": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true,
+    "BelongsToIntegrityCheck": false
+  },
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "required": true,
+      "description": ["may be a formatted text, questions, audio player, video player, etc."]
+    }
+  },
+  "validations": [],
+  "relations": {
+    "pages": {
+      "type": "hasMany",
+      "model": "page",
+      "foreignKey": "itemId",
+      "through": "page_item"
+    },
+    "attributes": {
+      "type": "hasMany",
+      "model": "attribute",
+      "foreignKey": "itemId",
+      "through": "item_attribute_value"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

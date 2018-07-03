@@ -76,7 +76,13 @@ var logger = winston.createLogger({
     format: fileFormat,
     transports: [
         new DailyRotateFile({ filename: path.join(envVars.LOGS_DIR, 'error.log'), level: 'error', handleExceptions: true }),
-        new DailyRotateFile({ filename: path.join(envVars.LOGS_DIR, 'silly.log'), level: 'silly' }),
+        new DailyRotateFile({
+            filename: path.join(envVars.LOGS_DIR, 'silly.log'), 
+            level: 'silly', 
+            options: {
+                flags: (process.env.NODE_ENV == 'development' ? 'w+' : 'a')
+            } 
+        }),
         new DailyRotateFile({ filename: path.join(envVars.LOGS_DIR, 'combined.log'), level: envVars.LOGGER_LEVEL})    
     ],
     exitOnError: false

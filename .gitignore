@@ -26,3 +26,9 @@ demo
 
 #logs files
 logs
+
+#files only for local environments
+/server/datasources.local.json
+
+#uploads dir
+upload

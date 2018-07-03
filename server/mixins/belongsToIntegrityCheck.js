@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 var Promise = require('bluebird');
-var myErrors = require('../errors');
 const HttpErrors = require('http-errors');
 
 var checkBelongsToIntegrity = function (ctx, next) {
@@ -59,9 +58,9 @@ var checkBelongsToIntegrity = function (ctx, next) {
 
             next(err);
         });
-
-
     }
+
+    next();
 }
 
 module.exports = function (Model, options) {

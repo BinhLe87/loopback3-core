@@ -4,9 +4,15 @@ var loopback = require('loopback');
 var boot = require('loopback-boot');
 
 var app = module.exports = loopback();
-var logger = require('./config/winston');
+const dotenv = require('dotenv').config(); 
+var { logger } = require('../server/errors/errorLogger');
+
 
 app.logger = logger;
+//An instance of logger class can be accessed via the global `logger` variable.
+global.logger = logger;
+
+
 
 app.start = function() {
   // start the web server
@@ -19,7 +25,6 @@ app.start = function() {
       console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
     }
 
-    
   });
 };
 

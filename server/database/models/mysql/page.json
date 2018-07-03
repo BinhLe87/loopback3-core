@@ -1,0 +1,45 @@
+{
+  "name": "page",
+  "plural": "pages",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true,
+    "BelongsToIntegrityCheck": false
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "scope": {
+
+    "limit": 1,
+    "order": "createdAt DESC",
+    "where": {
+      "is_active": 1,
+      "name": "page_1"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "chapters": {
+      "type": "hasMany",
+      "model": "chapter",
+      "foreignKey": "pageId",
+      "through": "chapter_page"
+    },
+    "items": {
+      "type": "hasMany",
+      "model": "item",
+      "foreignKey": "pageId",
+      "through": "page_item"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
