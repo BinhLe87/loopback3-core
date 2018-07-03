@@ -95,6 +95,9 @@ class ErrorLogger {
 
     parseErrorObjectToString(error) {
 
+        if(typeof error != 'object')
+            return error;
+
         try {
             var parsedErrString = util.inspect(error, { showHidden: true, depth: 5, compact: false, breakLength: 80 })
 
