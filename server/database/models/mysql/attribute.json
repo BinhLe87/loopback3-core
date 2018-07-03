@@ -18,6 +18,17 @@
       "default": 1
     }
   },
+  "indexes": {
+    "name_type_idx": {
+      "keys": {
+        "name": 1,
+        "attr_type": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
   "validations": [],
   "relations": {
     "items": {
