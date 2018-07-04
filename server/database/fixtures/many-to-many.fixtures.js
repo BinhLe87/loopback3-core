@@ -7,6 +7,7 @@ const debug = require('debug')(path.basename(__filename));
 const util = require('util');
 const Promise = require('bluebird');
 const _ = require('lodash');
+const fixtures_util = require('./util.fixtures');
 
 /**
  *Generate fake data for many-to-many relationship between sourceModel and destinationModel
@@ -15,11 +16,11 @@ const _ = require('lodash');
  * @param {Model} sourceModel
  * @param {Model} destinationModel
  * @param {Model} joinModel
- * @param {Object} [options.sourceModelId] foreign key Id of source Model
- * @param {Object} [options.destinationModelId] foreign key Id of destination Model
+ * @param {Object} [options.sourceModelId] foreign key name of source Model
+ * @param {Object} [options.destinationModelId] foreign key name of destination Model
  * @param {Object} [options.maxIdSourceModel] maximum Id of source Model
  * @param {Object} [options.maxIdDestinationModel] maximum Id of destination Model
- * @param {Object} [options.fields] fields other than foreignKey. It is a key value pair, key is field nam and value is fakerjs type
+ * @param {Object} [options.fields] fields other than foreign key. It is a key value pair, key is field nam and value is fakerjs type
  * @returns list of generated ids
  */
 async function generateManyToManyData(numberRecordsWillGenerate = 0, sourceModel, destinationModel, joinModel, options = {}) {
@@ -63,48 +64,8 @@ async function generateManyToManyData(numberRecordsWillGenerate = 0, sourceModel
 
     var { sourceModel, destinationModel, joinModel } = modelsModel;
 
-    const datasource = app.dataSources.cc_mysql;
-    const mysqlConnector = datasource.connector;
-
-    async function getMaxIdOfModel(model) {
-
-        if (typeof model != 'function') {
-
-            model = app.loopback.getModel(model);
-        }
-
-        var maxId;
-        var executeFuncPromise = Promise.promisify(mysqlConnector.execute).bind(mysqlConnector);
-
-        try {
-
-            let resultArray = await executeFuncPromise(`SELECT MAX(id) as MaxId from ${model.name}`);
-            maxId = resultArray[0]['MaxId'];
-
-        } catch (e) {
-
-            debug(`Error: SELECT MAX(id) from ${model.name}`);
-            debug(e);
-        }
-
-        if (_.isEmpty(maxId)) {
-
-            var countFuncPromise = Promise.promisify(model.count).bind(model);
-            try {
-
-                maxId = await countFuncPromise();
-            } catch (e) {
-
-                debug(`Error: execute ${model.name}.count()`);
-                debug(e);
-            }
-        }
-
-        return maxId;
-    }
-
-    var maxIdSourceModel = await getMaxIdOfModel(sourceModel);
-    var maxIdDestinationModel = await getMaxIdOfModel(destinationModel);
+    var maxIdSourceModel = await _getMaxIdOfModel(sourceModel);
+    var maxIdDestinationModel = await _getMaxIdOfModel(destinationModel);
 
     maxIdSourceModel = maxIdSourceModel || options.maxIdSourceModel || numberRecordsWillGenerate;
     maxIdDestinationModel = maxIdDestinationModel || options.maxIdDestinationModel || numberRecordsWillGenerate;
@@ -119,10 +80,15 @@ async function generateManyToManyData(numberRecordsWillGenerate = 0, sourceModel
         record[`${destinationModel.name}Id`] = faker.random.number({ min: 1, max: maxIdDestinationModel });
 
         //add other fields
-        _.forOwn(options.fields, function (field_faker_type, field_name) {
+        let otherFields = {};
+        try {
+            otherFields = fixtures_util.parseRecordFields(options.fields);
+        } catch (e) {
+            debug(e);
+            throw e;
+        }
 
-            record[field_name] = field_faker_type;
-        })
+        Object.assign(record, otherFields);
 
         joinModel.create(record, function (err, result) {
 
@@ -140,5 +106,44 @@ async function generateManyToManyData(numberRecordsWillGenerate = 0, sourceModel
     return createdIds;
 }
 
-module.exports = generateManyToManyData;
+async function _getMaxIdOfModel(model) {
 
+    const datasource = app.dataSources.cc_mysql;
+    const mysqlConnector = datasource.connector;
+
+    if (typeof model != 'function') {
+
+        model = app.loopback.getModel(model);
+    }
+
+    var maxId;
+    var executeFuncPromise = Promise.promisify(mysqlConnector.execute).bind(mysqlConnector);
+
+    try {
+
+        let resultArray = await executeFuncPromise(`SELECT MAX(id) as MaxId from ${model.name}`);
+        maxId = resultArray[0]['MaxId'];
+
+    } catch (e) {
+
+        debug(`Error: SELECT MAX(id) from ${model.name}`);
+        debug(e);
+    }
+
+    if (_.isEmpty(maxId)) {
+
+        var countFuncPromise = Promise.promisify(model.count).bind(model);
+        try {
+
+            maxId = await countFuncPromise();
+        } catch (e) {
+
+            debug(`Error: execute ${model.name}.count()`);
+            debug(e);
+        }
+    }
+
+    return maxId;
+}
+
+module.exports = generateManyToManyData;
