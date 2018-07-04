@@ -64,8 +64,11 @@ async function generateManyToManyData(numberRecordsWillGenerate = 0, sourceModel
 
     var { sourceModel, destinationModel, joinModel } = modelsModel;
 
-    var maxIdSourceModel = await _getMaxIdOfModel(sourceModel);
-    var maxIdDestinationModel = await _getMaxIdOfModel(destinationModel);
+    var [maxIdSourceModel, maxIdDestinationModel] = await Promise.all([
+        _getMaxIdOfModel(sourceModel),
+        _getMaxIdOfModel(destinationModel)
+    ]);
+
 
     maxIdSourceModel = maxIdSourceModel || options.maxIdSourceModel || numberRecordsWillGenerate;
     maxIdDestinationModel = maxIdDestinationModel || options.maxIdDestinationModel || numberRecordsWillGenerate;

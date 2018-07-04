@@ -1,4 +1,4 @@
-var server = require('../server');
+var server = require('../../server');
 var _ = require('lodash');
 
 var ds = server.dataSources.cc_mysql;
