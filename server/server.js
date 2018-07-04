@@ -12,8 +12,6 @@ app.logger = logger;
 //An instance of logger class can be accessed via the global `logger` variable.
 global.logger = logger;
 
-
-
 app.start = function() {
   // start the web server
   return app.listen(function() {
@@ -25,6 +23,8 @@ app.start = function() {
       console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
     }
 
+    //set unlimited event listeners
+    app.setMaxListeners(0);
   });
 };
 
