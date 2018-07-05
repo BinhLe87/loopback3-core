@@ -15,8 +15,8 @@ const _ = require('lodash');
  * @param {Model} sourceModel
  * @param {Model} destinationModel
  * @param {Model} joinModel
- * @param {Object} [options.sourceModelId] foreign key Id of source Model
- * @param {Object} [options.destinationModelId] foreign key Id of destination Model
+ * @param {Object} [options.sourceModelId] source Model name
+ * @param {Object} [options.destinationModelId] destination Model name
  * @param {Object} [options.maxIdSourceModel] maximum Id of source Model
  * @param {Object} [options.maxIdDestinationModel] maximum Id of destination Model
  * @param {Object} [options.fields] fields other than foreignKey. It is a key value pair, key is field nam and value is fakerjs type
