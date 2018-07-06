@@ -29,7 +29,7 @@ var envVarsSchema = joi.object({
 const { error, value: envVars } = joi.validate(process.env, envVarsSchema);
 
 if (error) {
-    throw new Error(`Config validation error in winston.js: ${error.message}`);
+    throw new Error(`Config validation error in ${path.basename(__filename)}: ${util.inspect(error.details)}`);
 }
 
 //------------LOG OPTIONS

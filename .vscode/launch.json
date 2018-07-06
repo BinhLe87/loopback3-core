@@ -19,12 +19,18 @@
         {
             "type": "node",
             "request": "attach",
+            "name": "Debug current file",
+            "processId": "${command:PickProcess}",
+            "stopOnEntry": false
+        },
+        {
+            "type": "node",
+            "request": "attach",
             "name": "Nodemon APC",
             "stopOnEntry": false,
             "processId": "${command:PickProcess}",
             "restart": true,
             "protocol": "inspector",
-            "port": 9230,
             "trace": "verbose"
         },
     ]
