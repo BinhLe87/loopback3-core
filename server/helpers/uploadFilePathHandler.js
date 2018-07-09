@@ -12,30 +12,78 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 
 const HASH_RANDOM_FORMAT = '(\\w{6})';
-const FILE_NAME_FORMAT_REGEXP = RegExp(`^(.*)_([a-zA-Z0-9]{1,3})-(\\d{8})-${HASH_RANDOM_FORMAT}\\.(\\w+)$`);
+const FILE_NAME_FORMAT_REGEXP = RegExp(`^(.*)_([a-zA-Z0-9]{1,3})-(\\d{8})-${HASH_RANDOM_FORMAT}\\.?(\\w*)$`);
 
-function filePathHanlder() {
+/**
+ * This class will transform file name into following format
+ * 
+ * `<baseFileName>_<service_name>-YYYYMMDD-<random_hash_six_chars>.<file_type>`
+ * 
+ * @example  `master-yoga-in-30-days_abc-20180705-zmnrhb.mp4`
+ *
+ * @param {object} [options={}] the setting options for current service
+ * @param {string} [options.uploadDir] the absolute path of upload directory of current service. This value will override `ROOT_UPLOAD_DIR` env
+ */
+function filePathHanlder(options = {}) {
 
     EventEmitter.call(this);
+    this.options = options;
 }
 
 utils.inherits(filePathHanlder, EventEmitter);
+
+Object.defineProperty(filePathHanlder.prototype, 'ROOT_UPLOAD_DIR', {
+    enumerable: true,
+    get() {
+
+        let root_dir = process.env.ROOT_UPLOAD_DIR;
+        if (_.isEmpty(root_dir)) { //return default path
+
+            return path.resolve(process.cwd(), 'upload');
+        }
+
+        return root_dir;
+    }
+});
+
+Object.defineProperty(filePathHanlder.prototype, 'SERVICE_NAME', {
+    enumerable: true,
+    get() {
+
+        var service_name = process.env.SERVICE_NAME;
+
+        if (!service_name) {
+
+            throw new Error(`${path.basename(__filename)} function _generateFileName() requires Node env SERVICE_NAME`);
+        }
+
+        return service_name;
+    }
+});
+
+
 
 function _isValidFileNameFormat(file_name) {
 
     return FILE_NAME_FORMAT_REGEXP.test(file_name);
 }
+/**
+ *
+ *
+ * @param {*} transformedFileName
+ * @param {*} cb
+ * @returns {Array} array of fields are baseFileName, serviceName, dateString, randomHash, fileExtension
+ */
+function _extractFieldsFromFileName(transformedFileName, cb) {
 
-function _extractFieldsFromFileName(file_name, cb) {
+    if (!_isValidFileNameFormat(transformedFileName)) {
 
-    if (!_isValidFileNameFormat(file_name)) {
-
-        throw new Error(`File name '${file_name}' has invalid format`);
+        throw new Error(`File name '${transformedFileName}' has invalid format`);
     }
 
     var ext_fields = [];
 
-    file_name.replace(FILE_NAME_FORMAT_REGEXP, function (match, ...fields) {
+    transformedFileName.replace(FILE_NAME_FORMAT_REGEXP, function (match, ...fields) {
 
         ext_fields = fields.splice(0, fields.length - 2); //remove the 2 last elements are found offset and origin string
     });
@@ -43,9 +91,9 @@ function _extractFieldsFromFileName(file_name, cb) {
     return ext_fields;
 }
 
-async function _generateRandomHashWithSixChars() {
 
-    var randomBytesPromise = Promise.promisify(crypto.randomBytes).bind(crypto);
+function _generateRandomHashHasSixChars() {
+
 
     function __isValidHash(hash) {
 
@@ -53,13 +101,13 @@ async function _generateRandomHashWithSixChars() {
     }
 
     //Note: in javascript, each string character is 16-bit length => be 3 bytes for 6 characters
-    var runIndex = 0;
+    var remainingAttempts = 10;
     var hashSixChars;
+    const buf = Buffer.alloc(3);
     do {
-        let buf = await randomBytesPromise(3);
-        hashSixChars = buf.toString('hex');
-        runIndex++;
-    } while (runIndex < 10 && !__isValidHash(hashSixChars))
+        hashSixChars = crypto.randomFillSync(buf).toString('hex');
+        remainingAttempts--;
+    } while (remainingAttempts > 0 && !__isValidHash(hashSixChars))
 
     if (!__isValidHash(hashSixChars)) {
 
@@ -69,30 +117,24 @@ async function _generateRandomHashWithSixChars() {
     return hashSixChars;
 }
 
-async function _transformFileNameToSave(file_name) {
+filePathHanlder.prototype.transformFileNameToSave = function(file_name) {
 
-    var service_name = process.env.SERVICE_NAME;
+    var service_name = this.SERVICE_NAME;
 
-    if (!service_name) {
-
-        throw new Error(`${path.basename(__filename)} function _generateFileName() requires Node env SERVICE_NAME`);
-    }
-
-    var baseFileName = /[.]/.exec(file_name) ? /^[^.]+/.exec(file_name)[0] : file_name;
     var fileExt = FileUtil.getFileExtension(file_name);
+    var baseFileName = file_name.replace((fileExt ? `.${fileExt}` : fileExt), '');
     var slugifiedBaseFileName = slugify(baseFileName);
 
     var now = moment(); //current locale time
     var dateString = now.format('YYYYMMDD');
-    //Note: in javascript, each string character is 16-bit length
-    var sixchars_hash = await _generateRandomHashWithSixChars();
 
+    var sixchars_hash = _generateRandomHashHasSixChars();
 
     let dirStructureOfFile = [service_name, dateString, sixchars_hash].join('-');
-    let fileExtWithPoint = _.isEmpty(fileExt) ? fileExt : `.${fileExt}`;
-    let fileNameToSave = [`${slugifiedBaseFileName}_`, dirStructureOfFile, fileExtWithPoint].join('');
+    let fileExtHasPoint = _.isEmpty(fileExt) ? fileExt : `.${fileExt}`;
+    let fileNameToSave = [`${slugifiedBaseFileName}_`, dirStructureOfFile, fileExtHasPoint].join('');
 
-    //Re-check the code to ensure it run properly if you're on development stage
+    //Re-check the code to ensure it run properly if you're on development environment
     if (process.env.NODE_ENV == 'development') {
 
         if (!_isValidFileNameFormat(fileNameToSave)) {
@@ -102,31 +144,60 @@ async function _transformFileNameToSave(file_name) {
     }
 
     return fileNameToSave;
-
 }
+/**
+ * Return the directory structure as below
+ * 
+ * ```
+  path.resolve(this.rootUploadDir, serviceName,
+    date.year().toString(),
+    _.padStart((date.month() + 1).toString(), 2, '0'),
+    _.padStart(date.date().toString(), 2, '0'),
+    transformedFileName);
+ * ```
+ * Notice that: the `rootUploadDir` will be one in the priority order: `[options.uploadDir]` > `process.env.ROOT_UPLOAD_DIR`
+ * @param {string} baseFileName
+ * @returns
+ */
+filePathHanlder.prototype.identifyPathWillSave = function (baseFileName) {
 
-filePathHanlder.prototype.saveFile = async function (file_name) {
+    var transformedFileName = this.transformFileNameToSave(baseFileName);
 
-    try {
+    var dirPathWillSave = this.identifyDirPathWillSave();
 
-        var [file_title, service_id, date, hash, file_type] = _extractFieldsFromFileName(file_name);
-        
+    var pathWillSave = path.resolve(dirPathWillSave, transformedFileName);
 
+    return pathWillSave;
+}
+/**
+ *  Identify directory hierarchy path will store uploaded file.
+ *
+ * @param {boolean} [shouldCreateDirs=true] If the returned path hierarchy doesn't exists, it's created
+ * @returns
+ */
+filePathHanlder.prototype.identifyDirPathWillSave = function(shouldCreateDirs = true) {
 
+    var uploadDir = this.options.uploadDir || this.ROOT_UPLOAD_DIR;
+    var serviceName = this.SERVICE_NAME;
+    var date = moment();
 
+    var dirPathWillSave = path.resolve(uploadDir, serviceName,
+        date.year().toString(),
+        _.padStart((date.month() + 1).toString(), 2, '0'),
+        _.padStart(date.date().toString(), 2, '0'));
 
-    } catch (e) {
+    if (shouldCreateDirs) {
 
-
+        if (!fs.existsSync(dirPathWillSave)) {
+            fs.mkdirsSync(dirPathWillSave)
+        }
     }
+
+    return dirPathWillSave;
 }
 
-//HACK:
-var file_name = 'master_yoga!!in 30@@days.txt';
-_transformFileNameToSave(file_name).then(function(result) {
-    
-    console.log(result);
-});
+
+module.exports = filePathHanlder;
 
 
 

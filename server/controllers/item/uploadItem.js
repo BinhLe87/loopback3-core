@@ -5,31 +5,18 @@ var formidable = require('formidable'),
     path = require('path'),
     crypto = require('crypto'),
     moment = require('moment'),
-    createError = require('http-errors');
+    createError = require('http-errors'),
+    FilePathHandler = require('../../helpers/uploadFilePathHandler');
 
 // Error Messages
-var ERR_UPLOAD_FAILED = "Error file uploading has failed at <%=method%> <%=url%>. Please try again"
-
-function generateRandomFileName(originFileName) {
-
-    if(!originFileName) return null;
-
-    var randomString = crypto.randomBytes(8).toString('hex');
-    var dateString = moment().format('DDMMYYYYHHmmss'); 
-
-    var [fileName = '', fileExt] = originFileName.split('.');
-    var newFileName = `${fileName}_${randomString}_${dateString}` +
-                        (fileExt ? `.${fileExt}` : '');
-
-    return newFileName;
-}
-
+var ERR_UPLOAD_FAILED = "Error file uploading has failed at <%=method%> <%=url%>. Please try again";
+const uploadFilePathHandler = new FilePathHandler();
 
 module.exports = function uploadItem(req, res, next) {
 
     //parse a file upload
     var form = new formidable.IncomingForm();
-    form.uploadDir = path.resolve(process.cwd(), 'upload');
+    
     form.keepExtensions = true;
 
     form.parse(req, function(err, fields, files) {
@@ -55,11 +42,12 @@ module.exports = function uploadItem(req, res, next) {
     //off auto rename file, it also disables `form.uploadDir` and `form.keepExtensions` parameters
     form.on('fileBegin', function(name, file) {
 
-        var uploadDir = path.resolve(process.cwd(), 'upload');
-        
-        var fileNameWillSave = generateRandomFileName(file.name);
-        file.path = path.join(uploadDir, fileNameWillSave);
+        //Only accept invoking SYNC functions
+        file.path = uploadFilePathHandler.identifyPathWillSave(file.name);
+        file.name = uploadFilePathHandler.transformFileNameToSave(file.name);
     });
+
+    
 
     
 }
