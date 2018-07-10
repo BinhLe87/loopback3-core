@@ -19,3 +19,5 @@ exports.isBuiltInModel = function isBuiltInModel(model_name) {
 
     return _builtInModelNames.includes(model_name);
 }
+
+exports.builtInModelNames = _builtInModelNames;

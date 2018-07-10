@@ -1,31 +1,27 @@
 {
-  "name": "item_attribute_value",
+  "name": "item_attribute_template",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "attr_value": {
-      "type": "any"
-    },
-    "attr_displayIndex": {
+    "display_index": {
       "type": "number",
       "default": 0,
-      "description": ["the display order index of the attribute in item"]
+      "description": ["the display order index of the attribute in a item"]
     }
   },
   "validations": [],
   "relations": {
-    "item": {
+    "itemtype": {
       "type": "belongsTo",
-      "model": "item",
-      "foreignKey": "itemId"
+      "model": "item_type",
+      "foreignKey": "item_typeId"
     },
     "attribute": {
       "type": "belongsTo",
-      "model": "attribute",
-      "foreignKey": "attributeId"
+      "model": "attribute"
     }
   },
   "acls": [],

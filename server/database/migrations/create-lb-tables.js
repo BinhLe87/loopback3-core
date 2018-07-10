@@ -1,14 +1,22 @@
 var server = require('../../server');
 var _ = require('lodash');
+const { builtInModelNames } = require('../../helpers/loopbackUtil');
 
 var ds = server.dataSources.cc_mysql;
-var lbBuildInTables = ['User', 'AccessToken', 'ACL', 'RoleMapping', 'Role'];
+ds.setMaxListeners(0);
 
-var lbAllTables = _.map(server._models, 'modelName');
-var lbMyTables = _.xor(lbAllTables, lbBuildInTables);
 
-ds.automigrate(lbMyTables, function (er) {
+var lbAllModels = _.map(server._models, 'modelName');
+
+var lbMyModels = lbAllModels.filter(function(value, index) {
+
+    return !builtInModelNames.includes(value);
+});
+
+
+
+ds.automigrate(lbMyModels, function (er) {
     if (er) throw er;
-    console.log('Loopback tables [' - lbMyTables - '] created in ', ds.adapter.name);
+    console.log('Loopback tables [' - lbMyModels - '] created in ', ds.adapter.name);
     ds.disconnect();
 });

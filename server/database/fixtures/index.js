@@ -3,12 +3,15 @@
 const _ = require('lodash');
 const faker = require('faker/locale/en_US');
 const app = require('../../server');
+const path = require('path');
+const debug = require('debug')('index_fixtures');
 
 
-const NUMBER_RECORDS = process.env.NUMBER_RECORDS;
-if (_.isEmpty(NUMBER_RECORDS)) {
+const NUMBER_RECORDS = process.env.NUMBER_RECORDS || 200;
+if (NUMBER_RECORDS <= 0) {
 
-    throw new Error('Error: Not passed node variable NUMBER_RECORDS')
+    debug('Error: value of NUMBER_RECORDS must be greater than 0');
+    throw new Error('Error: value of NUMBER_RECORDS must be greater than 0')
 }
 
 app.on('booted', function() {
@@ -75,26 +78,59 @@ app.on('booted', function() {
     
     require('./model.fixtures')(NUMBER_RECORDS, 'item', {
         name: { func: faker.lorem.words, args: 7 },
-        type: {
+        item_typeId: {
             func: faker.random.arrayElement,
             args: [1, 2, 3, 4, 5]
         }
     });
     
     require('./many-to-many.fixtures')(NUMBER_RECORDS, 'page', 'item', 'page_item');
-    
-    //attribute for item type is formatted text
-    require('./model.fixtures')(NUMBER_RECORDS, 'attribute', {
-        name: {
+
+    require('./model.fixtures')(NUMBER_RECORDS, 'item_type', {
+        code: {
             func: faker.random.arrayElement,
-            args: ['padding', 'background_color', 'align', 'margin']
+            args: ['text', 'video', 'audio', 'question', 'html', 'experience_points']
         },
-        attr_type: 'text',
+        label: {
+            func: faker.random.arrayElement,
+            args: ['text', 'video', 'audio', 'question', 'html', 'experience_points']
+        },
         is_active: {
             func: faker.random.arrayElement,
             args: [0, 1]
         }
     });
+    
+    //attribute for item type is formatted text
+    require('./model.fixtures')(NUMBER_RECORDS, 'attribute', {
+        code: {
+            func: faker.random.arrayElement,
+            args: ['padding', 'background_color', 'align', 'margin']
+        },
+        label :{
+            func: faker.random.arrayElement,
+            args: ['padding', 'background_color', 'align', 'margin']
+        },
+        data_type: 'string',
+        is_active: {
+            func: faker.random.arrayElement,
+            args: [0, 1]
+        },
+        is_required: {
+            func: faker.random.arrayElement,
+            args: [0, 1]
+        }
+    });
+
+    require('./many-to-many.fixtures')(NUMBER_RECORDS, 'item_type', 'attribute', 'item_attribute_template', {
+        fields: {
+            display_index: {
+                func: faker.random.number,
+                args: { min: 1, max: 5 }
+            }
+        }
+    });
+    
 });
 
 

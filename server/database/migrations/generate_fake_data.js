@@ -1,5 +1,4 @@
 'use strict';
 
-var app = require('../server');
-
-var 
+//invoke generating fake data
+var fixturesProcessor = require('../fixtures');
