@@ -92,8 +92,12 @@
     "dataSource": "cc_mysql",
     "public": false
   },
-  "item_attribute_value": {
+  "item_attribute_template": {
     "dataSource": "cc_mysql",
     "public": false
+  },
+  "item_type": {
+    "dataSource": "cc_mysql",
+    "public": true
   }
 }

@@ -18,7 +18,7 @@ const fixtures_util = require('./util.fixtures');
  */
 function generateModelData(numberRecordsWillGenerate = 0, model, fields) {
 
-    if (_.isEmpty(numberRecordsWillGenerate)) return;
+    if (numberRecordsWillGenerate <= 0) return;
 
     if (_.isEmpty(fields)) {
 

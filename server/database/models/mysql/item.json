@@ -24,10 +24,9 @@
     "name": {
       "type": "string"
     },
-    "type": {
-      "type": "string",
-      "required": true,
-      "description": ["may be a formatted text, questions, audio player, video player, etc."]
+    "content": {
+      "type": "object",
+      "description": ["contains all attributes' values description"]
     }
   },
   "validations": [],
@@ -42,7 +41,12 @@
       "type": "hasMany",
       "model": "attribute",
       "foreignKey": "itemId",
-      "through": "item_attribute_value"
+      "through": "item_attribute_template"
+    },
+    "itemtype": {
+      "type": "belongsTo",
+      "model": "item_type",
+      "foreignKey": "item_typeId"
     }
   },
   "acls": [],

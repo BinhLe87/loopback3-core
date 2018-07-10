@@ -38,7 +38,14 @@ class ErrorLogger {
         }
     }
 
-    log(error = {}, classNameOccurError, level = 'info') {
+    log(level = 'info', error = {}, classNameOccurError) {
+
+        //omit 'level' argument
+        if(arguments[0] && typeof arguments[0] == 'object') {
+
+            error = arguments[0];
+            level = 'info';
+        }
 
         this[level](error, classNameOccurError);
     }
