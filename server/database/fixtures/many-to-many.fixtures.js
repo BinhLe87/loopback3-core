@@ -16,13 +16,8 @@ const fixtures_util = require('./util.fixtures');
  * @param {Model} sourceModel
  * @param {Model} destinationModel
  * @param {Model} joinModel
-<<<<<<< HEAD
  * @param {Object} [options.sourceModelId] source Model name
  * @param {Object} [options.destinationModelId] destination Model name
-=======
- * @param {Object} [options.sourceModelId] foreign key name of source Model
- * @param {Object} [options.destinationModelId] foreign key name of destination Model
->>>>>>> master
  * @param {Object} [options.maxIdSourceModel] maximum Id of source Model
  * @param {Object} [options.maxIdDestinationModel] maximum Id of destination Model
  * @param {Object} [options.fields] fields other than foreign key. It is a key value pair, key is field nam and value is fakerjs type
