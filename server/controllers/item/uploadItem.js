@@ -43,7 +43,7 @@ module.exports = function uploadItem(req, res, next) {
     form.on('fileBegin', function(name, file) {
 
         //Only accept invoking SYNC functions
-        file.path = uploadFilePathHandler.identifyPathWillSave(file.name);
+        file.path = uploadFilePathHandler.identifyFilePathWillSave(file.name);
         file.name = uploadFilePathHandler.transformFileNameToSave(file.name);
     });
 
