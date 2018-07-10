@@ -14,10 +14,14 @@
             "type": "node",
             "request": "launch",
             "name": "Run current file",
-            "program": "${file}",
-            "env": {
-                "NUMBER_RECORDS": 3
-            }
+            "program": "${file}"
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Debug current file",
+            "processId": "${command:PickProcess}",
+            "stopOnEntry": false
         },
         {
             "type": "node",
@@ -27,7 +31,6 @@
             "processId": "${command:PickProcess}",
             "restart": true,
             "protocol": "inspector",
-            "port": 9230,
             "trace": "verbose"
         },
     ]

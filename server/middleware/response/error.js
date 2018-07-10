@@ -28,7 +28,7 @@ module.exports = function () {
             err.data = {}
         }
 
-        res.status(statusCode)
+        res.status(statusCode);
 
         // Respond using the appropriate custom response
         return res.json(

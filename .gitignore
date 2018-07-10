@@ -32,3 +32,5 @@ logs
 
 #uploads dir
 upload
+
+package-lock.json
