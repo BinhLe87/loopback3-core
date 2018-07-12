@@ -4,6 +4,7 @@ const _ = require('lodash');
 
 exports = module.exports = {};
 
+//TODO: support a field reference to other field's value
 exports.parseRecordFields = function parseRecordFields(fields) {
 
     let record = {};

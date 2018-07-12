@@ -3,16 +3,6 @@
   "plural": "items",
   "base": "PersistedModel",
   "idInjection": true,
-  "indexes": {
-    "name_idx": {
-      "keys": {
-        "name": 1
-      },
-      "options": {
-        "unique": true
-      }
-    }
-  },
   "options": {
     "validateUpsert": true
   },

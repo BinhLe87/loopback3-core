@@ -23,13 +23,15 @@
     "is_required": {
       "type": "boolean",
       "default": 0
+    },
+    "description": {
+      "type": "string"
     }
   },
   "indexes": {
     "name_type_idx": {
       "keys": {
-        "code": 1,
-        "data_type": 1
+        "code": 1
       },
       "options": {
         "unique": true
