@@ -1,4 +1,5 @@
 'use strict';
+const app = require('../../../server');
 
 exports = module.exports = {};
 
@@ -7,7 +8,7 @@ exports.getAttributesByItemtypeId = function getAttributesByItemtypeId(itemTypeI
     return new Promise((resolve, reject) => {
 
         //query list of attributes as a template of this itemTypeId
-        itemTypeModel = app.models.item_type;
+        var itemTypeModel = app.models.item_type;
         itemTypeModel.findOne({ "where": { "id": itemTypeId }, "include": { "relation": "attributes" } }, function (err, doc) {
 
             if (err) {
