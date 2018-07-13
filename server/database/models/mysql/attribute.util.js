@@ -45,11 +45,18 @@ function identifyJoiSchemaForDataType(data_type, options = {}) {
     var _joiSchema = joiSchemas[`${data_type}Schema`] || Joi.any();
 
     //add additional constraints if needed
-    var isRequired = options['is_required'] ? !!options['is_required'] : false;
-    if (isRequired) {
+    _.forOwn(options, function(method_param, method_name) {
 
-        _joiSchema = _joiSchema.required();
-    }
+        if (typeof method_name == 'string') { 
+            method_name = method_name.toLowerCase().trim();
+        }
+        
+        //check whether method name is supported by Joi
+        if (typeof _joiSchema[method_name] == 'function') {
+
+            _joiSchema = _joiSchema[method_name](method_param);
+        }
+    })
 
     return _joiSchema;
 }
@@ -73,7 +80,7 @@ async function validateAttributesByItemType(attributesWillCheck, itemTypeId) {
     var attributesInDB = await itemTypeUtil.getAttributesByItemtypeId(itemTypeId);
     //Some notice rules to validate:
     //- All attributes defined in database must be in 'attributes' array be passed through 'id' field
-    //- 'Attributes' passed must fulfill constraints defined in DB if any (ex: data type, additional constrains about is_required, etc.)
+    //- 'Attributes' passed must fulfill constraints defined in DB if any (ex: data type, additional constrains about op_required, etc.)
     for (let attributeInDB of attributesInDB) {
 
         var sameAttrIds = _.filter(attributesWillCheck, { id: attributeInDB.id });
@@ -83,14 +90,8 @@ async function validateAttributesByItemType(attributesWillCheck, itemTypeId) {
             throw new Error(`Error: Invalid attributes. The itemtypeId '${itemTypeId}' must contain at least one attribute has id '${attributeInDB.id}' as in template`)
         }
 
-        //extra constraints of an attribute in database will has prefix column name is 'is_'
-        var extraConstraints = _.reduce(attributeInDB, function (accum, value, key) {
-
-            if (/^(is_).+/.test(key)) {
-                accum[key] = value;
-            }
-            return accum;
-        }, {});
+        //extra constraints of an attribute in database will has prefix column name is 'op_'
+        var extraConstraints = parseAttributeOptions(attributeInDB);
 
         for (let attrWillCheck of sameAttrIds) {
 
@@ -102,8 +103,8 @@ async function validateAttributesByItemType(attributesWillCheck, itemTypeId) {
             //valueWillValidate maybe a array type (if has multiple values) or a primitive value (if only has one value)
             var valuesWillValidateByJoi = Array.isArray(valueOfAttrWillCheck) ? valueOfAttrWillCheck : [{value: valueOfAttrWillCheck}];
 
-            //tips: in case valuesWillValidateByJoi is empty array, insert a dummy element in order to 
-            //jump in Joi.validate() if is_required constraint is defined in DB
+            //trick: in case valuesWillValidateByJoi is empty array, insert a dummy element in order to 
+            //jump in Joi.validate() if op_required constraint is defined in DB
             if (_.isEmpty(valuesWillValidateByJoi)) {
                 valuesWillValidateByJoi = [{value: undefined}];
             }
@@ -119,9 +120,7 @@ async function validateAttributesByItemType(attributesWillCheck, itemTypeId) {
                         }
                     }
                 }, function (err, result) {
-
                     if (err) {
-
                         validateErrorMessages[`${attrWillCheck.id}:${attributeInDB.code}`] = err.details;
                     }
                 })
@@ -134,6 +133,49 @@ async function validateAttributesByItemType(attributesWillCheck, itemTypeId) {
         var validError = new Error();
         validError.message = 'one of field value is invalid. Please check again';
         validError.data = validateErrorMessages;
+
+        throw validError;
+    }
+
+    return true;
+}
+
+function parseAttributeOptions(attribute) {
+
+    if (typeof attribute != 'object') {
+
+        var detailMsg = `parseAttributeOptions() requires 'attribute' argument must be an object, but got ${typeof attribute}`;
+        logger.error(detailMsg);
+
+        let error = new Error(`Error: Unable to identify the constraint options of attribute ${attribute}. Please try again later`);
+        error.data = detailMsg;
+
+        throw error;
+    }
+
+    var options = _.reduce(attribute, function (accum, value, key) {
+
+        //remove the prefix 'op_' in option name for matching with Joi validation method name. 
+        //Ex: 'op_required' will be formatted to 'required'
+        let option_names = /^(?:op_)(.+)/.exec(key);
+        if (!_.isEmpty(option_names) && !_.isNull(value)) {
+        
+            //attemp to cast to number
+            let toNumber = _.toNumber(value);
+            value = _.isNaN(toNumber) ? value : toNumber;
+
+            accum[option_names[1]] = value;
+        }
+        return accum;
+    }, {});
+
+    //remove is_required if it was set to false
+    var isRequired = options['required'] ? !!options['required'] : false;
+    if (isRequired == false) {
+        delete options['required'];
+    }
+
+    return options;
 
         throw validError;
     }
@@ -157,7 +199,7 @@ validateAttributesByItemType(
         {
             id: 1,
             values: [
-                {name: "binh", "value": "123a"}
+                {value: "1"}
             ]
         }]
     ,
