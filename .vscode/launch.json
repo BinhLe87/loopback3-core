@@ -18,9 +18,9 @@
         },
         {
             "type": "node",
-            "request": "attach",
+            "request": "launch",
             "name": "Debug current file",
-            "processId": "${command:PickProcess}",
+            "program": "${file}",
             "stopOnEntry": false
         },
         {
