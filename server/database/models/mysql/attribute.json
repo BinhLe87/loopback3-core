@@ -20,11 +20,17 @@
       "type": "boolean",
       "default": 1
     },
-    "is_required": {
+    "description": {
+      "type": "string"
+    },
+    "op_required": {
       "type": "boolean",
       "default": 0
     },
-    "description": {
+    "op_max": {
+      "type": "string"
+    },
+    "op_regex": {
       "type": "string"
     }
   },
