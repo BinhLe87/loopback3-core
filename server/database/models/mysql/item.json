@@ -14,11 +14,12 @@
     "name": {
       "type": "string"
     },
-    "content": {
+    "item_attributes": {
       "type": "object",
       "description": ["contains all attributes' values description"]
     }
   },
+  "hidden": ["createdAt", "updatedAt"],
   "validations": [],
   "relations": {
     "pages": {

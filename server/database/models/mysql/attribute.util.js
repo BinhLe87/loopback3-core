@@ -10,8 +10,6 @@ const util = require('util');
 const joiSchemas = {
     stringSchema: Joi.string(),
     htmlSchema: Joi.string().base64(),
-    //Test url regx at here https://regex101.com/r/p3hrOH/1
-    urlSchema: Joi.string().regex(/((https?:\/\/)?(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|(https?:\/\/)?(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/),
     //numberic type
     integerSchema: Joi.number().integer(),
     floatSchema: Joi.number()
@@ -20,10 +18,9 @@ const joiSchemas = {
 Object.defineProperty(joiSchemas, 'numberSchema', {
     get: function () {
         
-        return Joi.alternatives().try(this.integerSchema, this.floatSchema);
+        return Joi.alternatives().try(this.floatSchema);
     }
 })
-
 
 /**
  * 
@@ -32,7 +29,7 @@ Object.defineProperty(joiSchemas, 'numberSchema', {
  * @param {object} [options={}] addtional constraints for this data type
  * @returns joi schema corresponds to data_type defined in DB. Return Joi.any() for unknown data_type as default
  */
-function identifyJoiSchemaForDataType(data_type, options = {}) {
+function _identifyJoiSchemaForDataType(data_type, options = {}) {
 
     if (typeof data_type != 'string') {
 
@@ -61,8 +58,14 @@ function identifyJoiSchemaForDataType(data_type, options = {}) {
 
     return _joiSchema;
 }
-
-async function validateAttributesByItemType(attributesWillCheck, itemTypeId) {
+/**
+ *
+ *
+ * @param {Array} attributesWillCheck an array of attributes will be checked validations
+ * @param {string|integer} itemTypeId item type id
+ * @returns {boolean} true if all attributes are valid, or throw error if any errors occured
+ */
+async function validateAttributesByItemtypeId(attributesWillCheck, itemTypeId) {
 
     if (!Array.isArray(attributesWillCheck)) {
 
@@ -92,12 +95,12 @@ async function validateAttributesByItemType(attributesWillCheck, itemTypeId) {
         }
 
         //extra constraints of an attribute in database will has prefix column name is 'op_'
-        var extraConstraints = parseAttributeOptions(attributeInDB);
+        var extraConstraints = _parseAttributeOptions(attributeInDB);
 
         for (let attrWillCheck of sameAttrIds) {
 
             //convert attribute will check to corresponding Joi schema through data type of attribute
-            let curJoiSchema = identifyJoiSchemaForDataType(attributeInDB.data_type, extraConstraints);
+            let curJoiSchema = _identifyJoiSchemaForDataType(attributeInDB.data_type, extraConstraints);
 
             valueOfAttrWillCheck = attrWillCheck.values || attrWillCheck.value; //property name alias
 
@@ -122,7 +125,11 @@ async function validateAttributesByItemType(attributesWillCheck, itemTypeId) {
                     }
                 }, function (err, result) {
                     if (err) {
-                        validateErrorMessages[`${attrWillCheck.id}:${attributeInDB.code}`] = err.details;
+
+                        let err_message_ele = `attribute_id:${attrWillCheck.id}`;
+                        validateErrorMessages[err_message_ele] = {};
+                        validateErrorMessages[err_message_ele].attribute_code = attributeInDB.code;
+                        validateErrorMessages[err_message_ele].errors = err.details;
                     }
                 })
             }
@@ -132,7 +139,7 @@ async function validateAttributesByItemType(attributesWillCheck, itemTypeId) {
     if (!_.isEmpty(validateErrorMessages)) {
 
         var validError = new Error();
-        validError.message = 'one of field value is invalid. Please check again';
+        validError.message = 'One of attribute value is invalid. Please check again';
         validError.data = validateErrorMessages;
 
         throw validError;
@@ -141,7 +148,7 @@ async function validateAttributesByItemType(attributesWillCheck, itemTypeId) {
     return true;
 }
 
-function parseAttributeOptions(attribute) {
+function _parseAttributeOptions(attribute) {
 
     if (typeof attribute != 'object') {
 
@@ -159,7 +166,7 @@ function parseAttributeOptions(attribute) {
         //remove the prefix 'op_' in option name for matching with Joi validation method name. 
         //Ex: 'op_required' will be formatted to 'required'
         let option_names = /^(?:op_)(.+)/.exec(key);
-        if (!_.isEmpty(option_names) && !_.isNull(value)) {
+        if (!_.isEmpty(option_names) && !_.isNull(value) && value != '') {
         
             //attemp to cast to number
             let toNumber = _.toNumber(value);
@@ -170,15 +177,26 @@ function parseAttributeOptions(attribute) {
         return accum;
     }, {});
 
-    //remove is_required if it was set to false
+    //Perform extra steps for some special validators, such as: op_required, op_regex
+    //op_required: remove op_required if it was set to false
     var isRequired = options['required'] ? !!options['required'] : false;
     if (isRequired == false) {
         delete options['required'];
     }
 
-    return options;
+    //op_regex: initialize RegExp constructor
+    var RegExpObj = options['regex'] ? RegExp(options['regex'].trim()) : undefined;
+    if (RegExpObj) {
+        options['regex'] = RegExpObj;
+    }
 
+
+    return options;
 }
+
+module.exports = exports = {};
+exports.validateAttributesByItemtypeId = validateAttributesByItemtypeId;
+
 
 //HACK: Test cases
 // describe('identifyJoiSchemaForDataType', () => {
@@ -191,20 +209,20 @@ function parseAttributeOptions(attribute) {
 //     })
 // })
 
-validateAttributesByItemType(
-    [
-        {
-            id: 1,
-            values: [
-                {value: "1"}
-            ]
-        }]
-    ,
-    1
-).then(function (result) {
+// validateAttributesByItemtypeId(
+//     [
+//         {
+//             id: 1,
+//             values: [
+//                 {value: "1"}
+//             ]
+//         }]
+//     ,
+//     1
+// ).then(function (result) {
 
-    debug(result);
-}).catch(function (err) {
+//     debug(result);
+// }).catch(function (err) {
 
-    debug(util.inspect(err, { compact: true, depth: 5, breakLength: 80 }));
-});
+//     debug(util.inspect(err, { compact: true, depth: 5, breakLength: 80 }));
+// });
