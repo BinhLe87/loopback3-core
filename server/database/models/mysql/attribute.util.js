@@ -8,8 +8,9 @@ const util = require('util');
 
 //Define Joi schema for each of data types
 const joiSchemas = {
-    stringSchema: Joi.any(),
-    htmlSchema: Joi.string().base64(),
+    stringSchema: Joi.string().empty(''),
+    urlSchema: Joi.string().empty(''),
+    htmlSchema: Joi.string().base64().empty(''),
     //numberic type
     integerSchema: Joi.number().integer(),
     floatSchema: Joi.number()
@@ -63,9 +64,10 @@ function _identifyJoiSchemaForDataType(data_type, options = {}) {
  *
  * @param {Array} attributesWillCheck an array of attributes will be checked validations
  * @param {string|integer} itemTypeId item type id
+ * @param {Boolean} [shouldUseDefaultValue=true] if true, will replace default value for missed/omitted attribute value
  * @returns {boolean} true if all attributes are valid, or throw error if any errors occured
  */
-async function validateAttributesByItemtypeId(attributesWillCheck, itemTypeId) {
+async function validateAttributesByItemtypeId(attributesWillCheck, itemTypeId, shouldUseDefaultValue = true) {
 
     if (!Array.isArray(attributesWillCheck)) {
 
@@ -102,16 +104,29 @@ async function validateAttributesByItemtypeId(attributesWillCheck, itemTypeId) {
             //convert attribute will check to corresponding Joi schema through data type of attribute
             let curJoiSchema = _identifyJoiSchemaForDataType(attributeInDB.data_type, extraConstraints);
 
-            valueOfAttrWillCheck = attrWillCheck.values || attrWillCheck.value; //property name alias
+            valueOfAttrWillCheck = attrWillCheck.values;
+            if (_.isUndefined(valueOfAttrWillCheck)) { 
 
-            //valueWillValidate maybe a array type (if has multiple values) or a primitive value (if only has one value)
-            var valuesWillValidateByJoi = Array.isArray(valueOfAttrWillCheck) ? valueOfAttrWillCheck : [{value: valueOfAttrWillCheck}];
+                valueOfAttrWillCheck = attrWillCheck.value; //'value' and 'values' are alias 
+            }
+            
+            //valueWillValidate maybe a array type (if has multiple values) or a primitive value (if only has one value)            
+            var valuesWillValidateByJoi;
+            if (Array.isArray(valueOfAttrWillCheck)) {                
+                valuesWillValidateByJoi = valueOfAttrWillCheck
+            } else { //only has one value                
+                //in case property name 'values' but only has one element => add a property name 'value' to treat as single attribute
+                attrWillCheck.value = valueOfAttrWillCheck;
+                delete attrWillCheck.values;
+
+                valuesWillValidateByJoi = [attrWillCheck]; //convert to array 
+            }
 
             //trick: in case valuesWillValidateByJoi is empty array, insert a dummy element in order to 
             //jump in Joi.validate() if op_required constraint is defined in DB
-            if (_.isEmpty(valuesWillValidateByJoi)) {
-                valuesWillValidateByJoi = [{value: undefined}];
-            }
+            // if (_.isEmpty(valuesWillValidateByJoi)) {
+            //     valuesWillValidateByJoi = [{value: undefined}];
+            // }
             
             for (let valueWillValidate of valuesWillValidateByJoi) {
 
@@ -129,10 +144,15 @@ async function validateAttributesByItemtypeId(attributesWillCheck, itemTypeId) {
                         let err_message_ele = `attribute_id:${attrWillCheck.id}`;
                         validateErrorMessages[err_message_ele] = {};
                         validateErrorMessages[err_message_ele].attribute_code = attributeInDB.code;
+                        validateErrorMessages[err_message_ele].data_type = attributeInDB.data_type;
                         validateErrorMessages[err_message_ele].errors = err.details;
                     }
+
+                    if(shouldUseDefaultValue) {
+                        valueWillValidate.value = result;
+                    }                    
                 })
-            }
+            }            
         }
     }
 
@@ -145,7 +165,7 @@ async function validateAttributesByItemtypeId(attributesWillCheck, itemTypeId) {
         throw validError;
     }
 
-    return true;
+    return attributesWillCheck;
 }
 
 function _parseAttributeOptions(attribute) {
@@ -166,7 +186,7 @@ function _parseAttributeOptions(attribute) {
         //remove the prefix 'op_' in option name for matching with Joi validation method name. 
         //Ex: 'op_required' will be formatted to 'required'
         let option_names = /^(?:op_)(.+)/.exec(key);
-        if (!_.isEmpty(option_names) && !_.isNull(value) && value != '') {
+        if (!_.isEmpty(option_names) && !_.isNull(value)) {
         
             //attemp to cast to number
             let toNumber = _.toNumber(value);
@@ -181,7 +201,12 @@ function _parseAttributeOptions(attribute) {
     //op_required: remove op_required if it was set to false
     var isRequired = options['required'] ? !!options['required'] : false;
     if (isRequired == false) {
-        delete options['required'];
+        delete options['required'];        
+    } else { //omit op_required if there's a default value for this attribute
+
+        if (typeof options['default'] != 'undefined') {
+            delete options['required'];
+        }
     }
 
     //op_regex: initialize RegExp constructor
