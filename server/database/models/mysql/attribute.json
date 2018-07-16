@@ -27,8 +27,14 @@
       "type": "boolean",
       "default": 0
     },
+    "op_default": {
+        "type": "any"
+    },
+    "op_min": {
+      "type": "number"
+    },
     "op_max": {
-      "type": "string"
+      "type": "number"
     },
     "op_regex": {
       "type": "string"
