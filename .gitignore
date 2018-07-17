@@ -33,4 +33,5 @@ logs
 #uploads dir
 upload
 
-package-lock.json
+#vendors third-parties that was customized
+server/vendors

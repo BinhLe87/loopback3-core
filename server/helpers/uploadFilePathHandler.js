@@ -9,7 +9,6 @@ const crypto = require('crypto');
 const FileUtil = require('../../utils/fileUtil');
 const slugify = require('@sindresorhus/slugify');
 const _ = require('lodash');
-const Promise = require('bluebird');
 
 const HASH_RANDOM_FORMAT = '(\\w{6})';
 const FILE_NAME_FORMAT_REGEXP = RegExp(`^(.*)_([a-zA-Z0-9]{1,3})-(\\d{8})-${HASH_RANDOM_FORMAT}\\.?(\\w*)$`);
@@ -24,15 +23,15 @@ const FILE_NAME_FORMAT_REGEXP = RegExp(`^(.*)_([a-zA-Z0-9]{1,3})-(\\d{8})-${HASH
  * @param {object} [options={}] the setting options for current service
  * @param {string} [options.uploadDir] the absolute path of upload directory of current service. This value will override `ROOT_UPLOAD_DIR` env
  */
-function filePathHanlder(options = {}) {
+function uploadFilePathHandler(options = {}) {
 
     EventEmitter.call(this);
     this.options = options;
 }
 
-utils.inherits(filePathHanlder, EventEmitter);
+utils.inherits(uploadFilePathHandler, EventEmitter);
 
-Object.defineProperty(filePathHanlder.prototype, 'ROOT_UPLOAD_DIR', {
+Object.defineProperty(uploadFilePathHandler.prototype, 'ROOT_UPLOAD_DIR', {
     enumerable: true,
     get() {
 
@@ -46,7 +45,7 @@ Object.defineProperty(filePathHanlder.prototype, 'ROOT_UPLOAD_DIR', {
     }
 });
 
-Object.defineProperty(filePathHanlder.prototype, 'SERVICE_NAME', {
+Object.defineProperty(uploadFilePathHandler.prototype, 'SERVICE_NAME', {
     enumerable: true,
     get() {
 
@@ -54,7 +53,9 @@ Object.defineProperty(filePathHanlder.prototype, 'SERVICE_NAME', {
 
         if (!service_name) {
 
-            throw new Error(`${path.basename(__filename)} function _generateFileName() requires Node env SERVICE_NAME`);
+            var err_message = `${path.basename(__filename)} this class requires Node env SERVICE_NAME`;
+            logger.error(err_message)
+            throw new Error(err_message);
         }
 
         return service_name;
@@ -117,7 +118,7 @@ function _generateRandomHashHasSixChars() {
     return hashSixChars;
 }
 
-filePathHanlder.prototype.transformFileNameToSave = function(file_name) {
+uploadFilePathHandler.prototype.transformFileNameToSave = function(file_name) {
 
     var service_name = this.SERVICE_NAME;
 
@@ -159,7 +160,7 @@ filePathHanlder.prototype.transformFileNameToSave = function(file_name) {
  * @param {string} baseFileName
  * @returns
  */
-filePathHanlder.prototype.identifyPathWillSave = function (baseFileName) {
+uploadFilePathHandler.prototype.identifyFilePathWillSave = function (baseFileName) {
 
     var transformedFileName = this.transformFileNameToSave(baseFileName);
 
@@ -175,7 +176,7 @@ filePathHanlder.prototype.identifyPathWillSave = function (baseFileName) {
  * @param {boolean} [shouldCreateDirs=true] If the returned path hierarchy doesn't exists, it's created
  * @returns
  */
-filePathHanlder.prototype.identifyDirPathWillSave = function(shouldCreateDirs = true) {
+uploadFilePathHandler.prototype.identifyDirPathWillSave = function(shouldCreateDirs = true) {
 
     var uploadDir = this.options.uploadDir || this.ROOT_UPLOAD_DIR;
     var serviceName = this.SERVICE_NAME;
@@ -197,7 +198,7 @@ filePathHanlder.prototype.identifyDirPathWillSave = function(shouldCreateDirs = 
 }
 
 
-module.exports = filePathHanlder;
+module.exports = uploadFilePathHandler;
 
 
 

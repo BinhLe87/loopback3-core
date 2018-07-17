@@ -6,7 +6,9 @@ var formidable = require('formidable'),
     crypto = require('crypto'),
     moment = require('moment'),
     createError = require('http-errors'),
-    FilePathHandler = require('../../helpers/uploadFilePathHandler');
+    FilePathHandler = require('../../helpers/uploadFilePathHandler'),
+    debug = require('debug')(path.basename(__filename));
+
 
 // Error Messages
 var ERR_UPLOAD_FAILED = "Error file uploading has failed at <%=method%> <%=url%>. Please try again";
@@ -35,7 +37,6 @@ module.exports = function uploadItem(req, res, next) {
         res.writeHead(200, { 'content-type': 'text/plain' });
         res.write('received upload:\n\n');
         return res.end(util.inspect({ fields: fields, files: files }));
-
     });
 
 
@@ -43,9 +44,32 @@ module.exports = function uploadItem(req, res, next) {
     form.on('fileBegin', function(name, file) {
 
         //Only accept invoking SYNC functions
-        file.path = uploadFilePathHandler.identifyPathWillSave(file.name);
+        file.path = uploadFilePathHandler.identifyFilePathWillSave(file.name);
         file.name = uploadFilePathHandler.transformFileNameToSave(file.name);
     });
+
+    var fields = {};
+    form.on('field', function (name, value) {
+
+        fields[name] = value;
+        debug(util.inspect(fields));
+        
+    });
+    
+    form.onPart = function (part) {
+        
+        if (part.filename) {
+
+            this.handlePartFile(part);
+            debug('file');            
+        } else {
+            
+            this.handlePartFields(part);       
+            debug('field');     
+        }
+
+    };
+   
 
     
 
