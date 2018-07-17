@@ -116,9 +116,33 @@ app.on('booted', function() {
             func: faker.random.arrayElement,
             args: [0, 1]
         },
-        is_required: {
+        op_required: {
             func: faker.random.arrayElement,
             args: [0, 1]
+        }
+    });
+
+    require('./model.fixtures')(1, 'attribute', {
+        code: {
+            func: faker.random.arrayElement,
+            args: ['url']
+        },
+        label: {
+            func: faker.random.arrayElement,
+            args: ['url']
+        },
+        data_type: 'string',
+        is_active: {
+            func: faker.random.arrayElement,
+            args: [1]
+        },
+        op_required: {
+            func: faker.random.arrayElement,
+            args: [0]
+        },
+        op_regex: {
+            func: faker.random.arrayElement,
+            args: ['(((ftp|http|https):\/\/)|(\/)|(..\/))(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?']
         }
     });
 

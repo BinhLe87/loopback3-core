@@ -121,13 +121,7 @@ async function validateAttributesByItemtypeId(attributesWillCheck, itemTypeId, s
 
                 valuesWillValidateByJoi = [attrWillCheck]; //convert to array 
             }
-
-            //trick: in case valuesWillValidateByJoi is empty array, insert a dummy element in order to 
-            //jump in Joi.validate() if op_required constraint is defined in DB
-            // if (_.isEmpty(valuesWillValidateByJoi)) {
-            //     valuesWillValidateByJoi = [{value: undefined}];
-            // }
-            
+         
             for (let valueWillValidate of valuesWillValidateByJoi) {
 
                 Joi.validate(valueWillValidate.value, curJoiSchema, {
