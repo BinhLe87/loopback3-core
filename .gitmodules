@@ -1,0 +1,3 @@
+[submodule "server/vendors/node-formidable"]
+	path = server/vendors/node-formidable
+	url = https://BinhVanLe@github.com/BinhVanLe/node-formidable.git

@@ -24,7 +24,7 @@
     "cross-env": "^5.2.0",
     "debug": "^3.1.0",
     "dotenv": "^6.0.0",
-    "formidable": "^1.2.1",
+    "formidable": "git+https://github.com/BinhVanLe/node-formidable.git#b48e739b4e058d729a9a8a7848611b61777069da",
     "fs-extra": "^6.0.1",
     "helmet": "^3.10.0",
     "http-errors": "^1.6.3",
