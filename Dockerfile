@@ -11,6 +11,9 @@ RUN npm install
 
 EXPOSE 8080
 
+#Print node version
+CMD ["node", "-v"]
+
 CMD [ "npm", "start" ]
 
 #Test CI
