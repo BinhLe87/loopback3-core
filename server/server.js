@@ -7,7 +7,7 @@ const util = require('util');
 var app = module.exports = loopback();
 const dotenv = require('dotenv').config(); 
 var { logger } = require('../server/errors/errorLogger');
-
+const { exec } = require('child_process');
 
 app.logger = logger;
 //An instance of logger class can be accessed via the global `logger` variable.
@@ -48,3 +48,10 @@ process.on('uncaughtException', function (err) {
 
   throw err;
 })
+
+
+//Print current Node version running on server
+exec('node -v', function(err, stdout, stderr) {
+
+  logger.info('Node version running on server: ' + stdout);
+});
