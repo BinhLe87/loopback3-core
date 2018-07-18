@@ -13,6 +13,13 @@ app.logger = logger;
 //An instance of logger class can be accessed via the global `logger` variable.
 global.logger = logger;
 
+//Print current Node version running on server
+exec('node -v', function (err, stdout, stderr) {
+
+  logger.info('Node version running on server: ' + stdout);
+});
+
+
 app.start = function() {
   // start the web server
   return app.listen(function() {
@@ -50,8 +57,3 @@ process.on('uncaughtException', function (err) {
 })
 
 
-//Print current Node version running on server
-exec('node -v', function(err, stdout, stderr) {
-
-  logger.info('Node version running on server: ' + stdout);
-});
