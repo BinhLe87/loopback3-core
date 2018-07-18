@@ -2,6 +2,7 @@
 
 var loopback = require('loopback');
 var boot = require('loopback-boot');
+const util = require('util');
 
 var app = module.exports = loopback();
 const dotenv = require('dotenv').config(); 
@@ -37,3 +38,13 @@ boot(app, __dirname, function(err) {
   if (require.main === module)
     app.start();
 });
+
+
+// catch the uncaught errors that weren't wrapped in a domain or try catch statement
+// do not use this in modules, but only in applications, as otherwise we could have multiple of these bound
+process.on('uncaughtException', function (err) {
+  // handle the error safely
+  logger.error("Application was crashed: " + util.inspect(err, { compact: true, depth: 5, breakLength: 80 }), __filename);
+
+  throw err;
+})

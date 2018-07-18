@@ -1,8 +1,3 @@
 {
-    "execMap": {
-        "js": "DEBUG=* node"
-    },
-    "events": {
-        "start": "npm config set apc:debug_api get_programs | node server/debug/debug_exec.js"
-    }
+    
 }

@@ -23,8 +23,7 @@ var envVarsSchema = joi.object({
         .default(true),
     LOGS_DIR: joi.string()
         .default('./logs')
-}).unknown()
-    .required();
+}).unknown();
 
 const { error, value: envVars } = joi.validate(process.env, envVarsSchema);
 
@@ -71,19 +70,24 @@ const fileFormat = winston.format.combine(
 var logger = winston.createLogger({
 
     level: envVars.LOGGER_LEVEL,
-    maxsize: 5242880, // 5MB
-    maxFiles: 5,
     format: fileFormat,
     transports: [
-        new DailyRotateFile({ filename: path.join(envVars.LOGS_DIR, 'error.log'), level: 'error', handleExceptions: true }),
-        new DailyRotateFile({
-            filename: path.join(envVars.LOGS_DIR, 'silly.log'), 
-            level: 'silly', 
-            options: {
-                flags: (process.env.NODE_ENV == 'development' ? 'w+' : 'a')
-            } 
+        new DailyRotateFile({ 
+            dirname: envVars.LOGS_DIR,
+            filename: 'error.log',
+            level: 'error',
+            handleExceptions: true 
         }),
-        new DailyRotateFile({ filename: path.join(envVars.LOGS_DIR, 'combined.log'), level: envVars.LOGGER_LEVEL})    
+        new DailyRotateFile({
+            dirname: envVars.LOGS_DIR,
+            filename: 'silly.log',
+            level: 'silly'
+        }),
+        new DailyRotateFile({
+            dirname: envVars.LOGS_DIR,
+            filename: 'combined.log', 
+            level: envVars.LOGGER_LEVEL
+        })
     ],
     exitOnError: false
 });
@@ -100,7 +104,8 @@ if (process.env.NODE_ENV !== 'production') {
     logger.add(new winston.transports.Console({
         format: consoleFormat,
         colorize: true,
-        level: envVars.CONSOLE_LEVEL
+        level: envVars.CONSOLE_LEVEL,
+        handleExceptions: true
     }));
 }
 
