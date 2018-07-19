@@ -4,8 +4,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
-import LeftContent from '../LeftContent'
-import { classnames } from '../../utils'
+import LeftNavigation from '../LeftNavigation'
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -14,57 +13,6 @@ const muiTheme = getMuiTheme({
 })
 
 export default class Main extends React.Component {
-  handleResizeWindow = () => {
-    let bodyWidth = document.body.clientWidth
-    this.props.updatePageSettings({screenWidth: bodyWidth})
-
-    if (bodyWidth < 768) {
-      this.props.updatePageSettings({showCvsInfo: false})
-    } else {
-      this.setState({showCvsInfo: true})
-      this.props.updatePageSettings({showCvsInfo: true})
-    }
-
-    if (bodyWidth < 1024) {
-      document.body.classList.remove('showLeftNav')
-      this.props.updatePageSettings({
-        showLeftNav: false,
-        showConversationsMenu: false
-      })
-    } else {
-      document.body.classList.add('showLeftNav')
-      this.props.updatePageSettings({
-        showLeftNav: true
-      })
-    }
-  }
-
-  componentWillMount() {
-    this.handleResizeWindow()
-  }
-
-  componentDidMount() {
-    window.addEventListener('resize', this.handleResizeWindow)
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResizeWindow)
-  }
-
-  componentDidUpdate() {
-    let { showLeftNav, isLoading } = this.props.pageSettings
-    if (isLoading) {
-      document.body.classList.add('no-scroll')
-    } else {
-      document.body.classList.remove('no-scroll')
-    }
-    if (showLeftNav) {
-      document.body.classList.add('showLeftNav')
-    } else {
-      document.body.classList.remove('showLeftNav')
-    }
-  }
-
   closeSnackbar = () => {
     this.props.updatePageSettings({
       showSnackbar: false,
@@ -73,14 +21,14 @@ export default class Main extends React.Component {
   }
 
   render() {
-    let { showLeftNav, screenWidth, showPopup, isLoading, showSnackbar, snackbarMessage } = this.props.pageSettings
+    let { isLoading, showSnackbar, snackbarMessage } = this.props.pageSettings
 
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
         <Fragment>
-          <LeftContent {...this.props} />
+          <LeftNavigation {...this.props} />
 
-          <main className={classnames("main-content", {showLeftNav: showLeftNav}, {showPopup: showPopup})}>
+          <main className="main-content">
             {this.props.children}
           </main>
 

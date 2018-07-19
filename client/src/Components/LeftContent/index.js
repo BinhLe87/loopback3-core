@@ -29,7 +29,7 @@ export default class LeftContent extends React.Component {
     ]
 
     return (
-      <nav className="left-content-wrapper">
+      <section className="left-content-wrapper">
         <h2>Workbook One</h2>
         <div className="left-content-inner">
           <Chapter {...this.props.pageSettings} title="Chapter One" pages={pages1} updatePageSettings={this.props.updatePageSettings} />
@@ -45,7 +45,7 @@ export default class LeftContent extends React.Component {
             </div>
           }
         </div>
-      </nav>
+      </section>
     )
   }
 }
