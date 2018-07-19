@@ -13,7 +13,7 @@ module.exports = function (server) {
 
                 return autoupdate.call(model.dataSource, model.modelName).catch(err => {
 
-                    server.logger.error(err);
+                    logger.error(err);
                 });
             }
         }

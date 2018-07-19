@@ -71,7 +71,7 @@ async function validateAttributesByItemtypeId(attributesWillCheck, itemTypeId, s
 
     if (!Array.isArray(attributesWillCheck)) {
 
-        var detailMsg = `validateAttributesByItemType() requires 'attributesWillCheck' argument must be an array, but got ${typeof attributesWillCheck}`;
+        var detailMsg = `validateAttributesByItemtypeId() requires 'attributesWillCheck' argument must be an array, but got ${typeof attributesWillCheck}`;
         logger.error(detailMsg);
 
         let error = new Error(`Error: Can not validate attributes of item type at the moment. Please try again later`);
