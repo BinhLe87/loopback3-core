@@ -5,7 +5,10 @@ import { Provider } from 'react-redux'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import reducer from './reducers'
 import MainContainer from './Containers/MainContainer'
-import PagePreviewContainer from './Containers/PagePreviewContainer'
+import WorkBookContainer from './Containers/WorkBookContainer'
+import Overview from './Components/Overview'
+import Automation from './Components/Automation'
+import Analytics from './Components/Analytics'
 import './assets/style/style.css'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import registerServiceWorker from './registerServiceWorker'
@@ -22,7 +25,10 @@ ReactDOM.render(
     <BrowserRouter>
       <MainContainer>
         <Switch>
-          <Route exact path='/' component={PagePreviewContainer}/>
+          <Route exact path='/' component={Overview}/>
+          <Route path='/workbook' component={WorkBookContainer}/>
+          <Route path='/automation' component={Automation}/>
+          <Route path='/analytics' component={Analytics}/>
         </Switch>
       </MainContainer>
     </BrowserRouter>

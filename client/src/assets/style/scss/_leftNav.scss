@@ -1,0 +1,26 @@
+.left-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 48px;
+  padding: 14px 0;
+  background-color: rgb(216,216,216);
+  .links {
+    text-align: center;
+    li {
+      line-height: 0;
+      margin-bottom: 14px;
+      a {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: rgb(171,171,165);
+        &.active {
+          background-color: $main-color;
+        }
+      }
+    }
+  }
+}
