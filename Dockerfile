@@ -16,9 +16,9 @@ CMD ["node", "-v"]
 
 CMD [ "npm", "start" ]
 
-WORKDIR /usr/src/app/client
-RUN npm install
-CMD [ "npm", "start" ]
+#WORKDIR /usr/src/app/client
+#RUN npm install
+#CMD [ "npm", "start" ]
 
 
 #Test CI
