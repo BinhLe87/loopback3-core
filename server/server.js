@@ -11,6 +11,7 @@ const winston = require('./config/components/winston');
 const { exec } = require('child_process');
 const { formatMessage } = require('../server/config/components/globalize/globalize');
 const debug = require('debug')('server.js');
+const semver = require('semver');
 
 //Set global instance variables
 global.logger = logger;
@@ -22,7 +23,27 @@ global.__i18n = global.__locale = formatMessage;
 //Print current Node version running on server
 exec('node -v', function (err, stdout, stderr) {
 
-  logger.info('Node version running on server: ' + stdout);
+  var cur_node_version = stdout;
+
+  logger.info('Node version running on server: ' + cur_node_version);
+
+  //parse version
+  var is_valid_node_version = false;
+
+  var required_node_version = '7.6.0';
+
+  if (semver.gt(cur_node_version, required_node_version)) {
+
+      is_valid_node_version = true;
+    }
+
+  if (!is_valid_node_version) {
+
+    let err_msg = `Application require NodeJS version must greater than v${required_node_version}, but got ${cur_node_version}`;
+    logger.error(err_msg, __filename);
+
+    return;
+  }
 });
 
 
@@ -57,9 +78,6 @@ boot(app, __dirname, function(err) {
 // do not use this in modules, but only in applications, as otherwise we could have multiple of these bound
 // process.on('uncaughtException', function (err) {
 //   // handle the error safely
-//   //winston.error("Application was crashed: " + util.inspect(err, { compact: true, depth: 5, breakLength: 80 }), __filename);
-
 //   throw err;
 // })
 
-throw new Error('App bi dung lai!!!');
