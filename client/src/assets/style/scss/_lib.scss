@@ -1,0 +1,64 @@
+$main-color: rgb(33, 150, 243);
+$large-screen: 1024px;
+$topBarHeight: 60px;
+$cvsInfoWidth: 300px;
+
+@mixin transition($time) {
+  transition: all $time ease 0s;
+}
+
+@mixin transition2 {
+  transition: all .25s ease 0s;
+}
+
+/* break point */
+@mixin min($min-width) {
+  @media screen and (min-width: $min-width) {@content;}
+}
+
+@mixin max($max-width) {
+  @media screen and (max-width: $max-width) {@content;}
+}
+
+@mixin bw($min-width, $max-width) {
+  @media screen and (min-width: $min-width) and (max-width: $max-width) {@content;}
+}
+
+@mixin clearfix {
+  &:before,
+  &:after {
+    content: "";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+@mixin barHeight {
+  height: 64px;
+  @include max(1023px) {
+    height: 60px;
+  }
+  @include max(767px) {
+    height: 56px;
+  }
+}
+
+@mixin topPosition {
+  position: absolute;
+  top: 64px;
+  @include max(1023px) {
+    top: 60px;
+  }
+  @include max(767px) {
+    top: 56px;
+  }
+}
+
+@mixin scrollingTouch {
+  -webkit-overflow-scrolling: touch;
+  > div, > ul {
+    height: calc(100% + 1px);
+  }
+}
