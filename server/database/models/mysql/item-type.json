@@ -1,5 +1,5 @@
 {
-  "name": "attribute",
+  "name": "item_type",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -13,35 +13,13 @@
     "label": {
       "type": "string"
     },
-    "data_type": {
-      "type": "string"
-    },
     "is_active": {
       "type": "boolean",
       "default": 1
-    },
-    "description": {
-      "type": "string"
-    },
-    "op_required": {
-      "type": "boolean",
-      "default": 0
-    },
-    "op_default": {
-        "type": "any"
-    },
-    "op_min": {
-      "type": "number"
-    },
-    "op_max": {
-      "type": "number"
-    },
-    "op_regex": {
-      "type": "string"
     }
   },
   "indexes": {
-    "name_type_idx": {
+    "code_idx": {
       "keys": {
         "code": 1
       },
@@ -52,6 +30,12 @@
   },
   "validations": [],
   "relations": {
+     "attributes": {
+       "type": "hasMany",
+       "model": "attribute",
+       "foreignKey": "item_typeId",
+       "through": "item_attribute_template"
+     }
   },
   "acls": [],
   "methods": {}

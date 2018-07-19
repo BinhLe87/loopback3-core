@@ -6,19 +6,13 @@ var boot = require('loopback-boot');
 var app = module.exports = loopback();
 const dotenv = require('dotenv').config(); 
 var { logger } = require('../server/errors/errorLogger');
-<<<<<<< HEAD
-
-=======
 const { exec } = require('child_process');
 const { formatMessage } = require('../server/config/components/globalize/globalize');
 const debug = require('debug')('server.js');
->>>>>>> 41807ff... Added: wrapper function to handle internationalization via 'globalize' module
 
 //Set global instance variables
 global.logger = logger;
 global.__i18n = global.__locale = formatMessage;
-
-
 
 
 
