@@ -19,6 +19,7 @@
   "dependencies": {
     "@sindresorhus/slugify": "^0.3.0",
     "bluebird": "^3.5.1",
+    "cldr-data": "^32.0.1",
     "compression": "^1.0.3",
     "cors": "^2.5.2",
     "cross-env": "^5.2.0",
@@ -26,6 +27,7 @@
     "dotenv": "^6.0.0",
     "formidable": "git+https://github.com/BinhVanLe/node-formidable.git#b48e739b4e058d729a9a8a7848611b61777069da",
     "fs-extra": "^6.0.1",
+    "globalize": "^1.4.0",
     "helmet": "^3.10.0",
     "http-errors": "^1.6.3",
     "include-all": "^4.0.3",

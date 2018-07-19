@@ -8,10 +8,14 @@ var app = module.exports = loopback();
 const dotenv = require('dotenv').config(); 
 var { logger } = require('../server/errors/errorLogger');
 const { exec } = require('child_process');
+const { formatMessage } = require('../server/config/components/globalize/globalize');
+const debug = require('debug')('server.js');
 
-app.logger = logger;
-//An instance of logger class can be accessed via the global `logger` variable.
+//Set global instance variables
 global.logger = logger;
+global.__i18n = global.__locale = formatMessage;
+
+
 
 //Print current Node version running on server
 exec('node -v', function (err, stdout, stderr) {
