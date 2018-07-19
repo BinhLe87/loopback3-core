@@ -7,12 +7,14 @@ const util = require('util');
 var app = module.exports = loopback();
 const dotenv = require('dotenv').config(); 
 var { logger } = require('../server/errors/errorLogger');
+const winston = require('./config/components/winston');
 const { exec } = require('child_process');
 const { formatMessage } = require('../server/config/components/globalize/globalize');
 const debug = require('debug')('server.js');
 
 //Set global instance variables
 global.logger = logger;
+global.winston = winston;
 global.__i18n = global.__locale = formatMessage;
 
 
@@ -53,11 +55,11 @@ boot(app, __dirname, function(err) {
 
 // catch the uncaught errors that weren't wrapped in a domain or try catch statement
 // do not use this in modules, but only in applications, as otherwise we could have multiple of these bound
-process.on('uncaughtException', function (err) {
-  // handle the error safely
-  logger.error("Application was crashed: " + util.inspect(err, { compact: true, depth: 5, breakLength: 80 }), __filename);
+// process.on('uncaughtException', function (err) {
+//   // handle the error safely
+//   //winston.error("Application was crashed: " + util.inspect(err, { compact: true, depth: 5, breakLength: 80 }), __filename);
 
-  throw err;
-})
+//   throw err;
+// })
 
-
+throw new Error('App bi dung lai!!!');

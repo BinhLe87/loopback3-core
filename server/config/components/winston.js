@@ -76,7 +76,6 @@ var logger = winston.createLogger({
             dirname: envVars.LOGS_DIR,
             filename: 'error.log',
             level: 'error',
-            handleExceptions: true 
         }),
         new DailyRotateFile({
             dirname: envVars.LOGS_DIR,
@@ -89,9 +88,15 @@ var logger = winston.createLogger({
             level: envVars.LOGGER_LEVEL
         })
     ],
+    exceptionHandlers: [
+        
+        new DailyRotateFile({
+            dirname: envVars.LOGS_DIR,
+            filename: 'uncaughtException.log'
+        })
+    ],
     exitOnError: false
 });
-
 
 winston.addColors({
     error: 'red',
