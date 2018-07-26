@@ -3,6 +3,8 @@ const path = require('path');
 const debug = require('debug')(path.basename(__filename));
 const util = require('util');
 const functionContract = require('../helpers/functionContract');
+const Promise = require('bluebird');
+const URI = require('urijs');
 
 const RESOURCE_TYPE = {
     'object': 'object',
@@ -86,25 +88,29 @@ module.exports = function (app) {
     remotes.after('**', function (ctx, next) {
 
         var req_accept_header = _.get(ctx, 'req.headers.accept');
-        if(req_accept_header == 'loopback/json') {
+        if (req_accept_header == 'loopback/json') {
 
             ctx.resolveReponseOperation = override_resolveReponseOperation;
             return next();
         }
 
         //format response follow jsonapi.org standard
-        try {
-            var responseInJsonAPI = parseResouceFactory(ctx);      
-            
+        parseResouceFactory(ctx).then(function (responseInJsonAPI) {
+
             ctx.result = responseInJsonAPI;
-        } catch (ex) {
+            next();
+        }).catch(function(err) {
 
             logger.error(`Error parsing response into jsonApi format for ${getSelfFullUrl(ctx)}`);
-            logger.error(helper.inspect(ex));
-        }
+            logger.error(helper.inspect(err));
 
-        next();
+            next(new Error(`Unable to response in jsonAPI format at the moment. 
+            You probably try use raw format by passing the 'Accept' header parameter is 'loopback/json'.`));
+        });
         
+
+        
+
     });
 }
 /**
@@ -123,24 +129,44 @@ function determineSingleOrCollectionResource(ctx) {
 
         return RESOURCE_TYPE.object;
     }
-    
+
     throw new TypeError('Unable to specify resource type is single object or array of resource objects');
 }
 
-function parseResouceFactory(ctx) {
+async function parseResouceFactory(ctx) {
 
     var resourceType = determineSingleOrCollectionResource(ctx);
+    var result = {};
 
     switch (resourceType) {
 
         case RESOURCE_TYPE.object:
-            return parseSingleResource(ctx);
-        break;
+            result = parseSingleResource(ctx);
+            break;
 
         case RESOURCE_TYPE.collection:
-            return parseArrayOfResources(ctx);
-        break;
+            result = await parseArrayOfResources(ctx);
+            break;
     }
+
+    //Notice: The reason why set 'schema' property here is to want it appear once in case both of single resource or array resources
+    var primaryResource = parsePrimaryResourceName(ctx);
+    var Model = ctx.req.app.loopback.getModel(primaryResource);
+    //get schema definition
+    var modelProps = _.get(Model, 'definition.rawProperties');
+    var json_schema = {};
+    if (!_.isUndefined(modelProps)) {
+
+        json_schema = _.reduce(modelProps, function(accum, prop_definitions, prop_name) {
+
+            accum[prop_name] = _.pick(prop_definitions, Object.getOwnPropertyNames(prop_definitions));
+            return accum;
+        }, {});
+    }
+
+    _.set(result, 'schema', json_schema);
+
+    return result;
 
     throw new Error('parseResouceFactory(): Unable to parse resource at the moment. Please try again later');
 }
@@ -156,25 +182,44 @@ function parseSingleResource(ctx) {
     var toplevelMembers = parseIdAndType(ctx);
     var relationships = parseRelationships(ctx);
     var attributes_included = parseIncludedDataAndAttributes(ctx);
-    
+
     //combine all object properties into one object
     var response = Object.assign({}, toplevelMembers, attributes_included, relationships);
 
     return response;
 }
 
-function parseArrayOfResources(ctx) {
+async function parseArrayOfResources(ctx) {
 
     var resources = ctx.result;
     var protocolAndHostURL = getProtocolAndHostUrl(ctx.req);
-    
+
     var result = {};
 
     //links
     var links = parseLinks(ctx);
     result = Object.assign(result, links);
 
-    //result.type = parsePrimaryResourceName(ctx);
+    //meta info
+    var count = await getCountObjects(ctx);
+    var total_pages = 1;
+    var limit = null;
+    if (!_.isUndefined(count)) {
+
+        //identify whether in pagination mode
+        var origin_limit = _.get(ctx, 'args.filter.limit');
+        limit = _.toNumber(origin_limit);
+        if (!_.isNaN(limit)) {
+
+            total_pages = Math.ceil(count/limit);
+        }
+    } else {
+        count = null;
+    }
+    _.set(result, 'meta.count', count);
+    _.set(result, 'meta.total-pages', total_pages);
+    _.set(result, 'meta.limit', limit);
+    _.set(result, 'meta.skip', _.get(ctx, 'args.filter.skip', 0));
 
     var data = [];
     for (var resource of resources) {
@@ -194,7 +239,7 @@ function parseArrayOfResources(ctx) {
         data.push(data_item);
     }
 
-        result.data = data;
+    result.data = data;
 
     
 
@@ -220,7 +265,7 @@ function parsePrimaryResourceName(ctx) {
 }
 
 function _generateSubContext(ctx, resource_name, attributes, forcedSelfBaseUrl, forcedSelfFullUrl) {
-    
+
     var _ctx = {};
 
     _ctx.resultType = resource_name;
@@ -260,12 +305,12 @@ function parseIncludedDataAndAttributes(ctx) {
 
                     var resource_name = relation_data.itemType.modelName;
                     var _ctx = _generateSubContext(ctx, resource_name, _attributes);
-                    var _topMember =parseIdAndType(_ctx);
-                    
+                    var _topMember = parseIdAndType(_ctx);
+
                     //remove 'id' property from attributes
                     delete _attributes.id;
-                    var _included_item = Object.assign({}, _topMember, {attributes: _attributes});
-                    
+                    var _included_item = Object.assign({}, _topMember, { attributes: _attributes });
+
                     includedData.push(_included_item);
                 }
             }
@@ -295,7 +340,7 @@ function parseIncludedDataAndAttributes(ctx) {
 
         return resource_data;
     }
-    
+
     //included property
     var included = {};
     var includedData = _parseIncludedData(ctx);
@@ -319,7 +364,7 @@ function parseIdAndType(ctx) {
 }
 
 function getSelfBaseUrl(ctx) {
-    
+
     if (typeof ctx.req.forcedSelfBaseUrl != 'undefined') { // forcedSelfBaseUrl was passed
 
         return ctx.req.forcedSelfBaseUrl;
@@ -349,10 +394,13 @@ function getSelfFullUrl(ctx) {
     return path.join(protocolAndHostURL, req.originalUrl);
 }
 
-
-
 function getProtocolAndHostUrl(req) {
-    return req.protocol + ':////' + req.get('host');
+
+    var url_parts = {
+        protocol: req.protocol,
+        hostname: req.get('host')
+    }
+    return URI.build(url_parts);
 }
 
 /**
@@ -365,14 +413,10 @@ function getProtocolAndHostUrl(req) {
 function generateRelationLinkSelf(ctx, relation_name) {
 
     var selfBaseUrl = getSelfBaseUrl(ctx);
+    var url = new URI(selfBaseUrl);
+    url.addQuery(`filter[include][${relation_name}]`);
 
-    if (!selfBaseUrl.includes('?filter')) { //this is first filter
-        selfBaseUrl += `?filter[include][${relation_name}]`;
-    } else {
-        selfBaseUrl += `&filter[include][${relation_name}]`;
-    }
-
-    return selfBaseUrl;
+    return url.readable();
 }
 
 /**
@@ -397,7 +441,7 @@ function parseRelationships(ctx) {
     var relations = _.get(Model, 'settings.relations');
 
     var relationships = {};
-    _.forOwn(relations, function(relation_values, relation_name, o) {
+    _.forOwn(relations, function (relation_values, relation_name, o) {
 
         relationships[relation_name] = {};
 
@@ -459,20 +503,12 @@ function parseIncludesFilter(ctx) {
 function generateLastAndNextPageReqOriginalURL(ctx) {
 
     var originalUrl = ctx.req.originalUrl;
-    //identify current page
-    var cur_skip = _.get(ctx, 'args.filter.skip', 0);
+    //process for 'limit' parameter
     var cur_limit = _.get(ctx, 'args.filter.limit');
-
+    
     if (typeof cur_limit == 'undefined') { //fetch all items => no need pagination
-
-        return {last: undefined, next: undefined};
-    }
-
-    //attemp to cast to number
-    cur_skip = _.toNumber(cur_skip);
-    if (_.isNaN(cur_skip)) {
-
-        throw new TypeError(`Skip filter value '${cur_skip}' can not convert to integer`)
+        
+        return { last: undefined, next: undefined };
     }
     cur_limit = _.toNumber(cur_limit);
     if (_.isNaN(cur_limit)) {
@@ -480,12 +516,32 @@ function generateLastAndNextPageReqOriginalURL(ctx) {
         throw new TypeError(`Limit filter value '${cur_limit}' can not convert to integer`)
     }
 
-    var last_page = cur_skip - cur_limit;
-    var next_page = cur_skip + cur_limit;
-
+    //process for 'skip' parameter
+    var cur_skip = _.get(ctx, 'args.filter.skip', 0);
     var skip_RestAPI_regx = '\\[skip\\]=([^&]*)';
     var skip_NodeAPI_regx = `["']?skip.*:\\s*([^,}]*)`;
     var skip_regx = skip_RestAPI_regx + "|" + skip_NodeAPI_regx; //support both syntaxs of NodeAPI or RestAPI
+
+    if(cur_skip == 0) { 
+
+        if (!RegExp(skip_regx).test(originalUrl)) { //will implicitly specify skip parameter in URL by adding filter[skip]=0 to originalURL as default
+
+            let url = new URI(originalUrl);
+            url.addQuery(`filter[skip]`, 0);
+            originalUrl = url.readable();
+        }        
+    }
+
+    cur_skip = _.toNumber(cur_skip);
+    if (_.isNaN(cur_skip)) {
+
+        throw new TypeError(`Skip filter value '${cur_skip}' can not convert to integer`)
+    }
+
+    var last_page = cur_skip - cur_limit;
+    var next_page = cur_skip + cur_limit;
+
+    
 
     var last_page_url;
     if (last_page >= 0) {
@@ -513,9 +569,33 @@ function generateLastAndNextPageReqOriginalURL(ctx) {
     }
 
     return {
-        last: last_page_url,
-        next: next_page_url
+        last: _.isUndefined(last_page_url) ? undefined : new URI(last_page_url).readable(),
+        next: _.isUndefined(next_page_url) ? undefined : new URI(next_page_url).readable()
     };
+}
+/**
+ * get the total of objects
+ *
+ * @param {*} ctx
+ * @returns {number|undefined} if success, return the real number; otherwise return undefined.
+ */
+async function getCountObjects(ctx) {
+
+    var primaryResource = parsePrimaryResourceName(ctx);
+    var Model = ctx.req.app.loopback.getModel(primaryResource);
+
+    var whereFilters = _.get(ctx, 'args.filter.where', {});
+    var countPromise = Promise.promisify(Model.count).bind(Model);
+    try {
+
+        return await countPromise(whereFilters);
+    } catch (e) {
+        
+        logger.error(`Can not count the total number of objects for ${getSelfFullUrl(ctx)}`);
+        logger.error(e);
+        return undefined;        
+    }
+    
 }
 
 
