@@ -1,29 +1,6 @@
-# STAGE: Build Stripe API website template 
-FROM ruby:2.3.7 AS apc_doc
-
-RUN apt-get update \
-    && apt-get install -y \
-        rubygems-integration \
-        git \
-    && apt-get clean
-
-RUN gem install bundler
-
-## clone https://github.com/lord/slate
-ARG docs_web_dir="/usr/src/server/docs_web/"
-ARG slate_git_url="https://github.com/lord/slate.git"
-RUN mkdir -p ${docs_web_dir}
-WORKDIR ${docs_web_dir}
-RUN git clone ${slate_git_url}
-WORKDIR ${docs_web_dir}/slate
-RUN bundle install
-
-# STAGE: Build Server API
-FROM node:9.11.2 as apc_api
+FROM node:9.11.2
 ENV api_dir="/usr/src/app/"
-ARG docs_web_dir="/usr/src/server/docs_web/"
-ARG dest_docs_web_dir=${api_dir}/docs_web/
-COPY --from=apc_doc ${docs_web_dir} ${dest_docs_web_dir}
+ARG dest_docs_web_dir=${api_dir}/server/docs_web/
 
 WORKDIR ${api_dir}
 ## Bundle app source
@@ -67,6 +44,5 @@ RUN bundle install
 WORKDIR ${api_dir}
 ENTRYPOINT pm2 start ecosystem.config.js \
         && tail -f /dev/null
-        
 EXPOSE 8080
 EXPOSE 4567

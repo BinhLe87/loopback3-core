@@ -1,1 +1,1 @@
-cd /usr/src/app/docs_web/slate && bundle exec middleman server
+cd /usr/src/app/server/docs_web/slate && bundle exec middleman server
