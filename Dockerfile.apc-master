@@ -1,0 +1,73 @@
+ARG docs_web_dir="/usr/src/server/docs_web/"
+
+# STAGE: Build Stripe API website template 
+FROM ruby:2.3.7 AS apc_doc
+
+RUN apt-get update \
+    && apt-get install -y \
+        rubygems-integration \
+        git \
+    && apt-get clean
+
+RUN gem install bundler
+
+## clone https://github.com/lord/slate
+ARG docs_web_dir
+ARG slate_git_url="https://github.com/lord/slate.git"
+RUN mkdir -p ${docs_web_dir}
+WORKDIR ${docs_web_dir}
+RUN git clone ${slate_git_url}
+WORKDIR ${docs_web_dir}/slate
+RUN bundle install
+
+# STAGE: Build Server API
+FROM node:9.11.2 as apc_api
+ENV api_dir="/usr/src/app/"
+ARG docs_web_dir
+ARG dest_docs_web_dir=${api_dir}/docs_web/
+COPY --from=apc_doc ${docs_web_dir} ${dest_docs_web_dir}
+
+WORKDIR ${api_dir}
+## Bundle app source
+COPY . ${api_dir}
+RUN npm install
+
+## Print node version
+RUN node -v
+
+## Start API
+RUN npm install -g pm2
+#RUN pm2 start server/server.js
+
+## Set up environment for api_docs website
+RUN apt-get update \
+    && apt-get install -y \
+    wget \
+    build-essential \
+    make
+
+### Install ruby
+RUN wget https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.7.tar.gz
+RUN tar -xzvf ruby-2.3.7.tar.gz
+WORKDIR ruby-2.3.7
+RUN ./configure
+RUN make
+RUN make install
+RUN ruby -v
+
+RUN apt-get install -y \
+        rubygems-integration \
+    && apt-get clean
+
+RUN gem install bundler
+
+WORKDIR ${dest_docs_web_dir}
+WORKDIR slate
+RUN bundle install
+
+## Start api server and api docs website
+WORKDIR ${api_dir}
+ENTRYPOINT pm2 start ecosystem.config.js \
+        && tail -f /dev/null
+EXPOSE 8080
+EXPOSE 4567
