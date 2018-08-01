@@ -67,5 +67,6 @@ RUN bundle install
 WORKDIR ${api_dir}
 ENTRYPOINT pm2 start ecosystem.config.js \
         && tail -f /dev/null
+        
 EXPOSE 8080
 EXPOSE 4567
