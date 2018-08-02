@@ -30,12 +30,13 @@ Formular: `?filter={ Stringified-JSON }`
 Sample: [http://dev01.cc.cloud:49173/api/libraries?filter={"where":{"id":"2"}}](http://dev01.cc.cloud:49173/api/libraries?filter={"where":{"id":"2"}})
 
 **LoopBack supports the following kinds of filters:**
-* Fields filter
-* Limit filter
-* Order filter
-* Skip filter
-* Where filter
-* Include filter
+
+- `Fields` filter
+- `Limit` filter
+- `Order` filter
+- `Skip` filter
+- `Where` filter
+- `Include` filter
 
 The following table describes Loopback's filter types:
 
@@ -234,5 +235,6 @@ like, nlike	|LIKE / NOT LIKE operators for use with regular expressions. The reg
 regexp		|Regular expression. See examples below.
 
 # Authentication
+
 
 # Versioning
