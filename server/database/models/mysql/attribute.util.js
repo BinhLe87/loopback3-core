@@ -1,7 +1,6 @@
 
 const Joi = require('joi');
 const assert = require('assert');
-const app = require('../../../server');
 const debug = require('debug')('attribute.util.js');
 const itemTypeUtil = require('./item-type.util');
 const util = require('util');
@@ -18,7 +17,7 @@ const joiSchemas = {
 
 Object.defineProperty(joiSchemas, 'numberSchema', {
     get: function () {
-        
+
         return Joi.alternatives().try(this.floatSchema);
     }
 })
@@ -44,12 +43,12 @@ function _identifyJoiSchemaForDataType(data_type, options = {}) {
     var _joiSchema = joiSchemas[`${data_type}Schema`] || Joi.any();
 
     //add additional constraints if needed
-    _.forOwn(options, function(method_param, method_name) {
+    _.forOwn(options, function (method_param, method_name) {
 
-        if (typeof method_name == 'string') { 
+        if (typeof method_name == 'string') {
             method_name = method_name.toLowerCase().trim();
         }
-        
+
         //check whether method name is supported by Joi
         if (typeof _joiSchema[method_name] == 'function') {
 
@@ -81,74 +80,11 @@ async function validateAttributesByItemtypeId(attributesWillCheck, itemTypeId, s
     }
 
     //convert from array of items to a object has property name is 'id' field in array item
-    var validateErrorMessages = {};
+    
 
     var attributesInDB = await itemTypeUtil.getAttributesByItemtypeId(itemTypeId);
-    //Some notice rules to validate:
-    //- All attributes defined in database must be in 'attributes' array be passed through 'id' field
-    //- 'Attributes' passed must fulfill constraints defined in DB if any (ex: data type, additional constrains about op_required, etc.)
-    for (let attributeInDB of attributesInDB) {
 
-        var sameAttrIds = _.filter(attributesWillCheck, { id: attributeInDB.id });
-
-        if (_.isEmpty(sameAttrIds)) {
-
-            throw new Error(`Error: Invalid attributes. The itemtypeId '${itemTypeId}' must contain at least one attribute has id '${attributeInDB.id}' as in template`)
-        }
-
-        //extra constraints of an attribute in database will has prefix column name is 'op_'
-        var extraConstraints = _parseAttributeOptions(attributeInDB);
-
-        for (let attrWillCheck of sameAttrIds) {
-
-            //convert attribute will check to corresponding Joi schema through data type of attribute
-            let curJoiSchema = _identifyJoiSchemaForDataType(attributeInDB.data_type, extraConstraints);
-
-            valueOfAttrWillCheck = attrWillCheck.values;
-            if (_.isUndefined(valueOfAttrWillCheck)) { 
-
-                valueOfAttrWillCheck = attrWillCheck.value; //'value' and 'values' are alias 
-            }
-            
-            //valueWillValidate maybe a array type (if has multiple values) or a primitive value (if only has one value)            
-            var valuesWillValidateByJoi;
-            if (Array.isArray(valueOfAttrWillCheck)) {                
-                valuesWillValidateByJoi = valueOfAttrWillCheck
-            } else { //only has one value                
-                //in case property name 'values' but only has one element => add a property name 'value' to treat as single attribute
-                attrWillCheck.value = valueOfAttrWillCheck;
-                delete attrWillCheck.values;
-
-                valuesWillValidateByJoi = [attrWillCheck]; //convert to array 
-            }
-         
-            for (let valueWillValidate of valuesWillValidateByJoi) {
-
-                Joi.validate(valueWillValidate.value, curJoiSchema, {
-                    abortEarly: false,
-                    convert: true,
-                    language: {
-                        any: {
-                            required: `property of attribute id '${attrWillCheck.id}' was not specified`
-                        }
-                    }
-                }, function (err, result) {
-                    if (err) {
-
-                        let err_message_ele = `attribute_id:${attrWillCheck.id}`;
-                        validateErrorMessages[err_message_ele] = {};
-                        validateErrorMessages[err_message_ele].attribute_code = attributeInDB.code;
-                        validateErrorMessages[err_message_ele].data_type = attributeInDB.data_type;
-                        validateErrorMessages[err_message_ele].errors = err.details;
-                    }
-
-                    if(shouldUseDefaultValue) {
-                        valueWillValidate.value = result;
-                    }                    
-                })
-            }            
-        }
-    }
+    var validateErrorMessages = __validateInputAttributesWithInDB(attributesWillCheck, attributesInDB);
 
     if (!_.isEmpty(validateErrorMessages)) {
 
@@ -160,6 +96,75 @@ async function validateAttributesByItemtypeId(attributesWillCheck, itemTypeId, s
     }
 
     return attributesWillCheck;
+
+    /**
+     *
+     *
+     * @param {object} attributesWillCheck
+     * @param {object} attributesInDB
+     * @returns {object} return object of error if any, otherwise return empty object if non-error exists.
+     */
+    function __validateInputAttributesWithInDB(attributesWillCheck, attributesInDB) {
+
+        var validateErrorMessages = {};
+        //Some notice rules to validate:
+        //- All attributes defined in database must be in 'attributes' array be passed through 'id' field
+        //- 'Attributes' passed must fulfill constraints defined in DB if any (ex: data type, additional constrains about op_required, etc.)
+
+        for (let attributeInDB of attributesInDB) {
+            var sameAttrIds = _.filter(attributesWillCheck, { id: attributeInDB.id });
+            if (_.isEmpty(sameAttrIds)) {
+                throw new Error(`Error: Invalid attributes. The itemtypeId '${itemTypeId}' must contain at least one attribute has id '${attributeInDB.id}' as in template`);
+            }
+            //extra constraints of an attribute in database will has prefix column name is 'op_'
+            var extraConstraints = _parseAttributeOptions(attributeInDB);
+            for (let attrWillCheck of sameAttrIds) {
+                //convert attribute will check to corresponding Joi schema through data type of attribute
+                let curJoiSchema = _identifyJoiSchemaForDataType(attributeInDB.data_type, extraConstraints);
+                var valueOfAttrWillCheck = attrWillCheck.values;
+                if (_.isUndefined(valueOfAttrWillCheck)) {
+                    valueOfAttrWillCheck = attrWillCheck.value; //'value' and 'values' are alias 
+                }
+                //valueWillValidate maybe a array type (if has multiple values) or a primitive value (if only has one value)            
+                var valuesWillValidateByJoi;
+                if (Array.isArray(valueOfAttrWillCheck)) {
+                    valuesWillValidateByJoi = valueOfAttrWillCheck;
+                }
+                else { //only has one value                
+                    //in case property name 'values' but only has one element => add a property name 'value' to treat as single attribute
+                    attrWillCheck.value = valueOfAttrWillCheck;
+                    delete attrWillCheck.values;
+                    valuesWillValidateByJoi = [attrWillCheck]; //convert to array 
+                }
+                __validateValuesByJoi(valuesWillValidateByJoi, curJoiSchema, attrWillCheck, attributeInDB);
+            }
+        }
+
+        function __validateValuesByJoi(valuesWillValidateByJoi, curJoiSchema, attrWillCheck, attributeInDB) {
+            for (let valueWillValidate of valuesWillValidateByJoi) {
+                Joi.validate(valueWillValidate.value, curJoiSchema, {
+                    abortEarly: false,
+                    convert: true,
+                    language: {
+                        any: {
+                            required: `property of attribute id '${attrWillCheck.id}' was not specified`
+                        }
+                    }
+                }, function (err, result) {
+                    if (err) {
+                        let err_message_ele = `attribute_id:${attrWillCheck.id}`;
+                        validateErrorMessages[err_message_ele] = {};
+                        validateErrorMessages[err_message_ele].attribute_code = attributeInDB.code;
+                        validateErrorMessages[err_message_ele].data_type = attributeInDB.data_type;
+                        validateErrorMessages[err_message_ele].errors = err.details;
+                    }
+                    if (shouldUseDefaultValue) {
+                        valueWillValidate.value = result;
+                    }
+                });
+            }
+        }
+    }
 }
 
 function _parseAttributeOptions(attribute) {
@@ -181,7 +186,7 @@ function _parseAttributeOptions(attribute) {
         //Ex: 'op_required' will be formatted to 'required'
         let option_names = /^(?:op_)(.+)/.exec(key);
         if (!_.isEmpty(option_names) && !_.isNull(value)) {
-        
+
             //attemp to cast to number
             let toNumber = _.toNumber(value);
             value = _.isNaN(toNumber) ? value : toNumber;
@@ -195,7 +200,7 @@ function _parseAttributeOptions(attribute) {
     //op_required: remove op_required if it was set to false
     var isRequired = options['required'] ? !!options['required'] : false;
     if (isRequired == false) {
-        delete options['required'];        
+        delete options['required'];
     } else { //omit op_required if there's a default value for this attribute
 
         if (typeof options['default'] != 'undefined') {
