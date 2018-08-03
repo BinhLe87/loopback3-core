@@ -7,7 +7,8 @@
     "rest": {
       "handleErrors": false,
       "normalizeHttpPath": false,
-      "xml": false
+      "xml": false,
+      "supportedTypes": ["loopback/json", "application/vnd.api-json", "application/json", "application/javascript", "text/javascript", "json", "*/*"]
     },
     "json": {
       "strict": false,
@@ -19,13 +20,7 @@
     },
     "cors": false,
     "sharedMethods": {
-      "*": false,
-      "find": true,
-      "findById": true,
-      "create": true,
-      "deleteById": true,
-      "patchOrCreate": true,
-      "count": true
+      "*": true
     }
   }
 }

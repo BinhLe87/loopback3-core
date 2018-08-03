@@ -35,3 +35,6 @@ upload
 
 #vendors third-parties that was customized
 server/vendors
+
+#api docs website
+**/server/docs_web/

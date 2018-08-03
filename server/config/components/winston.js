@@ -11,7 +11,7 @@ var envVarsSchema = joi.object({
 
     LOGGER_LEVEL: joi.string()
         .allow(['error', 'warn', 'info', 'verbose', 'debug', 'silly'])
-        .default('info'),
+        .default('debug'),
     CONSOLE_LEVEL: joi.string()
         .allow(['error', 'warn', 'info', 'verbose', 'debug', 'silly'])
         .default('silly'),
@@ -86,7 +86,8 @@ var logger = winston.createLogger({
             dirname: envVars.LOGS_DIR,
             filename: 'combined.log', 
             level: envVars.LOGGER_LEVEL
-        })
+        }),
+        new winston.transports.File({ filename:  path.join(envVars.LOGS_DIR, 'combined.log'), level: envVars.LOGGER_LEVEL }), 
     ],
     exceptionHandlers: [
         

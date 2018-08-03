@@ -7,18 +7,17 @@ const util = require('util');
 var app = module.exports = loopback();
 const dotenv = require('dotenv').config(); 
 var { logger } = require('../server/errors/errorLogger');
-const winston = require('./config/components/winston');
 const { exec } = require('child_process');
 const { formatMessage } = require('../server/config/components/globalize/globalize');
 const debug = require('debug')('server.js');
 const semver = require('semver');
+const _ = require('lodash');
 
 //Set global instance variables
 global.logger = logger;
-global.winston = winston;
 global.__i18n = global.__locale = formatMessage;
-
-
+global._ = _;
+_.set(global, 'helper.inspect', require('./helpers/printHelper').inspect);
 
 //Print current Node version running on server
 exec('node -v', function (err, stdout, stderr) {
@@ -27,9 +26,7 @@ exec('node -v', function (err, stdout, stderr) {
 
   logger.info('Node version running on server: ' + cur_node_version);
 
-  //parse version
   var is_valid_node_version = false;
-
   var required_node_version = '7.6.0';
 
   if (semver.gt(cur_node_version, required_node_version)) {
