@@ -1,15 +1,17 @@
 'use strict';
+
 const path = require('path');
-const debug = require('debug')(path.basename(__filename));
-const util = require('util');
-const functionContract = require('../helpers/functionContract');
 const Promise = require('bluebird');
 const URI = require('urijs');
+var util = require('util');
+var js2xmlparser = require('js2xmlparser');
 
 const RESOURCE_TYPE = {
     'object': 'object',
     'collection': 'collection'
 }
+
+//NOTE: START: Dummy code used to override the resolveReponseOperation() in 'strong-remoting' module
 /**
  * Utility functions to send response body
  */
@@ -40,8 +42,57 @@ function sendBodyDefault(res) {
     res.status(406).send('Not Acceptable');
 }
 
+
+function toXML(input, options) {
+    var xml;
+    var xmlDefaultOptions = { declaration: true };
+    var xmlOptions = util._extend(xmlDefaultOptions, options);
+    if (input && typeof input.toXML === 'function') {
+        xml = input.toXML();
+    } else {
+        if (typeof input == 'object') {
+            // Trigger toJSON() conversions
+            input = toJSON(input);
+        }
+        if (Array.isArray(input)) {
+            input = { result: input };
+        }
+        xml = js2xmlparser.parse(xmlOptions.wrapperElement || 'response', input, {
+            declaration: {
+                include: xmlOptions.declaration,
+                encoding: 'UTF-8',
+            },
+            format: {
+                doubleQuotes: true,
+                indent: '  ',
+            },
+            convertMap: {
+                '[object Date]': function (date) {
+                    return date.toISOString();
+                },
+            },
+        });
+    }
+    return xml;
+}
+
+
+function toJSON(input) {
+    if (!input) {
+        return input;
+    }
+    if (typeof input.toJSON === 'function') {
+        return input.toJSON();
+    } else if (Array.isArray(input)) {
+        return input.map(toJSON);
+    } else {
+        return input;
+    }
+}
+//END: Dummy code
+
 /**
- * Deciding on the operation of response, function is called inside this.done()
+ * Override the original resolveReponseOperation() in 'strong-remoting' module to add extra Content-Type 'loopback/json'
  */
 
 function override_resolveReponseOperation(accepts) {
@@ -71,7 +122,7 @@ function override_resolveReponseOperation(accepts) {
             }
             result.sendBody = sendBodyXml;
             break;
-        case 'loopback/json':
+        case 'loopback/json':                       //=> Add extra Content-Type
             result.contentType = 'loopback/json';
             break;
         default:
@@ -80,7 +131,9 @@ function override_resolveReponseOperation(accepts) {
             break;
     }
     return result;
-};
+}
+
+
 
 module.exports = function (app) {
 
@@ -147,6 +200,9 @@ async function parseResouceFactory(ctx) {
         case RESOURCE_TYPE.collection:
             result = await parseArrayOfResources(ctx);
             break;
+            
+            default:
+            throw new Error('parseResouceFactory(): Unable to parse resource at the moment. Please try again later');
     }
 
     //Notice: The reason why set 'schema' property here is to want it appear once in case both of single resource or array resources
@@ -168,7 +224,6 @@ async function parseResouceFactory(ctx) {
 
     return result;
 
-    throw new Error('parseResouceFactory(): Unable to parse resource at the moment. Please try again later');
 }
 
 function parseSingleResource(ctx) {
@@ -373,7 +428,6 @@ function getSelfBaseUrl(ctx) {
     var req = ctx.req;
     var baseUrl = req.baseUrl;
     var selfBaseUrl = path.join(getProtocolAndHostUrl(req), baseUrl);
-    var params = req.params;
     if (!_.isUndefined(ctx.result.id)) {
 
         selfBaseUrl = path.join(selfBaseUrl, _.toString(ctx.result.id));
@@ -441,7 +495,7 @@ function parseRelationships(ctx) {
     var relations = _.get(Model, 'settings.relations');
 
     var relationships = {};
-    _.forOwn(relations, function (relation_values, relation_name, o) {
+    _.forOwn(relations, function (relation_values, relation_name) {
 
         relationships[relation_name] = {};
 
@@ -463,10 +517,12 @@ function parseLinks(ctx) {
     //generate links for last page and next page
     var lastAndnextLinks = generateLastAndNextPageReqOriginalURL(ctx);
     if (!_.isUndefined(lastAndnextLinks.next)) {
-        _.set(links, 'links.next', path.join(getProtocolAndHostUrl(ctx.req), lastAndnextLinks.next));
+        var next_link = path.join(getProtocolAndHostUrl(ctx.req), lastAndnextLinks.next);
+        _.set(links, 'links.next', next_link);
     }
     if (!_.isUndefined(lastAndnextLinks.last)) {
-        _.set(links, 'links.last', path.join(getProtocolAndHostUrl(ctx.req), lastAndnextLinks.last));
+        var last_link = path.join(getProtocolAndHostUrl(ctx.req), lastAndnextLinks.last);
+        _.set(links, 'links.last', last_link);
     }
 
     return links;
