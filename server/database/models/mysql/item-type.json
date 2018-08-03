@@ -1,5 +1,6 @@
 {
   "name": "item_type",
+  "plural": "item_types",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {

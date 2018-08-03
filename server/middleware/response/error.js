@@ -28,16 +28,21 @@ module.exports = function () {
             err.data = {}
         }
 
+        var respJson = {
+            status: "error",
+            code: statusCode,
+            message: err.message || "",
+            data: err.data || err.stack || {}
+        };
+        
+        //log
+        logger.info(respJson);
+
         res.status(statusCode);
 
         // Respond using the appropriate custom response
         return res.json(
-            {
-                status: "error",
-                code: statusCode,
-                message: err.message || "",
-                data: err.data || err.stack || {}
-            }
+            respJson
         )
     }
 }
