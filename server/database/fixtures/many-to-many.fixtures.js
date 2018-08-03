@@ -4,7 +4,6 @@ const app = require('../../server');
 const faker = require('faker/locale/en_US');
 const path = require('path');
 const debug = require('debug')(path.basename(__filename));
-const util = require('util');
 const Promise = require('bluebird');
 const _ = require('lodash');
 const fixtures_util = require('./util.fixtures');
@@ -31,35 +30,25 @@ async function generateManyToManyData(numberRecordsWillGenerate = 0, sourceModel
         'joinModel': joinModel
     }
 
-    var modelsModel = {};
+    var modelsModel = __validateModelIsExistsInDB(modelsName, modelsModel);
 
-    const ERR_MISSING_PARAMS = `Must input valid 3 model name to generate many-to-many relationship data.
-                    You has passed sourceModel=<%=sourceModel%>, destinationModel=<%=destinationModel%>, joinModel=<%=joinModel%>`;
+    if (_.isEmpty(modelsModel)) return undefined;
 
-    var shouldReturnUndefined = false;
-    _.forOwn(modelsName, function (model_name, model_type) {
+    var createdIds = await __generateEntireFakeData(modelsModel, numberRecordsWillGenerate, options);
 
-        try {
+    return createdIds;
+}
 
-            modelsModel[model_type] = app.loopback.getModel(model_name);
-        } catch (e) {
+/**
+ * Generate fake data and afterwards insert into database
+ * @param {*} modelsModel
+ * @param {*} numberRecordsWillGenerate
+ * @param {*} options
+ * @returns {array} array of created Id
+ */
+async function __generateEntireFakeData(modelsModel, numberRecordsWillGenerate, options) {
 
-            let compliedTemplate = _.template(ERR_MISSING_PARAMS);
-
-            logger.error(compliedTemplate({
-                'sourceModel': sourceModel,
-                'destinationModel': destinationModel,
-                'joinModel': joinModel
-            }), __filename);
-            logger.error(e, __filename);
-
-            shouldReturnUndefined = true;
-            return;
-        }
-    });
-
-    if (shouldReturnUndefined) return undefined;
-
+    var createdIds = [];
     var { sourceModel, destinationModel, joinModel } = modelsModel;
 
     var [maxIdSourceModel, maxIdDestinationModel] = await Promise.all([
@@ -67,44 +56,60 @@ async function generateManyToManyData(numberRecordsWillGenerate = 0, sourceModel
         _getMaxIdOfModel(destinationModel)
     ]);
 
-
     maxIdSourceModel = maxIdSourceModel || options.maxIdSourceModel || numberRecordsWillGenerate;
     maxIdDestinationModel = maxIdDestinationModel || options.maxIdDestinationModel || numberRecordsWillGenerate;
 
-    var createdIds = [];
-
 
     for (var i = 0; i < numberRecordsWillGenerate; i++) {
-
         let record = {};
         record[`${sourceModel.name}Id`] = faker.random.number({ min: 1, max: maxIdSourceModel });
         record[`${destinationModel.name}Id`] = faker.random.number({ min: 1, max: maxIdDestinationModel });
-
         //add other fields
         let otherFields = {};
         try {
             otherFields = fixtures_util.parseRecordFields(options.fields);
-        } catch (e) {
+        }
+        catch (e) {
             debug(e);
             throw e;
         }
-
         Object.assign(record, otherFields);
 
-        joinModel.create(record, function (err, result) {
+        var createdRecordId = fixtures_util.insertRecordInDB(joinModel, record);
 
-            if (!err) {
+        if(!_.isUndefined(createdRecordId)) {
 
-                createdIds.push(result.id);
-                debug(`model '${joinModel.name}': ${util.inspect(result)}`);
-            } else {
-
-                debug(`model '${joinModel.name}': ${util.inspect(err)}`);
-            }
-        });
+            createdIds.push(createdRecordId);
+        }
     }
 
     return createdIds;
+}
+
+/**
+ *
+ *
+ * @param {*} modelsName
+ * @returns {object} meta data of each of modelsName
+ */
+function __validateModelIsExistsInDB(modelsName) {
+
+    var modelsModel = {};
+    const ERR_MISSING_PARAMS = `Must input valid 3 model name to generate many-to-many relationship data.
+                    You has passed sourceModel=<%=sourceModel%>, destinationModel=<%=destinationModel%>, joinModel=<%=joinModel%>`;
+    _.forOwn(modelsName, function (model_name, model_type) {
+        try {
+            modelsModel[model_type] = app.loopback.getModel(model_name);
+        }
+        catch (e) {
+            let compliedTemplate = _.template(ERR_MISSING_PARAMS);
+            var err_messsage = compliedTemplate(modelsName);
+
+            throw new TypeError(err_messsage);
+        }
+    });
+
+    return modelsModel;
 }
 
 async function _getMaxIdOfModel(model) {

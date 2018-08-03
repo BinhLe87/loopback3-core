@@ -1,6 +1,10 @@
 'use strict';
 
 const _ = require('lodash');
+const Promise = require('bluebird');
+const path = require('path');
+const debug = require('debug')(path.basename(__filename));
+const util = require('util');
 
 exports = module.exports = {};
 
@@ -31,3 +35,24 @@ exports.parseRecordFields = function parseRecordFields(fields) {
 
     return record;
 };
+/**
+ *
+ *
+ * @param {*} model
+ * @param {*} record
+ * @returns {number|undefined} If succeed, return created record id. Otherwise, return undefined
+ */
+exports.insertRecordInDB = async function insertRecordInDB(model, record) {
+
+    var insertPromise = Promise.promisify(model.create).bind(model);
+
+    try {
+        var result = await insertPromise(record);
+        debug(`model '${model.name}': ${util.inspect(result)}`);
+        return result.id;
+    } catch (err){
+
+        debug(`model '${model.name}': ${util.inspect(err)}`);
+        return undefined;
+    }
+}
