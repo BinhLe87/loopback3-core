@@ -3,136 +3,12 @@
 const path = require('path');
 const Promise = require('bluebird');
 const URI = require('urijs');
-var util = require('util');
-var js2xmlparser = require('js2xmlparser');
+const jsonAPIFormatterUtil = require('./jsonApiFormatter.util');
 
 const RESOURCE_TYPE = {
     'object': 'object',
     'collection': 'collection'
 }
-
-//NOTE: START: Dummy code used to override the resolveReponseOperation() in 'strong-remoting' module
-/**
- * Utility functions to send response body
- */
-function sendBodyJson(res, data) {
-    res.json(data);
-}
-
-function sendBodyJsonp(res, data) {
-    res.jsonp(data);
-}
-
-function sendBodyXml(res, data, method) {
-    if (data === null) {
-        res.header('Content-Length', '7');
-        res.send('<null/>');
-    } else if (data) {
-        try {
-            var xmlOptions = method.returns[0].xml || {};
-            var xml = toXML(data, xmlOptions);
-            res.send(xml);
-        } catch (e) {
-            res.status(500).send(e + '\n' + data);
-        }
-    }
-}
-
-function sendBodyDefault(res) {
-    res.status(406).send('Not Acceptable');
-}
-
-
-function toXML(input, options) {
-    var xml;
-    var xmlDefaultOptions = { declaration: true };
-    var xmlOptions = util._extend(xmlDefaultOptions, options);
-    if (input && typeof input.toXML === 'function') {
-        xml = input.toXML();
-    } else {
-        if (typeof input == 'object') {
-            // Trigger toJSON() conversions
-            input = toJSON(input);
-        }
-        if (Array.isArray(input)) {
-            input = { result: input };
-        }
-        xml = js2xmlparser.parse(xmlOptions.wrapperElement || 'response', input, {
-            declaration: {
-                include: xmlOptions.declaration,
-                encoding: 'UTF-8',
-            },
-            format: {
-                doubleQuotes: true,
-                indent: '  ',
-            },
-            convertMap: {
-                '[object Date]': function (date) {
-                    return date.toISOString();
-                },
-            },
-        });
-    }
-    return xml;
-}
-
-
-function toJSON(input) {
-    if (!input) {
-        return input;
-    }
-    if (typeof input.toJSON === 'function') {
-        return input.toJSON();
-    } else if (Array.isArray(input)) {
-        return input.map(toJSON);
-    } else {
-        return input;
-    }
-}
-//END: Dummy code
-
-/**
- * Override the original resolveReponseOperation() in 'strong-remoting' module to add extra Content-Type 'loopback/json'
- */
-
-function override_resolveReponseOperation(accepts) {
-    var result = { // default
-        sendBody: sendBodyJson,
-        contentType: 'application/json',
-    };
-    switch (accepts) {
-        case '*/*':
-        case 'application/json':
-        case 'json':
-            break;
-        case 'application/vnd.api+json':
-            result.contentType = 'application/vnd.api+json';
-            break;
-        case 'application/javascript':
-        case 'text/javascript':
-            result.sendBody = sendBodyJsonp;
-            break;
-        case 'application/xml':
-        case 'text/xml':
-        case 'xml':
-            if (accepts == 'application/xml') {
-                result.contentType = 'application/xml';
-            } else {
-                result.contentType = 'text/xml';
-            }
-            result.sendBody = sendBodyXml;
-            break;
-        case 'loopback/json':                       //=> Add extra Content-Type
-            result.contentType = 'loopback/json';
-            break;
-        default:
-            result.sendBody = sendBodyDefault;
-            result.contentType = 'text/plain';
-            break;
-    }
-    return result;
-}
-
 
 
 module.exports = function (app) {
@@ -143,7 +19,7 @@ module.exports = function (app) {
         var req_accept_header = _.get(ctx, 'req.headers.accept');
         if (req_accept_header == 'loopback/json') {
 
-            ctx.resolveReponseOperation = override_resolveReponseOperation;
+            ctx.resolveReponseOperation = jsonAPIFormatterUtil.override_resolveReponseOperation;
             return next();
         }
 
@@ -152,7 +28,7 @@ module.exports = function (app) {
 
             ctx.result = responseInJsonAPI;
             next();
-        }).catch(function(err) {
+        }).catch(function (err) {
 
             logger.error(`Error parsing response into jsonApi format for ${getSelfFullUrl(ctx)}`);
             logger.error(helper.inspect(err));
@@ -160,9 +36,9 @@ module.exports = function (app) {
             next(new Error(`Unable to response in jsonAPI format at the moment. 
             You probably try use raw format by passing the 'Accept' header parameter is 'loopback/json'.`));
         });
-        
 
-        
+
+
 
     });
 }
@@ -200,8 +76,8 @@ async function parseResouceFactory(ctx) {
         case RESOURCE_TYPE.collection:
             result = await parseArrayOfResources(ctx);
             break;
-            
-            default:
+
+        default:
             throw new Error('parseResouceFactory(): Unable to parse resource at the moment. Please try again later');
     }
 
@@ -213,7 +89,7 @@ async function parseResouceFactory(ctx) {
     var json_schema = {};
     if (!_.isUndefined(modelProps)) {
 
-        json_schema = _.reduce(modelProps, function(accum, prop_definitions, prop_name) {
+        json_schema = _.reduce(modelProps, function (accum, prop_definitions, prop_name) {
 
             accum[prop_name] = _.pick(prop_definitions, Object.getOwnPropertyNames(prop_definitions));
             return accum;
@@ -266,7 +142,7 @@ async function parseArrayOfResources(ctx) {
         limit = _.toNumber(origin_limit);
         if (!_.isNaN(limit)) {
 
-            total_pages = Math.ceil(count/limit);
+            total_pages = Math.ceil(count / limit);
         }
     } else {
         count = null;
@@ -296,7 +172,7 @@ async function parseArrayOfResources(ctx) {
 
     result.data = data;
 
-    
+
 
     return result;
 }
@@ -341,70 +217,70 @@ function _generateSubContext(ctx, resource_name, attributes, forcedSelfBaseUrl, 
  */
 function parseIncludedDataAndAttributes(ctx) {
 
-    function _parseIncludedData(ctx) {
-
-        var relations = parseIncludesFilter(ctx);
-
-        var includedData = [];
-        for (let relation_name of relations) {
-
-            let result_data = ctx.result.__data;
-
-            let relation_data = result_data[relation_name];
-
-            for (let data_item of relation_data) {
-
-                if (data_item instanceof ctx.req.app.loopback.PersistedModel) {
-
-                    var _attributes = _.clone(data_item.__data);
-
-                    var resource_name = relation_data.itemType.modelName;
-                    var _ctx = _generateSubContext(ctx, resource_name, _attributes);
-                    var _topMember = parseIdAndType(_ctx);
-
-                    //remove 'id' property from attributes
-                    delete _attributes.id;
-                    var _included_item = Object.assign({}, _topMember, { attributes: _attributes });
-
-                    includedData.push(_included_item);
-                }
-            }
-        }
-
-        return includedData.length == 0 ? null : includedData;
-    }
-
-    function _parseAttributes(ctx) {
-
-        var result = _.clone(ctx.result);
-        var resource_data = {};
-
-        //delete included resources in 'attributes' property since it will be moved to 'included' property
-        var includesFilter = parseIncludesFilter(ctx);
-        for (let include_filter of includesFilter) {
-
-            delete result[include_filter];
-            delete result.__data[include_filter];
-        }
-
-        //delete 'id' property from attributes since it was moved to top member properties
-        delete result.id;
-        delete result.__data.id;
-
-        resource_data.attributes = result;
-
-        return resource_data;
-    }
-
     //included property
     var included = {};
-    var includedData = _parseIncludedData(ctx);
+    var includedData = parseIncludedDataAndAttributes_parseIncludedData(ctx);
     if (!_.isEmpty(includedData)) {
         included.included = includedData;
     }
-    var attributes = _parseAttributes(ctx);
+    var attributes = parseIncludedDataAndAttributes_parseAttributes(ctx);
     return Object.assign({}, attributes, included);
 
+}
+
+function parseIncludedDataAndAttributes_parseIncludedData(ctx) {
+
+    var relations = parseIncludesFilter(ctx);
+
+    var includedData = [];
+    for (let relation_name of relations) {
+
+        let result_data = ctx.result.__data;
+
+        let relation_data = result_data[relation_name];
+
+        for (let data_item of relation_data) {
+
+            if (data_item instanceof ctx.req.app.loopback.PersistedModel) {
+
+                var _attributes = _.clone(data_item.__data);
+
+                var resource_name = relation_data.itemType.modelName;
+                var _ctx = _generateSubContext(ctx, resource_name, _attributes);
+                var _topMember = parseIdAndType(_ctx);
+
+                //remove 'id' property from attributes
+                delete _attributes.id;
+                var _included_item = Object.assign({}, _topMember, { attributes: _attributes });
+
+                includedData.push(_included_item);
+            }
+        }
+    }
+
+    return includedData.length == 0 ? null : includedData;
+}
+
+function parseIncludedDataAndAttributes_parseAttributes(ctx) {
+
+    var result = _.clone(ctx.result);
+    var resource_data = {};
+
+    //delete included resources in 'attributes' property since it will be moved to 'included' property
+    var includesFilter = parseIncludesFilter(ctx);
+    for (let include_filter of includesFilter) {
+
+        delete result[include_filter];
+        delete result.__data[include_filter];
+    }
+
+    //delete 'id' property from attributes since it was moved to top member properties
+    delete result.id;
+    delete result.__data.id;
+
+    resource_data.attributes = result;
+
+    return resource_data;
 }
 
 function parseIdAndType(ctx) {
@@ -559,76 +435,105 @@ function parseIncludesFilter(ctx) {
 function generateLastAndNextPageReqOriginalURL(ctx) {
 
     var originalUrl = ctx.req.originalUrl;
-    //process for 'limit' parameter
-    var cur_limit = _.get(ctx, 'args.filter.limit');
-    
-    if (typeof cur_limit == 'undefined') { //fetch all items => no need pagination
-        
-        return { last: undefined, next: undefined };
-    }
-    cur_limit = _.toNumber(cur_limit);
-    if (_.isNaN(cur_limit)) {
 
-        throw new TypeError(`Limit filter value '${cur_limit}' can not convert to integer`)
+    var cur_limit = _parseLimitFilter(ctx);
+
+    if (typeof cur_limit == 'undefined') { //fetch all items => no need pagination
+
+        return { last: undefined, next: undefined };
     }
 
     //process for 'skip' parameter
-    var cur_skip = _.get(ctx, 'args.filter.skip', 0);
+    var cur_skip = _parseSkipFilter(ctx);
+    cur_skip = _.isUndefined(cur_skip) ? 0 : cur_skip;
+
     var skip_RestAPI_regx = '\\[skip\\]=([^&]*)';
     var skip_NodeAPI_regx = `["']?skip.*:\\s*([^,}]*)`;
     var skip_regx = skip_RestAPI_regx + "|" + skip_NodeAPI_regx; //support both syntaxs of NodeAPI or RestAPI
 
-    if(cur_skip == 0) { 
+    if (cur_skip == 0) {
 
         if (!RegExp(skip_regx).test(originalUrl)) { //will implicitly specify skip parameter in URL by adding filter[skip]=0 to originalURL as default
 
             let url = new URI(originalUrl);
             url.addQuery(`filter[skip]`, 0);
             originalUrl = url.readable();
-        }        
-    }
-
-    cur_skip = _.toNumber(cur_skip);
-    if (_.isNaN(cur_skip)) {
-
-        throw new TypeError(`Skip filter value '${cur_skip}' can not convert to integer`)
+        }
     }
 
     var last_page = cur_skip - cur_limit;
     var next_page = cur_skip + cur_limit;
 
-    
-
     var last_page_url;
     if (last_page >= 0) {
 
-        last_page_url = __replaceURLWithPage(originalUrl, last_page);
+        last_page_url = __replaceURLWithPage(originalUrl, last_page, skip_regx, skip_RestAPI_regx);
     }
 
-    var next_page_url = __replaceURLWithPage(originalUrl, next_page);
-
-    function __replaceURLWithPage(url, desired_page) {
-        var exec_result = RegExp(skip_regx).exec(url);
-        if (!_.isNull(exec_result)) { //matched
-            var skip_matched = exec_result[0];
-            var new_skip;
-            if (RegExp(skip_RestAPI_regx).test(skip_matched)) {
-                new_skip = `[skip]=${desired_page}`;
-            }
-            else {
-                new_skip = `"skip":${desired_page}`;
-            }
-            return url.replace(RegExp(skip_regx), new_skip);
-        }
-
-        return undefined;
-    }
+    var next_page_url = __replaceURLWithPage(originalUrl, next_page, skip_regx, skip_RestAPI_regx);
 
     return {
         last: _.isUndefined(last_page_url) ? undefined : new URI(last_page_url).readable(),
         next: _.isUndefined(next_page_url) ? undefined : new URI(next_page_url).readable()
     };
 }
+/**
+ *
+ *
+ * @param {object} ctx
+ * @return {number|undefined} limit number or undefined if it is not explicitly specified
+ * @returns
+ */
+function _parseLimitFilter(ctx) {
+
+    //process for 'limit' parameter
+    var cur_limit = _.get(ctx, 'args.filter.limit');
+
+    if (!_.isUndefined(cur_limit)) {
+
+        cur_limit = _.toNumber(cur_limit);
+        if (_.isNaN(cur_limit)) {
+
+            throw new TypeError(`Limit filter value '${cur_limit}' can not convert to integer`)
+        }
+    }
+
+    return cur_limit;
+}
+
+function _parseSkipFilter(ctx) {
+
+    var cur_skip = _.get(ctx, 'args.filter.skip', 0);
+
+    if (!_.isUndefined(cur_skip)) {
+
+        cur_skip = _.toNumber(cur_skip);
+        if (_.isNaN(cur_skip)) {
+
+            throw new TypeError(`Skip filter value '${cur_skip}' can not convert to integer`)
+        }
+    }
+    return cur_skip;
+}
+
+function __replaceURLWithPage(url, desired_page, skip_regx, skip_RestAPI_regx) {
+
+    var exec_result = RegExp(skip_regx).exec(url);
+    if (!_.isNull(exec_result)) { //matched
+        var skip_matched = exec_result[0];
+        var new_skip;
+        if (RegExp(skip_RestAPI_regx).test(skip_matched)) {
+            new_skip = `[skip]=${desired_page}`;
+        }
+        else {
+            new_skip = `"skip":${desired_page}`;
+        }
+        return url.replace(RegExp(skip_regx), new_skip);
+    }
+
+    return undefined;
+}
+
 /**
  * get the total of objects
  *
@@ -646,12 +551,12 @@ async function getCountObjects(ctx) {
 
         return await countPromise(whereFilters);
     } catch (e) {
-        
+
         logger.error(`Can not count the total number of objects for ${getSelfFullUrl(ctx)}`);
         logger.error(e);
-        return undefined;        
+        return undefined;
     }
-    
+
 }
 
 
