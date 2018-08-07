@@ -1,5 +1,3 @@
 'use strict';
 
-module.exports = function(Itemtype) {
-
-};
+module.exports = function(Itemtype) {};

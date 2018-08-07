@@ -10,7 +10,13 @@
     "start": "NODE_ENV=development node .",
     "start-watch": "NODE_ENV=development nodemon .",
     "debug": "nodemon --nolazy --inspect-brk .",
-    "posttest": "npm run lint && nsp check"
+    "posttest": "npm run lint && nsp check",
+    "precommit": "lint-staged",
+    "format": "prettier --ignore-path .eslintignore --write '**/*.js'"
+  },
+  "lint-staged": {
+    "*.js": [      
+    ]
   },
   "config": {
     "debug_api": "aaa"
@@ -49,8 +55,13 @@
   "devDependencies": {
     "eslint": "^3.17.1",
     "eslint-config-loopback": "^8.0.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-prettier": "^2.6.2",
     "faker": "^4.1.0",
-    "nsp": "^2.1.0"
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.0",
+    "nsp": "^2.1.0",
+    "prettier": "^1.14.0"
   },
   "repository": {
     "type": "",

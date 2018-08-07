@@ -1,8 +1,3 @@
 'use strict';
 
-module.exports = function(Workbook) {
-
-
-
-
-};
+module.exports = function(Workbook) {};
