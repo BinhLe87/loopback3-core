@@ -17,7 +17,7 @@ Globalize.locale('en');
 Globalize.loadMessages(require('./globalize.json'));
 
 /**
- * Localize message types 
+ * Localize message types
  *
  * @param {*} message
  * @param {string} [key=''] the path of message key
@@ -26,25 +26,22 @@ Globalize.loadMessages(require('./globalize.json'));
  * @param {object|array|any} [args] optional arguments passed to globalize method invoked correspondingly
  */
 function formatMessage(key = '', locale = 'en', type = 'message', ...args) {
-
-    var locale_message;
-    try {
-        switch (type) {
-
-            default: { 
-
-                locale_message = args ? Globalize(locale).formatMessage(key, args) : Globalize(locale).formatMessage(key);
-            }
-        }
-
-    } catch (ex) { //return key as default message
-
-        locale_message = (typeof key == 'string' ? key : '');        
+  var locale_message;
+  try {
+    switch (type) {
+      default: {
+        locale_message = args
+          ? Globalize(locale).formatMessage(key, args)
+          : Globalize(locale).formatMessage(key);
+      }
     }
+  } catch (ex) {
+    //return key as default message
 
-    return locale_message;
+    locale_message = typeof key == 'string' ? key : '';
+  }
+
+  return locale_message;
 }
 
 module.exports.formatMessage = formatMessage;
-
-

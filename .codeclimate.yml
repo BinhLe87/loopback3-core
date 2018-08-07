@@ -1,0 +1,38 @@
+version: "2"
+plugins: 
+  eslint:
+    enabled: true
+    channel: "eslint-4"
+    config:
+      extensions:
+      - .es6
+      - .js
+checks:
+  method-complexity:
+    enabled: false
+  argument-count:
+    enabled: false
+  method-lines:
+    config:
+      threshold: 40
+  file-lines:
+    config:
+      threshold: 400
+exclude_patterns:
+- config/
+- db/
+- dist/
+- features/
+- "**/node_modules/"
+- script/
+- "**/spec/"
+- "**/test/"
+- "**/tests/"
+- "**/vendor/"
+- "**/*.d.ts"
+- docs/
+- demo/
+- logs/
+- upload/
+- server/vendors/
+- server/docs_web/

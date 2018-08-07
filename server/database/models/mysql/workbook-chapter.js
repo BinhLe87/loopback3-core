@@ -1,5 +1,3 @@
 'use strict';
 
-module.exports = function(Workbookchapter) {
-
-};
+module.exports = function(Workbookchapter) {};

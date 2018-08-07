@@ -6,7 +6,7 @@ const path = require('path');
 const debug = require('debug')(path.basename(__filename));
 const _ = require('lodash');
 const util = require('util');
-const fixtures_util = require('./util.fixtures'); 
+const fixtures_util = require('./util.fixtures');
 
 /**
  * Generate fake data for model
@@ -17,56 +17,50 @@ const fixtures_util = require('./util.fixtures');
  * @returns list of generated ids
  */
 function generateModelData(numberRecordsWillGenerate = 0, model, fields) {
+  if (numberRecordsWillGenerate <= 0) return;
 
-    if (numberRecordsWillGenerate <= 0) return;
+  if (_.isEmpty(fields)) {
+    let err_msg =
+      'Error: Must pass fields to declare fields along with faker type';
+    debug(err_msg);
+    throw new Error(err_msg);
+  }
 
-    if (_.isEmpty(fields)) {
+  if (typeof model != 'function') {
+    model = app.loopback.getModel(model);
+  }
 
-        let err_msg = 'Error: Must pass fields to declare fields along with faker type';
-        debug(err_msg);
-        throw new Error(err_msg);
+  if (!model) {
+    debug('Not found model ' + model);
+    return;
+  }
+
+  const debug = require('debug')(
+    `${path.basename(__filename)} with model '${model.name}'`
+  );
+
+  var createdIds = [];
+
+  for (var i = 0; i < numberRecordsWillGenerate; i++) {
+    let record = {};
+    try {
+      record = fixtures_util.parseRecordFields(fields);
+    } catch (e) {
+      debug(e);
+      throw e;
     }
 
-    if (typeof model != 'function') {
+    model.create(record, function(err, result) {
+      if (!err) {
+        createdIds.push(result.id);
+        debug(`model '${model.name}': ${util.inspect(result)}`);
+      } else {
+        debug(`model '${model.name}': ${util.inspect(err)}`);
+      }
+    });
+  }
 
-        model = app.loopback.getModel(model);
-    }
-
-    if (!model) {
-
-        debug('Not found model ' + model);
-        return;
-    }
-
-    const debug = require('debug')(`${path.basename(__filename)} with model '${model.name}'`);
-
-    var createdIds = [];
-
-    for (var i = 0; i < numberRecordsWillGenerate; i++) {
-
-        let record = {}
-        try {
-            record = fixtures_util.parseRecordFields(fields);
-        } catch(e) {
-            debug(e);
-            throw e;
-        }
-        
-        model.create(record, function (err, result) {
-
-            if (!err) {
-
-                createdIds.push(result.id);
-                debug(`model '${model.name}': ${util.inspect(result)}`);
-            } else {
-
-                debug(`model '${model.name}': ${util.inspect(err)}`);
-            }
-        });
-    }
-
-    return createdIds;
-};
-
+  return createdIds;
+}
 
 module.exports = generateModelData;
