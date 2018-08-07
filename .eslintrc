@@ -1,3 +1,31 @@
 {
-  "extends": "loopback"
+  "plugins": [
+    "prettier"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "globals": {
+    "logger": true,
+    "helper": true,
+    "_": true
+  },
+  "rules": {
+    "max-lines": ["error", 400],
+    "no-unused-vars": 0,
+    "prettier/prettier": "error",
+    "complexity": 0
+  }
 }

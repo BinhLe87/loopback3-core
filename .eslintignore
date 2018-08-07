@@ -1,1 +1,38 @@
-/client/
+*.csv
+*.dat
+*.iml
+*.log
+*.out
+*.pid
+*.seed
+*.sublime-*
+*.swo
+*.swp
+*.tgz
+*.xml
+.DS_Store
+.idea
+.project
+.strong-pm
+coverage
+node_modules
+npm-debug.log
+
+#documentation/reference files
+docs
+
+#contains class for experiment purpose
+demo
+
+#logs files
+logs
+
+#files only for local environments
+/server/datasources.local.json
+
+#uploads dir
+upload
+
+#vendors third-parties that was customized
+server/vendors
+server/docs_web

@@ -20,23 +20,32 @@ const fixtures_util = require('./util.fixtures');
  * @param {Object} [options.fields] fields other than foreign key. It is a key value pair, key is field nam and value is fakerjs type
  * @returns list of generated ids
  */
-async function generateManyToManyData(numberRecordsWillGenerate = 0, sourceModel, destinationModel, joinModel, options = {}) {
+async function generateManyToManyData(
+  numberRecordsWillGenerate = 0,
+  sourceModel,
+  destinationModel,
+  joinModel,
+  options = {}
+) {
+  if (numberRecordsWillGenerate <= 0) return;
 
-    if (numberRecordsWillGenerate <= 0) return;
+  var modelsName = {
+    sourceModel: sourceModel,
+    destinationModel: destinationModel,
+    joinModel: joinModel
+  };
 
-    var modelsName = {
-        'sourceModel': sourceModel,
-        'destinationModel': destinationModel,
-        'joinModel': joinModel
-    }
+  var modelsModel = __validateModelIsExistsInDB(modelsName, modelsModel);
 
-    var modelsModel = __validateModelIsExistsInDB(modelsName, modelsModel);
+  if (_.isEmpty(modelsModel)) return undefined;
 
-    if (_.isEmpty(modelsModel)) return undefined;
+  var createdIds = await __generateEntireFakeData(
+    modelsModel,
+    numberRecordsWillGenerate,
+    options
+  );
 
-    var createdIds = await __generateEntireFakeData(modelsModel, numberRecordsWillGenerate, options);
-
-    return createdIds;
+  return createdIds;
 }
 
 /**
@@ -46,44 +55,54 @@ async function generateManyToManyData(numberRecordsWillGenerate = 0, sourceModel
  * @param {*} options
  * @returns {array} array of created Id
  */
-async function __generateEntireFakeData(modelsModel, numberRecordsWillGenerate, options) {
+async function __generateEntireFakeData(
+  modelsModel,
+  numberRecordsWillGenerate,
+  options
+) {
+  var createdIds = [];
+  var { sourceModel, destinationModel, joinModel } = modelsModel;
 
-    var createdIds = [];
-    var { sourceModel, destinationModel, joinModel } = modelsModel;
+  var [maxIdSourceModel, maxIdDestinationModel] = await Promise.all([
+    _getMaxIdOfModel(sourceModel),
+    _getMaxIdOfModel(destinationModel)
+  ]);
 
-    var [maxIdSourceModel, maxIdDestinationModel] = await Promise.all([
-        _getMaxIdOfModel(sourceModel),
-        _getMaxIdOfModel(destinationModel)
-    ]);
+  maxIdSourceModel =
+    maxIdSourceModel || options.maxIdSourceModel || numberRecordsWillGenerate;
+  maxIdDestinationModel =
+    maxIdDestinationModel ||
+    options.maxIdDestinationModel ||
+    numberRecordsWillGenerate;
 
-    maxIdSourceModel = maxIdSourceModel || options.maxIdSourceModel || numberRecordsWillGenerate;
-    maxIdDestinationModel = maxIdDestinationModel || options.maxIdDestinationModel || numberRecordsWillGenerate;
-
-
-    for (var i = 0; i < numberRecordsWillGenerate; i++) {
-        let record = {};
-        record[`${sourceModel.name}Id`] = faker.random.number({ min: 1, max: maxIdSourceModel });
-        record[`${destinationModel.name}Id`] = faker.random.number({ min: 1, max: maxIdDestinationModel });
-        //add other fields
-        let otherFields = {};
-        try {
-            otherFields = fixtures_util.parseRecordFields(options.fields);
-        }
-        catch (e) {
-            debug(e);
-            throw e;
-        }
-        Object.assign(record, otherFields);
-
-        var createdRecordId = fixtures_util.insertRecordInDB(joinModel, record);
-
-        if(!_.isUndefined(createdRecordId)) {
-
-            createdIds.push(createdRecordId);
-        }
+  for (var i = 0; i < numberRecordsWillGenerate; i++) {
+    let record = {};
+    record[`${sourceModel.name}Id`] = faker.random.number({
+      min: 1,
+      max: maxIdSourceModel
+    });
+    record[`${destinationModel.name}Id`] = faker.random.number({
+      min: 1,
+      max: maxIdDestinationModel
+    });
+    //add other fields
+    let otherFields = {};
+    try {
+      otherFields = fixtures_util.parseRecordFields(options.fields);
+    } catch (e) {
+      debug(e);
+      throw e;
     }
+    Object.assign(record, otherFields);
 
-    return createdIds;
+    var createdRecordId = fixtures_util.insertRecordInDB(joinModel, record);
+
+    if (!_.isUndefined(createdRecordId)) {
+      createdIds.push(createdRecordId);
+    }
+  }
+
+  return createdIds;
 }
 
 /**
@@ -93,63 +112,57 @@ async function __generateEntireFakeData(modelsModel, numberRecordsWillGenerate, 
  * @returns {object} meta data of each of modelsName
  */
 function __validateModelIsExistsInDB(modelsName) {
-
-    var modelsModel = {};
-    const ERR_MISSING_PARAMS = `Must input valid 3 model name to generate many-to-many relationship data.
+  var modelsModel = {};
+  const ERR_MISSING_PARAMS = `Must input valid 3 model name to generate many-to-many relationship data.
                     You has passed sourceModel=<%=sourceModel%>, destinationModel=<%=destinationModel%>, joinModel=<%=joinModel%>`;
-    _.forOwn(modelsName, function (model_name, model_type) {
-        try {
-            modelsModel[model_type] = app.loopback.getModel(model_name);
-        }
-        catch (e) {
-            let compliedTemplate = _.template(ERR_MISSING_PARAMS);
-            var err_messsage = compliedTemplate(modelsName);
+  _.forOwn(modelsName, function(model_name, model_type) {
+    try {
+      modelsModel[model_type] = app.loopback.getModel(model_name);
+    } catch (e) {
+      let compliedTemplate = _.template(ERR_MISSING_PARAMS);
+      var err_messsage = compliedTemplate(modelsName);
 
-            throw new TypeError(err_messsage);
-        }
-    });
+      throw new TypeError(err_messsage);
+    }
+  });
 
-    return modelsModel;
+  return modelsModel;
 }
 
 async function _getMaxIdOfModel(model) {
+  const datasource = app.dataSources.cc_mysql;
+  const mysqlConnector = datasource.connector;
 
-    const datasource = app.dataSources.cc_mysql;
-    const mysqlConnector = datasource.connector;
+  if (typeof model != 'function') {
+    model = app.loopback.getModel(model);
+  }
 
-    if (typeof model != 'function') {
+  var maxId;
+  var executeFuncPromise = Promise.promisify(mysqlConnector.execute).bind(
+    mysqlConnector
+  );
 
-        model = app.loopback.getModel(model);
-    }
+  try {
+    let resultArray = await executeFuncPromise(
+      `SELECT MAX(id) as MaxId from ${model.name}`
+    );
+    maxId = resultArray[0]['MaxId'];
+  } catch (e) {
+    debug(`Error: SELECT MAX(id) from ${model.name}`);
+    debug(e);
+  }
 
-    var maxId;
-    var executeFuncPromise = Promise.promisify(mysqlConnector.execute).bind(mysqlConnector);
-
+  if (_.isEmpty(maxId)) {
+    var countFuncPromise = Promise.promisify(model.count).bind(model);
     try {
-
-        let resultArray = await executeFuncPromise(`SELECT MAX(id) as MaxId from ${model.name}`);
-        maxId = resultArray[0]['MaxId'];
-
+      maxId = await countFuncPromise();
     } catch (e) {
-
-        debug(`Error: SELECT MAX(id) from ${model.name}`);
-        debug(e);
+      debug(`Error: execute ${model.name}.count()`);
+      debug(e);
     }
+  }
 
-    if (_.isEmpty(maxId)) {
-
-        var countFuncPromise = Promise.promisify(model.count).bind(model);
-        try {
-
-            maxId = await countFuncPromise();
-        } catch (e) {
-
-            debug(`Error: execute ${model.name}.count()`);
-            debug(e);
-        }
-    }
-
-    return maxId;
+  return maxId;
 }
 
 module.exports = generateManyToManyData;

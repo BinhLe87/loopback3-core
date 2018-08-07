@@ -5,18 +5,14 @@ const { builtInModelNames } = require('../../helpers/loopbackUtil');
 var ds = server.dataSources.cc_mysql;
 ds.setMaxListeners(0);
 
-
 var lbAllModels = _.map(server._models, 'modelName');
 
 var lbMyModels = lbAllModels.filter(function(value, index) {
-
-    return !builtInModelNames.includes(value);
+  return !builtInModelNames.includes(value);
 });
 
+ds.automigrate(lbMyModels, function(er) {
+  if (er) throw er;
 
-
-ds.automigrate(lbMyModels, function (er) {
-    if (er) throw er;
-    console.log('Loopback tables [' - lbMyModels - '] created in ', ds.adapter.name);
-    ds.disconnect();
+  ds.disconnect();
 });

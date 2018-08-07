@@ -15,34 +15,30 @@
  * @param {number} err.code - Error Code.
  * @param {string} err.mssg - Error message.
  * @param {Object} err.data - Error detail object.
- *  
+ *
  */
-module.exports = function () {
+module.exports = function() {
+  return function responseErrorHandler(err, req, res, next) {
+    var statusCode = err.status ? err.status : 500;
 
-    return function responseErrorHandler(err, req, res, next) {
-
-        var statusCode = err.status ? err.status : 500
-
-        var body = err;
-        if (process.env.NODE_ENV === 'production') {
-            err.data = {}
-        }
-
-        var respJson = {
-            status: "error",
-            code: statusCode,
-            message: err.message || "",
-            data: err.data || err.stack || {}
-        };
-        
-        //log
-        logger.info(respJson);
-
-        res.status(statusCode);
-
-        // Respond using the appropriate custom response
-        return res.json(
-            respJson
-        )
+    var body = err;
+    if (process.env.NODE_ENV === 'production') {
+      err.data = {};
     }
-}
+
+    var respJson = {
+      status: 'error',
+      code: statusCode,
+      message: err.message || '',
+      data: err.data || err.stack || {}
+    };
+
+    //log
+    logger.info(respJson);
+
+    res.status(statusCode);
+
+    // Respond using the appropriate custom response
+    return res.json(respJson);
+  };
+};

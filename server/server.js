@@ -4,11 +4,13 @@ var loopback = require('loopback');
 var boot = require('loopback-boot');
 const util = require('util');
 
-var app = module.exports = loopback();
-const dotenv = require('dotenv').config(); 
+var app = (module.exports = loopback());
+const dotenv = require('dotenv').config();
 var { logger } = require('../server/errors/errorLogger');
 const { exec } = require('child_process');
-const { formatMessage } = require('../server/config/components/globalize/globalize');
+const {
+  formatMessage
+} = require('../server/config/components/globalize/globalize');
 const debug = require('debug')('server.js');
 const semver = require('semver');
 const _ = require('lodash');
@@ -20,8 +22,7 @@ global._ = _;
 _.set(global, 'helper.inspect', require('./helpers/printHelper').inspect);
 
 //Print current Node version running on server
-exec('node -v', function (err, stdout, stderr) {
-
+exec('node -v', function(err, stdout, stderr) {
   var cur_node_version = stdout;
 
   logger.info('Node version running on server: ' + cur_node_version);
@@ -30,12 +31,10 @@ exec('node -v', function (err, stdout, stderr) {
   var required_node_version = '7.6.0';
 
   if (semver.gt(cur_node_version, required_node_version)) {
-
-      is_valid_node_version = true;
-    }
+    is_valid_node_version = true;
+  }
 
   if (!is_valid_node_version) {
-
     let err_msg = `Application require NodeJS version must greater than v${required_node_version}, but got ${cur_node_version}`;
     logger.error(err_msg, __filename);
 
@@ -43,16 +42,15 @@ exec('node -v', function (err, stdout, stderr) {
   }
 });
 
-
 app.start = function() {
   // start the web server
   return app.listen(function() {
     app.emit('started');
     var baseUrl = app.get('url').replace(/\/$/, '');
-    console.log('Web server listening at: %s', baseUrl);
+    debug('Web server listening at: %s', baseUrl);
     if (app.get('loopback-component-explorer')) {
       var explorerPath = app.get('loopback-component-explorer').mountPath;
-      console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
+      debug('Browse your REST API at %s%s', baseUrl, explorerPath);
     }
 
     //set unlimited event listeners
@@ -66,10 +64,8 @@ boot(app, __dirname, function(err) {
   if (err) throw err;
 
   // start the server if `$ node server.js`
-  if (require.main === module)
-    app.start();
+  if (require.main === module) app.start();
 });
-
 
 // catch the uncaught errors that weren't wrapped in a domain or try catch statement
 // do not use this in modules, but only in applications, as otherwise we could have multiple of these bound
@@ -77,4 +73,3 @@ boot(app, __dirname, function(err) {
 //   // handle the error safely
 //   throw err;
 // })
-

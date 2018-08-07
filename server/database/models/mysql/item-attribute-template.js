@@ -3,8 +3,6 @@
 const path = require('path');
 const debug = require('debug')(path.basename(__filename));
 
-
-
 // const itemTypeMapping = {
 //     string: typesSchema.typeStringSchema,
 //     video: typesSchema.typeUrlSchema,
@@ -13,10 +11,4 @@ const debug = require('debug')(path.basename(__filename));
 
 // }
 
-
-
-module.exports = function (ItemAttributeTemplate) {
-
-
-};
-
+module.exports = function(ItemAttributeTemplate) {};
