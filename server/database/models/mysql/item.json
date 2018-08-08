@@ -17,6 +17,10 @@
     "item_attributes": {
       "type": "object",
       "description": ["contains all attributes' values description"]
+    },
+    "is_public": {
+      "type": "boolean",
+      "default": 0
     }
   },
   "hidden": ["createdAt", "updatedAt"],
