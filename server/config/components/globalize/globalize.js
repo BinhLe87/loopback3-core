@@ -1,20 +1,30 @@
-// Include the Globalize library
-var Globalize = require('globalize');
 
-// Include the CLDR data
-var cldrData = require('cldr-data');
+var Globalize;
+var cldrData;
 
-// Loads the supplemental data
-Globalize.load(cldrData.entireSupplemental());
+try {
+  // Include the Globalize library
+  Globalize = require('globalize');
 
-//Loads the data of the specified locales
-Globalize.load(cldrData.entireMainFor('en', 'en-GB'));
+  // Include the CLDR data
+  cldrData = require('cldr-data');
 
-//Set default locale
-Globalize.locale('en');
+  // Loads the supplemental data
+  Globalize.load(cldrData.entireSupplemental());
 
-//Load locale messages from resource file `globalize.messages.js`
-Globalize.loadMessages(require('./globalize.json'));
+  //Loads the data of the specified locales
+  Globalize.load(cldrData.entireMainFor('en', 'en-GB'));
+
+  //Set default locale
+  Globalize.locale('en');
+
+  //Load locale messages from resource file `globalize.messages.js`
+  Globalize.loadMessages(require('./globalize.json'));
+} catch (error) {
+
+  logger.error('Unable to load globalize modules at the moment');
+  logger.error(error);
+}
 
 /**
  * Localize message types
@@ -26,6 +36,13 @@ Globalize.loadMessages(require('./globalize.json'));
  * @param {object|array|any} [args] optional arguments passed to globalize method invoked correspondingly
  */
 function formatMessage(key = '', locale = 'en', type = 'message', ...args) {
+
+  if(_.isUndefined(Globalize) || _.isUndefined(cldrData)) { //unable to load globalize modules
+
+    return key; //return origin key as default in this situation
+  }
+
+
   var locale_message;
   try {
     switch (type) {
