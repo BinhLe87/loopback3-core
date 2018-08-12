@@ -3,23 +3,26 @@
 var loopback = require('loopback');
 var boot = require('loopback-boot');
 const util = require('util');
+const _ = require('lodash');
 
 var app = (module.exports = loopback());
 const dotenv = require('dotenv').config();
 var { logger } = require('../server/errors/errorLogger');
+//Set global instance variables
+global.logger = logger;
+
 const { exec } = require('child_process');
 const {
   formatMessage
 } = require('../server/config/components/globalize/globalize');
-const debug = require('debug')('server.js');
-const semver = require('semver');
-const _ = require('lodash');
-
-//Set global instance variables
-global.logger = logger;
 global.__i18n = global.__locale = formatMessage;
 global._ = _;
 _.set(global, 'helper.inspect', require('./helpers/printHelper').inspect);
+
+
+const debug = require('debug')('server.js');
+const semver = require('semver');
+
 
 //Print current Node version running on server
 exec('node -v', function(err, stdout, stderr) {
