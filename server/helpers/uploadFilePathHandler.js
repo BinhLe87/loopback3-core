@@ -100,7 +100,7 @@ function _generateRandomHashHasSixChars() {
   var hashSixChars;
   const buf = Buffer.alloc(3);
   do {
-    hashSixChars = crypto.randomFillSync(buf).toString('hex');
+    hashSixChars = crypto.randomFillSync(buf).toString('hex'); //This method is used to encode each byte as two hexadecimal characters.
     remainingAttempts--;
   } while (remainingAttempts > 0 && !__isValidHash(hashSixChars));
 

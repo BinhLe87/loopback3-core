@@ -10,7 +10,7 @@ const _ = require('lodash');
 
 const dimensionValueTypeJoi = joi.number().required();
 
-const dimensionValueJoi = joi.object({
+const dimensionValueJoi = joi.object().keys({
 
     width: dimensionValueTypeJoi.label('image width'),
     height: dimensionValueTypeJoi.label('image height')
@@ -37,7 +37,7 @@ var customJoi = joi.extend({
             name: 'extension',
             validate(params, value, state, options) {
 
-                var filePathParser = path.parse(value);  
+                var filePathParser = path.parse(value);
 
                 if (_.isEmpty(filePathParser.ext)) {
                     return this.createError('imagePath.extension', { v: value }, state, options);
@@ -68,6 +68,11 @@ const resizeProcessJoi = joi.object({
     device_type: deviceJoi,
 }).concat(dimensionValueJoi);
 
+const constructorValidatorJoi = joi.object().keys({
+    mobile: dimensionValueJoi.and('width', 'height'),
+    desktop: dimensionValueJoi.and('width', 'height')
+}).and('mobile', 'desktop');
+
 /**
  * This class will use converting params in following order:
  * + The params passed in constructor
@@ -78,6 +83,10 @@ const resizeProcessJoi = joi.object({
 class ImageProcessor {
 
     constructor(options) {
+
+        let {error, value} = constructorValidatorJoi.validate(options, baseJoiOptions);
+
+        if(error) throw error;
 
         this.desktop = {};
         this.desktop.width = _.get(options, 'desktop.width');
@@ -147,11 +156,6 @@ class ImageProcessor {
         if (error) {
             throw error;
         }
-
-        // //HACK:
-        // var fileOutputDir = '/Users/steven_lee/Documents/CoachingCloud/Projects/cc-automated-push-content/upload/resized/';
-        // var outputImage = 'resized_' + crypto.randomFillSync(Buffer.alloc(3)).toString('hex') + '.jpg';
-        // fs.mkdirp(fileOutputDir);
 
         sharp(inputImagePath).resize().toFile(outputImageFilePath, (error, info) => {
 
@@ -272,8 +276,12 @@ var imageProcessor = new ImageProcessor({
     mobile: {
         width: 200,
         height: 200
+    },
+    desktop: {
+        width: 200,
+        height: 'aa'
     }
 });
 //imageProcessor.resize("/Users/steven_lee/Documents/MYDATA/Miscellaneous/Screen shot/test", 400, 400);
-imageProcessor.resize("/Users/steven_lee/Documents/MYDATA/Miscellaneous/Screen shot/test_portrait.jpg", "mobile", 
-"image_1008_01.jpg");
+imageProcessor.resize("/Users/steven_lee/Documents/MYDATA/Miscellaneous/Screen shot/test_portrait.jpg", "mobile",
+    "image_1008_01.jpg");
