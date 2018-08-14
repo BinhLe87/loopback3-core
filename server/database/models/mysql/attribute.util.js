@@ -87,6 +87,7 @@ async function validateAttributesByItemtypeId(
   var attributesInDB = await itemTypeUtil.getAttributesByItemtypeId(itemTypeId);
 
   var validateErrorMessages = __validateInputAttributesWithInDB(
+    itemTypeId,
     attributesWillCheck,
     attributesInDB,
     shouldUseDefaultValue
@@ -112,6 +113,7 @@ async function validateAttributesByItemtypeId(
  * @returns {object} return object of error if any, otherwise return empty object if non-error exists.
  */
 function __validateInputAttributesWithInDB(
+  itemTypeId,
   attributesWillCheck,
   attributesInDB,
   shouldUseDefaultValue
@@ -126,10 +128,10 @@ function __validateInputAttributesWithInDB(
     if (_.isEmpty(sameAttrIds)) {
       throw new Error(
         `Error: Invalid attributes. The itemtypeId '${
-          attributesInDB.id
+        itemTypeId
         }' must contain at least one attribute has id '${
           attributeInDB.id
-        }' as in template`
+        }' (${attributeInDB.label}) as in template`
       );
     }
     //extra constraints of an attribute in database will has prefix column name is 'op_'
@@ -167,6 +169,8 @@ function __validateInputAttributesWithInDB(
       );
     }
   }
+
+  return validateErrorMessages;
 }
 /**
  *
@@ -215,10 +219,10 @@ function ___validateValuesByJoi(
           valueWillValidate.value = result;
         }
 
-        return validateErrorMessages;
       }
     );
   }
+  return validateErrorMessages;
 }
 
 function _parseAttributeOptions(attribute) {

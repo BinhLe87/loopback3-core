@@ -4,6 +4,7 @@ const path = require('path');
 const Promise = require('bluebird');
 const URI = require('urijs');
 const jsonAPIFormatterUtil = require('./jsonApiFormatter.util');
+const loopback_util = require('../helpers/loopbackUtil');
 
 const RESOURCE_TYPE = {
   object: 'object',
@@ -129,7 +130,7 @@ function parseSingleResource(ctx) {
 
 async function parseArrayOfResources(ctx) {
   var resources = ctx.result;
-  var protocolAndHostURL = getProtocolAndHostUrl(ctx.req);
+  var protocolAndHostURL =  loopback_util.getBaseURL(ctx.req);
 
   var result = {};
 
@@ -320,7 +321,7 @@ function getSelfBaseUrl(ctx) {
 
   var req = ctx.req;
   var baseUrl = req.baseUrl;
-  var selfBaseUrl = path.join(getProtocolAndHostUrl(req), baseUrl);
+  var selfBaseUrl = path.join(loopback_util.getBaseURL(req), baseUrl);
   if (!_.isUndefined(ctx.result.id)) {
     selfBaseUrl = path.join(selfBaseUrl, _.toString(ctx.result.id));
   }
@@ -336,16 +337,8 @@ function getSelfFullUrl(ctx) {
   }
 
   var req = ctx.req;
-  var protocolAndHostURL = getProtocolAndHostUrl(req);
+  var protocolAndHostURL = loopback_util.getBaseURL(req);
   return path.join(protocolAndHostURL, req.originalUrl);
-}
-
-function getProtocolAndHostUrl(req) {
-  var url_parts = {
-    protocol: req.protocol,
-    hostname: req.get('host')
-  };
-  return URI.build(url_parts);
 }
 
 /**
@@ -410,14 +403,14 @@ function parseLinks(ctx) {
   var lastAndnextLinks = generateLastAndNextPageReqOriginalURL(ctx);
   if (!_.isUndefined(lastAndnextLinks.next)) {
     var next_link = path.join(
-      getProtocolAndHostUrl(ctx.req),
+      loopback_util.getBaseURL(ctx.req),
       lastAndnextLinks.next
     );
     _.set(links, 'links.next', next_link);
   }
   if (!_.isUndefined(lastAndnextLinks.last)) {
     var last_link = path.join(
-      getProtocolAndHostUrl(ctx.req),
+      loopback_util.getBaseURL(ctx.req),
       lastAndnextLinks.last
     );
     _.set(links, 'links.last', last_link);

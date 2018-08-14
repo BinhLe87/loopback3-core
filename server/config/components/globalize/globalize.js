@@ -22,8 +22,10 @@ try {
   Globalize.loadMessages(require('./globalize.json'));
 } catch (error) {
 
+  if (process.env.NODE_ENV != 'development') {
   logger.error('Unable to load globalize modules at the moment');
   logger.error(error);
+  }
 }
 
 /**

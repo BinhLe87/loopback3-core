@@ -18,7 +18,7 @@ exports.getAttributesByItemtypeId = function getAttributesByItemtypeId(
 
         if (_.isEmpty(doc)) {
           return reject(
-            new Error(`Can not found item type has id ${itemTypeId}`)
+            new Error(`Not found item type has id ${itemTypeId}`)
           );
         }
 

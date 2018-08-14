@@ -4,8 +4,9 @@ const joi = require('joi');
 const fs = require('fs-extra');
 const crypto = require('crypto');
 const path = require('path');
-const fileUtil = require('../../../utils/fileUtil');
+const fileUtil = require('./fileUtil');
 const _ = require('lodash');
+
 
 
 const dimensionValueTypeJoi = joi.number().required();
@@ -73,6 +74,7 @@ const constructorValidatorJoi = joi.object().keys({
     desktop: dimensionValueJoi.and('width', 'height')
 }).and('mobile', 'desktop');
 
+
 /**
  * This class will use converting params in following order:
  * + The params passed in constructor
@@ -80,13 +82,13 @@ const constructorValidatorJoi = joi.object().keys({
  *
  * @class ImageProcessor
  */
-class ImageProcessor {
+class ImageConverter {
 
     constructor(options) {
 
-        let {error, value} = constructorValidatorJoi.validate(options, baseJoiOptions);
+        let { error, value } = constructorValidatorJoi.validate(options, baseJoiOptions);
 
-        if(error) throw error;
+        if (error) throw error;
 
         this.desktop = {};
         this.desktop.width = _.get(options, 'desktop.width');
@@ -126,43 +128,56 @@ class ImageProcessor {
      *          + image file directory: the file name will be generated from inputImagePath
      *          + undefined: the file name will be generated from inputImagePath and then stored in the same directory
      * @memberof ImageProcessor
+     * @returns {Promise} return a Promise
      */
-    resize(inputImagePath, targetDevice, outputImage) {
+    resizeAsync(inputImagePath, targetDevice, outputImage) {
 
         var outputImagePath = this._determineOutputImageFilePath(inputImagePath, outputImage, targetDevice);
 
-        this.resizeWithParams(inputImagePath, outputImagePath, targetDevice);
+        return this.resizeWithParamsAsync(inputImagePath, outputImagePath, targetDevice);
     }
+    /**
+     *
+     *
+     * @param {*} inputImagePath
+     * @param {*} outputImage
+     * @param {*} targetDevice
+     * @param {*} width
+     * @param {*} height
+     * @memberof ImageConverter
+     * @returns {Promise} returns a Promise
+     */
+    resizeWithParamsAsync(inputImagePath, outputImage, targetDevice, width, height) {        
 
-    resizeWithParams(inputImagePath, outputImage, targetDevice, width, height) {
+        return new Promise((resolve, reject) => {
 
-        var outputImageFilePath = this._determineOutputImageFilePath(inputImagePath, outputImage, targetDevice, width, height);
+            var outputImageFilePath = this._determineOutputImageFilePath(inputImagePath, outputImage, targetDevice, width, height);
 
-        if (_.isUndefined(width) && _.isUndefined(height)) {
+            if (_.isUndefined(width) && _.isUndefined(height)) {
 
-            var destSize = this.getDefaultSizeByDevice(targetDevice);
-            width = _.get(destSize, 'width');
-            height = _.get(destSize, 'height');
-        }
+                var destSize = this.getDefaultSizeByDevice(targetDevice);
+                width = _.get(destSize, 'width');
+                height = _.get(destSize, 'height');
+            }
 
-        var { error, value: inputResize } = resizeProcessJoi.validate({
-            input_image_path: inputImagePath,
-            output_image_path: outputImageFilePath,
-            width: width,
-            height: height,
-            device_type: targetDevice
-        }, baseJoiOptions);
+            var { error, value: inputResize } = resizeProcessJoi.validate({
+                input_image_path: inputImagePath,
+                output_image_path: outputImageFilePath,
+                width: width,
+                height: height,
+                device_type: targetDevice
+            }, baseJoiOptions);
 
-        if (error) {
-            throw error;
-        }
+            if (error) {
+                reject(error);
+            }
 
-        sharp(inputImagePath).resize().toFile(outputImageFilePath, (error, info) => {
+            sharp(inputImagePath).resize(_.toInteger(width), _.toInteger(height)).toFile(outputImageFilePath, (error, info) => {
 
-            if (error) throw error;
+                if(error) reject(error);
 
-            console.log(info);
-
+                resolve(path.basename(outputImageFilePath));
+            });
         });
     }
     /**
@@ -272,16 +287,21 @@ class ImageProcessor {
 
 }
 
-var imageProcessor = new ImageProcessor({
-    mobile: {
-        width: 200,
-        height: 200
-    },
-    desktop: {
-        width: 200,
-        height: 'aa'
-    }
-});
-//imageProcessor.resize("/Users/steven_lee/Documents/MYDATA/Miscellaneous/Screen shot/test", 400, 400);
-imageProcessor.resize("/Users/steven_lee/Documents/MYDATA/Miscellaneous/Screen shot/test_portrait.jpg", "mobile",
-    "image_1008_01.jpg");
+module.exports = exports = {};
+exports.ImageConverter = ImageConverter;
+
+
+
+// var imageProcessor = new ImageConverter({
+//     mobile: {
+//         width: 200,
+//         height: 200
+//     },
+//     desktop: {
+//         width: 200,
+//         height: 'aa'
+//     }
+// });
+// //imageProcessor.resize("/Users/steven_lee/Documents/MYDATA/Miscellaneous/Screen shot/test", 400, 400);
+// imageProcessor.resize("/Users/steven_lee/Documents/MYDATA/Miscellaneous/Screen shot/test_portrait.jpg", "mobile",
+//     "image_1008_01.jpg");

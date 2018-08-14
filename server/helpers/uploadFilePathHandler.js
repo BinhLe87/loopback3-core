@@ -166,31 +166,43 @@ uploadFilePathHandler.prototype.identifyFilePathWillSave = function(
 ) {
   var transformedFileName = this.transformFileNameToSave(baseFileName);
 
-  var dirPathWillSave = this.identifyDirPathWillSave();
+  var dirPathWillSave = this.identifyAbsoluteDirPathWillSave();
 
   var pathWillSave = path.resolve(dirPathWillSave, transformedFileName);
 
   return pathWillSave;
 };
+
+uploadFilePathHandler.prototype.identifyRelativeDirPathWillSave = function () {
+
+  var serviceName = this.SERVICE_NAME;
+  var date = moment();
+
+  var relativeDirPathWillSave = path.join(
+    serviceName,
+    date.year().toString(),
+    _.padStart((date.month() + 1).toString(), 2, '0'),
+    _.padStart(date.date().toString(), 2, '0')
+  );
+
+  return relativeDirPathWillSave;
+}
+
 /**
  *  Identify directory hierarchy path will store uploaded file.
  *
  * @param {boolean} [shouldCreateDirs=true] If the returned path hierarchy doesn't exists, it's created
  * @returns
  */
-uploadFilePathHandler.prototype.identifyDirPathWillSave = function(
+uploadFilePathHandler.prototype.identifyAbsoluteDirPathWillSave = function(
   shouldCreateDirs = true
 ) {
   var uploadDir = this.options.uploadDir || this.ROOT_UPLOAD_DIR;
-  var serviceName = this.SERVICE_NAME;
-  var date = moment();
+  var relativeDirPathWillSave = this.identifyRelativeDirPathWillSave();
 
   var dirPathWillSave = path.resolve(
     uploadDir,
-    serviceName,
-    date.year().toString(),
-    _.padStart((date.month() + 1).toString(), 2, '0'),
-    _.padStart(date.date().toString(), 2, '0')
+    relativeDirPathWillSave
   );
 
   if (shouldCreateDirs) {

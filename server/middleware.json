@@ -40,7 +40,15 @@
       ]
     }
   },
-  "files": {},
+  "files": {
+    "loopback#static": {
+        "name": "upload",
+        "paths": [
+          "/upload"
+        ],
+        "params": "$!../upload"
+    }
+  },
   "final": {
     "loopback#urlNotFound": {}
   },
