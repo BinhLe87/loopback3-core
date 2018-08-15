@@ -6,15 +6,17 @@ const crypto = require('crypto');
 const path = require('path');
 const fileUtil = require('./fileUtil');
 const _ = require('lodash');
+const image_size = require('image-size');
 
-
+const displayModeJoi = joi.any().allow('fitting', 'filling', 'strict').default('strict');
 
 const dimensionValueTypeJoi = joi.number().required();
 
 const dimensionValueJoi = joi.object().keys({
 
     width: dimensionValueTypeJoi.label('image width'),
-    height: dimensionValueTypeJoi.label('image height')
+    height: dimensionValueTypeJoi.label('image height'),
+    display_mode: displayModeJoi
 });
 
 const deviceJoi = joi.string().valid('mobile', 'desktop').label('target device type');
@@ -71,7 +73,8 @@ const resizeProcessJoi = joi.object({
 
 const constructorValidatorJoi = joi.object().keys({
     mobile: dimensionValueJoi.and('width', 'height'),
-    desktop: dimensionValueJoi.and('width', 'height')
+    desktop: dimensionValueJoi.and('width', 'height'),
+    display_mode: displayModeJoi
 }).and('mobile', 'desktop');
 
 
@@ -97,6 +100,8 @@ class ImageConverter {
         this.mobile = {};
         this.mobile.width = _.get(options, 'mobile.width');
         this.mobile.height = _.get(options, 'mobile.height');
+
+        this.display_mode = value.display_mode;
 
         this.options = options;
     }
@@ -130,28 +135,24 @@ class ImageConverter {
      * @memberof ImageProcessor
      * @returns {Promise} return a Promise
      */
-    resizeAsync(inputImagePath, targetDevice, outputImage) {
+    resizeAsync(inputImagePath, targetDevice) {
 
-        var outputImagePath = this._determineOutputImageFilePath(inputImagePath, outputImage, targetDevice);
-
-        return this.resizeWithParamsAsync(inputImagePath, outputImagePath, targetDevice);
+        return this.resizeWithParamsAsync(inputImagePath, targetDevice);
     }
     /**
      *
      *
      * @param {*} inputImagePath
-     * @param {*} outputImage
      * @param {*} targetDevice
-     * @param {*} width
-     * @param {*} height
+     * @param {*} [outputImage]
+     * @param {*} [width]
+     * @param {*} [height]
      * @memberof ImageConverter
      * @returns {Promise} returns a Promise
      */
-    resizeWithParamsAsync(inputImagePath, outputImage, targetDevice, width, height) {        
+    resizeWithParamsAsync(inputImagePath, targetDevice, outputImage, width, height) {        
 
         return new Promise((resolve, reject) => {
-
-            var outputImageFilePath = this._determineOutputImageFilePath(inputImagePath, outputImage, targetDevice, width, height);
 
             if (_.isUndefined(width) && _.isUndefined(height)) {
 
@@ -159,6 +160,40 @@ class ImageConverter {
                 width = _.get(destSize, 'width');
                 height = _.get(destSize, 'height');
             }
+
+            var source_size = image_size(inputImagePath);
+            //if image is portrait, switch the target size into portrait mode as well
+            if (source_size.width > source_size.height) {
+
+                width = Math.max(width, height);
+                height = Math.min(width, height);
+            }
+
+            //convert size to target display mode, default is 'strict' mode
+            if (this.display_mode == 'fitting') {
+
+                let dest_size = this._convertSizeToFittingMode(
+                    source_size.width, source_size.height,
+                    width, height
+                );
+
+                width = dest_size.width;
+                height = dest_size.height;
+            }
+
+            //in case not 'strict' mode, if the image would be stretched in any direction
+            //=> should preserve as original size
+            if (this.display_mode != 'strict' &&
+                (width > source_size.width || 
+                height > source_size.height)) {
+
+                width = source_size.width;
+                height = source_size.height;
+            }
+
+            
+            
+            var outputImageFilePath = this._determineOutputImageFilePath(inputImagePath, outputImage, targetDevice, width, height);
 
             var { error, value: inputResize } = resizeProcessJoi.validate({
                 input_image_path: inputImagePath,
@@ -171,7 +206,7 @@ class ImageConverter {
             if (error) {
                 reject(error);
             }
-
+            
             sharp(inputImagePath).resize(_.toInteger(width), _.toInteger(height)).toFile(outputImageFilePath, (error, info) => {
 
                 if(error) reject(error);
@@ -216,7 +251,7 @@ class ImageConverter {
 
         if (_.isUndefined(outputFileName)) { //will auto generate output file name
 
-            outputFileName = this._generateOutputImageFileName(inputImagePath, device_type);
+            outputFileName = this._generateOutputImageFileName(inputImagePath, device_type, width, height);
         }
 
 
@@ -284,7 +319,21 @@ class ImageConverter {
         }
     }
 
+    _convertSizeToFittingMode(source_width, source_height, dest_width, dest_height) {
 
+        var scaleW = dest_width / source_width;
+        var scaleH = dest_height / source_height;
+
+        var scale_min = Math.min(scaleW, scaleH);
+
+        var fittingW = _.toInteger(source_width * scale_min);
+        var fittingH = _.toInteger(source_height * scale_min);
+
+        return {
+            width: fittingW,
+            height: fittingH
+        }
+    }
 }
 
 module.exports = exports = {};
