@@ -19,10 +19,8 @@ global.__i18n = global.__locale = formatMessage;
 global._ = _;
 _.set(global, 'helper.inspect', require('./helpers/printHelper').inspect);
 
-
 const debug = require('debug')('server.js');
 const semver = require('semver');
-
 
 //Print current Node version running on server
 exec('node -v', function(err, stdout, stderr) {

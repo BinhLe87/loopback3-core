@@ -25,10 +25,9 @@ exports.isBuiltInModel = function isBuiltInModel(model_name) {
 exports.builtInModelNames = _builtInModelNames;
 
 exports.getBaseURL = function(req) {
-
   var url_parts = {
     protocol: req.protocol,
     hostname: req.get('host')
   };
   return URI.build(url_parts);
-}
+};

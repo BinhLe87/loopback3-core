@@ -127,9 +127,7 @@ function __validateInputAttributesWithInDB(
     var sameAttrIds = _.filter(attributesWillCheck, { id: attributeInDB.id });
     if (_.isEmpty(sameAttrIds)) {
       throw new Error(
-        `Error: Invalid attributes. The itemtypeId '${
-        itemTypeId
-        }' must contain at least one attribute has id '${
+        `Error: Invalid attributes. The itemtypeId '${itemTypeId}' must contain at least one attribute has id '${
           attributeInDB.id
         }' (${attributeInDB.label}) as in template`
       );
@@ -218,7 +216,6 @@ function ___validateValuesByJoi(
         if (shouldUseDefaultValue) {
           valueWillValidate.value = result;
         }
-
       }
     );
   }

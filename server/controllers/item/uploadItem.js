@@ -8,7 +8,6 @@ var multer = require('multer'),
   createError = require('http-errors'),
   FilePathHandler = require('../../helpers/uploadFilePathHandler'),
   debug = require('debug')(path.basename(__filename));
-  
 
 // Error Messages
 var ERR_UPLOAD_FAILED =
@@ -16,50 +15,51 @@ var ERR_UPLOAD_FAILED =
 const uploadFilePathHandler = new FilePathHandler();
 
 module.exports = function uploadItem(app, next, callback) {
-
   multer.bind(app);
 
   var relativeFilePathWillSave;
   var absoluteFilePathWillSave;
   var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-
+    destination: function(req, file, cb) {
       var pathWillSave = uploadFilePathHandler.identifyAbsoluteDirPathWillSave();
       cb(null, pathWillSave);
     },
-    filename: function (req, file, cb) {
-
+    filename: function(req, file, cb) {
       var origin_filename = file.originalname;
-      var fileNameWillSave = uploadFilePathHandler.transformFileNameToSave(origin_filename);
+      var fileNameWillSave = uploadFilePathHandler.transformFileNameToSave(
+        origin_filename
+      );
       cb(null, fileNameWillSave);
 
-      absoluteFilePathWillSave = path.join(uploadFilePathHandler.identifyAbsoluteDirPathWillSave(), fileNameWillSave);
-      relativeFilePathWillSave = path.join(uploadFilePathHandler.identifyRelativeDirPathWillSave(), fileNameWillSave);
-    } 
+      absoluteFilePathWillSave = path.join(
+        uploadFilePathHandler.identifyAbsoluteDirPathWillSave(),
+        fileNameWillSave
+      );
+      relativeFilePathWillSave = path.join(
+        uploadFilePathHandler.identifyRelativeDirPathWillSave(),
+        fileNameWillSave
+      );
+    }
   });
 
-  var fileFilter = function (req, file, cb) {
-
+  var fileFilter = function(req, file, cb) {
     //cb(new Error('Not allowed to upload at the moment!!!!'));
     cb(null, true);
   };
 
-  var upload = multer({ storage: storage, 
-      fileFilter: fileFilter,
-      limits: {}
-       });
+  var upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {}
+  });
 
   var my_upload = upload.single('image');
 
-  //handle when upload finished 
-  my_upload(app.req, app.res, (err) => {
-
-    callback(err, relativeFilePathWillSave, absoluteFilePathWillSave);    
+  //handle when upload finished
+  my_upload(app.req, app.res, err => {
+    callback(err, relativeFilePathWillSave, absoluteFilePathWillSave);
   });
-  
-  
-
-}
+};
 
 // module.exports = function uploadItem(req, res, next) {
 //   //parse a file upload

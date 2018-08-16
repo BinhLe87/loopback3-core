@@ -130,7 +130,7 @@ function parseSingleResource(ctx) {
 
 async function parseArrayOfResources(ctx) {
   var resources = ctx.result;
-  var protocolAndHostURL =  loopback_util.getBaseURL(ctx.req);
+  var protocolAndHostURL = loopback_util.getBaseURL(ctx.req);
 
   var result = {};
 
@@ -353,7 +353,7 @@ function generateRelationLinkSelf(ctx, relation_name) {
   var url = new URI(selfBaseUrl);
   url.addQuery(`filter[include][${relation_name}]`);
 
-  return url.readable();
+  return URI.decode(url.toString());
 }
 
 /**

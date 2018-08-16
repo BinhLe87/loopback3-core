@@ -1,4 +1,3 @@
-
 var Globalize;
 var cldrData;
 
@@ -21,10 +20,9 @@ try {
   //Load locale messages from resource file `globalize.messages.js`
   Globalize.loadMessages(require('./globalize.json'));
 } catch (error) {
-
   if (process.env.NODE_ENV != 'development') {
-  logger.error('Unable to load globalize modules at the moment');
-  logger.error(error);
+    logger.error('Unable to load globalize modules at the moment');
+    logger.error(error);
   }
 }
 
@@ -38,12 +36,11 @@ try {
  * @param {object|array|any} [args] optional arguments passed to globalize method invoked correspondingly
  */
 function formatMessage(key = '', locale = 'en', type = 'message', ...args) {
-
-  if(_.isUndefined(Globalize) || _.isUndefined(cldrData)) { //unable to load globalize modules
+  if (_.isUndefined(Globalize) || _.isUndefined(cldrData)) {
+    //unable to load globalize modules
 
     return key; //return origin key as default in this situation
   }
-
 
   var locale_message;
   try {

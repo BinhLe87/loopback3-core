@@ -173,8 +173,7 @@ uploadFilePathHandler.prototype.identifyFilePathWillSave = function(
   return pathWillSave;
 };
 
-uploadFilePathHandler.prototype.identifyRelativeDirPathWillSave = function () {
-
+uploadFilePathHandler.prototype.identifyRelativeDirPathWillSave = function() {
   var serviceName = this.SERVICE_NAME;
   var date = moment();
 
@@ -186,7 +185,7 @@ uploadFilePathHandler.prototype.identifyRelativeDirPathWillSave = function () {
   );
 
   return relativeDirPathWillSave;
-}
+};
 
 /**
  *  Identify directory hierarchy path will store uploaded file.
@@ -200,10 +199,7 @@ uploadFilePathHandler.prototype.identifyAbsoluteDirPathWillSave = function(
   var uploadDir = this.options.uploadDir || this.ROOT_UPLOAD_DIR;
   var relativeDirPathWillSave = this.identifyRelativeDirPathWillSave();
 
-  var dirPathWillSave = path.resolve(
-    uploadDir,
-    relativeDirPathWillSave
-  );
+  var dirPathWillSave = path.resolve(uploadDir, relativeDirPathWillSave);
 
   if (shouldCreateDirs) {
     if (!fs.existsSync(dirPathWillSave)) {
