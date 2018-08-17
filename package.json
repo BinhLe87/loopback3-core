@@ -18,7 +18,7 @@
     "format": "prettier --ignore-path .eslintignore --write '**/*.js'"
   },
   "lint-staged": {
-    "*.js": []
+    "*.js": ["npm run format", "git add"]
   },
   "config": {
     "debug_api": "aaa"

@@ -31,10 +31,7 @@ fs.readFile(path.join(__dirname, '../../../middleware.json'), (err, data) => {
 
 module.exports = function(Item) {
   Item.beforeRemote('create', function(ctx, modelInstance, next) {
-    //...
-    var req_header_content_type = ctx.req.headers['content-type'];
-
-    if (!req_header_content_type.includes('multipart/form-data')) {
+    if (!_isReqTypeIsUploadFile(ctx.req)) {
       //not upload file, just create raw item
 
       next();
@@ -206,4 +203,14 @@ function convertImageFileAsync(savedAbsoluteImagePath) {
     'desktop'
   );
   return Promise.all([convertToMobilePromise, convertToDesktopPromise]);
+}
+
+function _isReqTypeIsUploadFile(req) {
+  var req_header_content_type = req.headers['content-type'];
+
+  if (req_header_content_type.includes('multipart/form-data')) {
+    return true;
+  }
+
+  return false;
 }
