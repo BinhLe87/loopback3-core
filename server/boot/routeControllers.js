@@ -1,5 +1,5 @@
 'use strict';
-var uploadItemController = require('../controllers/item/uploadItem');
+const loginController = require('../controllers/authen/login');
 
 module.exports = function(server) {
   // Install a `/` route that returns server status
@@ -7,7 +7,7 @@ module.exports = function(server) {
   var router = server.loopback.Router();
   var restApiRoot = server.get('restApiRoot');
 
-  router.post(`${restApiRoot}/item/upload`, uploadItemController);
+  router.post(`${restApiRoot}/login`, loginController);
 
   server.use(router);
 };

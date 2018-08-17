@@ -1,15 +1,14 @@
 {
-  "name": "user",
-  "plural": "users",
-  "base": "PersistedModel",
+  "name": "client",
+  "plural": "clients",
+  "base": "User",
   "idInjection": true,
   "options": {
-    "validateUpsert": true
+    
   },
   "properties": {
     "name": {
-      "type": "string",
-      "required": true
+      "type": "string"      
     },
     "role": {
       "type": "string"

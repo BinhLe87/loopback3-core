@@ -18,7 +18,10 @@
     "format": "prettier --ignore-path .eslintignore --write '**/*.js'"
   },
   "lint-staged": {
-    "*.js": ["npm run format", "git add"]
+    "*.js": [
+      "npm run format",
+      "git add"
+    ]
   },
   "config": {
     "debug_api": "aaa"
@@ -26,6 +29,7 @@
   "dependencies": {
     "@sindresorhus/slugify": "^0.3.0",
     "bluebird": "^3.5.1",
+    "body-parser": "^1.18.3",
     "compression": "^1.0.3",
     "cors": "^2.5.2",
     "cross-env": "^5.2.0",
@@ -38,7 +42,7 @@
     "include-all": "^4.0.3",
     "joi": "^13.4.0",
     "lodash": "^4.17.10",
-    "loopback": "^3.19.0",
+    "loopback": "^3.22.0",
     "loopback-boot": "^2.6.5",
     "loopback-component-explorer": "^6.0.0",
     "loopback-component-visualizer": "^1.2.1",

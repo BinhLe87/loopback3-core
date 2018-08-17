@@ -15,25 +15,25 @@
     ]
   },
   "User": {
-    "dataSource": "db"
+    "dataSource": "cc_mysql"
   },
   "AccessToken": {
-    "dataSource": "db",
+    "dataSource": "cc_mysql",
     "public": false
   },
   "ACL": {
-    "dataSource": "db",
+    "dataSource": "cc_mysql",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "db",
+    "dataSource": "cc_mysql",
     "public": false,
     "options": {
       "strictObjectIDCoercion": true
     }
   },
   "Role": {
-    "dataSource": "db",
+    "dataSource": "cc_mysql",
     "public": false
   },
   "library": {
@@ -80,11 +80,11 @@
     "dataSource": "cc_mysql",
     "public": false
   },
-  "user": {
+  "client": {
     "dataSource": "cc_mysql",
     "public": true
   },
-  "user_program": {
+  "client_program": {
     "dataSource": "cc_mysql",
     "public": false
   },
