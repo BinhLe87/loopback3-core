@@ -1,12 +1,19 @@
 'use strict';
 
+const path = require('path');
+const dotenv = require('dotenv').config({
+  path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`)
+});
+
+//ensure mandatory parameters must be defined before lauching app
+require('./helpers/validators/preStartServiceValidator');
+
 var loopback = require('loopback');
 var boot = require('loopback-boot');
 const util = require('util');
 const _ = require('lodash');
 
 var app = (module.exports = loopback());
-const dotenv = require('dotenv').config();
 var { logger } = require('../server/errors/errorLogger');
 //Set global instance variables
 global.logger = logger;
