@@ -21,6 +21,7 @@ module.exports = function(app) {
       return next();
     }
 
+    ctx.req.originalUrl = URI.decode(ctx.req.originalUrl); //to avoid issues when using regx in url
     //format response follow jsonapi.org standard
     parseResouceFactory(ctx)
       .then(function(responseInJsonAPI) {
@@ -333,12 +334,12 @@ function getSelfFullUrl(ctx) {
   if (typeof ctx.req.forcedSelfFullUrl != 'undefined') {
     // forcedSelfFullUrl was passed
 
-    return ctx.req.forcedSelfFullUrl;
+    return URI.decode(ctx.req.forcedSelfFullUrl);
   }
 
   var req = ctx.req;
   var protocolAndHostURL = loopback_util.getBaseURL(req);
-  return path.join(protocolAndHostURL, req.originalUrl);
+  return URI.decode(path.join(protocolAndHostURL, req.originalUrl));
 }
 
 /**
@@ -406,14 +407,14 @@ function parseLinks(ctx) {
       loopback_util.getBaseURL(ctx.req),
       lastAndnextLinks.next
     );
-    _.set(links, 'links.next', next_link);
+    _.set(links, 'links.next', URI.decode(next_link));
   }
   if (!_.isUndefined(lastAndnextLinks.last)) {
     var last_link = path.join(
       loopback_util.getBaseURL(ctx.req),
       lastAndnextLinks.last
     );
-    _.set(links, 'links.last', last_link);
+    _.set(links, 'links.last', URI.decode(last_link));
   }
 
   return links;
@@ -473,7 +474,7 @@ function generateLastAndNextPageReqOriginalURL(ctx) {
 
       let url = new URI(originalUrl);
       url.addQuery(`filter[skip]`, 0);
-      originalUrl = url.readable();
+      originalUrl = URI.decode(url);
     }
   }
 
@@ -498,12 +499,8 @@ function generateLastAndNextPageReqOriginalURL(ctx) {
   );
 
   return {
-    last: _.isUndefined(last_page_url)
-      ? undefined
-      : new URI(last_page_url).readable(),
-    next: _.isUndefined(next_page_url)
-      ? undefined
-      : new URI(next_page_url).readable()
+    last: _.isUndefined(last_page_url) ? undefined : last_page_url,
+    next: _.isUndefined(next_page_url) ? undefined : next_page_url
   };
 }
 /**
@@ -552,7 +549,7 @@ function __replaceURLWithPage(url, desired_page, skip_regx, skip_RestAPI_regx) {
     if (RegExp(skip_RestAPI_regx).test(skip_matched)) {
       new_skip = `[skip]=${desired_page}`;
     } else {
-      new_skip = `"skip":${desired_page}`;
+      new_skip = `"skip":"${desired_page}"`;
     }
     return url.replace(RegExp(skip_regx), new_skip);
   }

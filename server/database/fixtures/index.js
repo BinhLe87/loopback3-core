@@ -13,7 +13,7 @@ if (NUMBER_RECORDS <= 0) {
 }
 
 app.on('booted', function() {
-  require('./model.fixtures')(NUMBER_RECORDS, 'user', {
+  require('./model.fixtures')(NUMBER_RECORDS, 'client', {
     name: faker.name.findName,
     role: {
       func: faker.random.arrayElement,
@@ -25,7 +25,7 @@ app.on('booted', function() {
     name: { func: faker.lorem.words, args: 7 },
     createdBy: {
       func: faker.random.arrayElement,
-      args: ['user', 'system']
+      args: ['client', 'system']
     },
     owner: {
       func: faker.random.number,
@@ -46,9 +46,9 @@ app.on('booted', function() {
 
   require('./many-to-many.fixtures')(
     NUMBER_RECORDS,
-    'user',
+    'client',
     'program',
-    'user_program'
+    'client_program'
   );
 
   require('./model.fixtures')(NUMBER_RECORDS, 'workbook', {
