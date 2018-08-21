@@ -9,6 +9,8 @@ toc_footers:
 
 includes:
   - errors
+  - api/item/item
+  - api/item/item_type
 
 search: true
 ---
