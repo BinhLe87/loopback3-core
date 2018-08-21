@@ -3,13 +3,6 @@
 ## List item types
 Return a list of item types.
 
-### HTTP Request
-GET `http://localhost:8080/api/item_types`
-
-### Query Parameters
-
-To filter response data, see [here](http://localhost:4567/#data-filters) 
-
 > Example Request
 
 ```shell
@@ -69,3 +62,13 @@ curl -X GET --header 'Accept: application/json' 'http://localhost:8080/api/item_
   }
 }
 ```
+
+### HTTP Request
+**GET** `http://localhost:8080/api/item_types`
+
+### Request body
+
+### Response
+
+If successful, return an object contains `data` property is an array of item types.
+
