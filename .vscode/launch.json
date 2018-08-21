@@ -30,8 +30,7 @@
             "stopOnEntry": false,
             "processId": "${command:PickProcess}",
             "restart": true,
-            "protocol": "inspector",
-            "trace": "verbose"
+            "protocol": "inspector"
         },
     ]
 }

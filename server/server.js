@@ -34,6 +34,7 @@ exec('node -v', function(err, stdout, stderr) {
   var cur_node_version = stdout;
 
   logger.info('Node version running on server: ' + cur_node_version);
+  logger.info(`Running in environment is ${process.env.NODE_ENV}`);
 
   var is_valid_node_version = false;
   var required_node_version = '7.6.0';
