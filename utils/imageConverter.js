@@ -1,10 +1,7 @@
 'use strict';
 const sharp = require('sharp');
 const joi = require('joi');
-const fs = require('fs-extra');
-const crypto = require('crypto');
 const path = require('path');
-const fileUtil = require('./fileUtil');
 const _ = require('lodash');
 const image_size = require('image-size');
 

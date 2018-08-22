@@ -472,7 +472,6 @@ function generateLastAndNextPageReqOriginalURL(ctx) {
     if (!RegExp(skip_regx).test(originalUrl)) {
       //will implicitly specify skip parameter in URL by adding filter[skip]=0 to originalURL as default
 
-      var limit_RestAPI_regx = '\\[limit\\]=([^&]*)';
       var limit_NodeAPI_regx = `(["']?limit.*:\\s*[^,}]+?)`;
 
       let limit_regx_exec = RegExp(limit_NodeAPI_regx, 'gi').exec(originalUrl);

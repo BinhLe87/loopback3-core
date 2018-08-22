@@ -2,7 +2,6 @@
 const request = require('request');
 const URI = require('urijs');
 const debug = require('debug')('resizeImageOnFly.js');
-const path = require('path');
 
 module.exports = function resizeImageOnFly(req, res, next) {
   var UNABLE_RESIZE_ERROR = new Error(
