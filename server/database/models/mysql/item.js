@@ -99,11 +99,11 @@ module.exports = function(Item) {
               {
                 id: attribute.id,
                 values: [
-                  { origin_url: URI.decode(origin_uri.normalize().toString()) },
+                  { high_url: URI.decode(origin_uri.normalize().toString()) },
                   {
-                    desktop_url: URI.decode(desktop_uri.normalize().toString())
+                    medium_url: URI.decode(desktop_uri.normalize().toString())
                   },
-                  { mobile_url: URI.decode(mobile_uri.normalize().toString()) }
+                  { low_url: URI.decode(mobile_uri.normalize().toString()) }
                 ]
               }
             ];
