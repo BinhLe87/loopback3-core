@@ -30,6 +30,20 @@
       "through": "program_workbook"
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "*",
+      "permission": "ALLOW",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "property": "*"
+    }
+  ],
   "methods": {}
 }

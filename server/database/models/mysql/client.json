@@ -17,6 +17,14 @@
   "validations": [],
   "relations": {
   },
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "*",
+      "permission": "ALLOW",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "property": "*"
+    }    
+  ],
   "methods": {}
 }
