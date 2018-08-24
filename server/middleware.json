@@ -30,8 +30,18 @@
       "enabled": false
     }
   },
-  "session": {},
+  "session": {
+    "body-parser#json": {},
+    "body-parser#urlencoded": {
+      "params": {
+        "extended": true
+      }
+    }
+  },
   "auth": {
+    "./middleware/authenBySSO": {
+
+    },
     "loopback#token": {
       "params": {
         "model": "AccessToken"
@@ -39,12 +49,7 @@
     }
   },
   "parse": {
-    "body-parser#json": {},
-    "body-parser#urlencoded": {
-      "params": {
-        "extended": true
-      }
-    }
+    
   },
   "routes": {
     "loopback#rest": {

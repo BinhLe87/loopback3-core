@@ -3,8 +3,9 @@
   "plural": "clients",
   "base": "User",
   "idInjection": true,
+  "ttl": -1,
   "options": {
-    
+    "allowEternalTokens": true
   },
   "properties": {
     "name": {
@@ -17,14 +18,6 @@
   "validations": [],
   "relations": {
   },
-  "acls": [
-    {
-      "accessType": "*",
-      "permission": "ALLOW",
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "property": "*"
-    }    
-  ],
+  "acls": [],
   "methods": {}
 }
