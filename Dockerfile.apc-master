@@ -1,8 +1,6 @@
 FROM node:9.11.2
 ENV api_dir="/usr/src/app/"
-ENV tool_dir="/usr/src/tool"
-ARG dest_docs_web_dir=${api_dir}/server/docs_web/
-ARG redis_dir=${tool_dir}/redis
+ENV tool_dir=${api_dir}/tools
 
 WORKDIR ${api_dir}
 ## Bundle app source
@@ -15,53 +13,19 @@ RUN node -v
 ## Print docker-compose version
 RUN docker-compose --version; exit 0
 
-## Start API
-RUN npm install -g pm2
-#RUN pm2 start server/server.js
-
-## Set up environment for api_docs website
-RUN apt-get update \
-    && apt-get install -y \
-    wget \
-    build-essential \
-    make
-
-### Install ruby
-RUN wget https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.7.tar.gz
-RUN tar -xzvf ruby-2.3.7.tar.gz
-WORKDIR ruby-2.3.7
-RUN ./configure
-RUN make
-RUN make install
-RUN ruby -v
-
-RUN apt-get install -y \
-        rubygems-integration \
-    && apt-get clean
-
-RUN gem install bundler
-
-WORKDIR ${dest_docs_web_dir}
-WORKDIR slate
-RUN bundle install
-
 ##Install Redis server
-WORKDIR ${redis_dir}
-RUN wget http://download.redis.io/releases/redis-4.0.11.tar.gz
+WORKDIR ${tool_dir}
 RUN tar xzf redis-4.0.11.tar.gz
 WORKDIR redis-4.0.11
 RUN make
-#WORKDIR src
-#CMD redis-server --daemonize yes
 
-## Start api server and api docs website
+## Start api server
+RUN npm install -g pm2
 WORKDIR ${api_dir}
 ENTRYPOINT pm2 start ecosystem.config.js \
         && pm2 status \
         && tail -f /dev/null 
 EXPOSE 8080
-EXPOSE 4567
-
 
 
 

@@ -24,8 +24,9 @@
   },
   "rules": {
     "max-lines": ["error", 400],
-    "no-unused-vars": 0,
-    "prettier/prettier": "error",
+    "no-unused-vars": 1,
+    "no-console": 0,
+    "prettier/prettier": 0,
     "complexity": 0
   }
 }

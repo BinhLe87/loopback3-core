@@ -16,13 +16,21 @@
     "debug": "NODE_ENV=development nodemon --nolazy --inspect-brk .",
     "posttest": "npm run lint > logs/eslint_log.txt && nsp check",
     "precommit": "lint-staged",
-    "format": "prettier --ignore-path .eslintignore --write '**/*.js'"
+    "format": "prettier --ignore-path .eslintignore --write '**/*.js'",
+    "api-docs": "cd $PWD/server/docs_web/slate && middleman build --build-dir ../../public/api_docs"
   },
   "lint-staged": {
-    "*.js": [
-      "npm run format",
-      "git add"
-    ]
+    "linters": {
+      "*.md": [
+        "npm run api-docs",
+        "npm run format",
+        "git add"
+      ],
+      "*.js": [
+        "npm run format",
+        "git add"
+      ]
+    }
   },
   "config": {
     "debug_api": "aaa"
@@ -68,7 +76,7 @@
     "eslint-plugin-prettier": "^2.6.2",
     "faker": "^4.1.0",
     "husky": "^0.14.3",
-    "lint-staged": "^7.2.0",
+    "lint-staged": "^7.2.2",
     "nsp": "^2.1.0",
     "prettier": "^1.14.0",
     "webpack": "^4.16.5",

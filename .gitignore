@@ -27,11 +27,17 @@ demo
 #logs files
 logs
 
-#files only for local environments
+#config files only for local environments
 /server/datasources.local.json
+.env.development
 
 #uploads dir
 upload
 
 #vendors third-parties that was customized
 server/vendors
+# server/docs_web/*
+# !*/**/*.md
+
+
+.eslintignore

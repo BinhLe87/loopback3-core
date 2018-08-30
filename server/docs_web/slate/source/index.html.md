@@ -234,9 +234,9 @@ between		|True if the value is between the two specified values: greater than or
 inq, nin	|In / not in an array of values.
 neq			|Not equal (!=)
 like, nlike	|LIKE / NOT LIKE operators for use with regular expressions. The regular expression format depends 			  |on the backend data source.
-regexp		|Regular expression. See examples below.
+regexp		| Regular expression. See examples below.
 
 # Authentication
-![authentication workflow](http://dev01.cc.cloud:49176/images/authen_workflow_apc.jpg)
+![authentication workflow](http://dev01.cc.cloud:49173/public/assets/images/authen_workflow_apc.jpg)
 
 # Versioning

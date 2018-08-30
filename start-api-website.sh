@@ -1,1 +1,0 @@
-cd /usr/src/app/server/docs_web/slate && bundle exec middleman server

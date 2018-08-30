@@ -37,7 +37,7 @@ pipeline {
                         //delete the old image
                         sh 'tid=`sudo docker ps | grep apc-master | awk \'{print $2}\' | awk -F: \'{print $2}\'`; if [ ! -z $tid ]; then sudo docker rm -f apc-master-development; sudo docker rmi -f `sudo docker images coachingcloud/automated-push-content:$tid -q`; fi'
                         //run the new one
-                        sh 'COMMIT=`git rev-parse --short HEAD`;sudo docker run --name apc-master-development -d -p 49173:8080 -p 49176:4567 coachingcloud/automated-push-content:dev-apc-master-$BUILD_NUMBER-$COMMIT'
+                        sh 'COMMIT=`git rev-parse --short HEAD`;sudo docker run --name apc-master-development -d -p 49173:8080 coachingcloud/automated-push-content:dev-apc-master-$BUILD_NUMBER-$COMMIT'
                         sh 'echo "Opening URL: http://dev01.cc.cloud:49173"'
                         // Test service is opening or not
 		        sleep 10
@@ -45,7 +45,7 @@ pipeline {
 		        def service_status = readFile 'status'
 		        if ( service_status ) {
                             echo 'INFO: The service is opening'
-			    slackSend (color: '#00FF00', message: "SUCCESSFUL: Job APC MASTER '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) \n Service URL: http://dev01.cc.cloud:49173 \n API DOCS URL: http://dev01.cc.cloud:49176") 
+slackSend (color: '#00FF00', message: "SUCCESSFUL: Job APC MASTER '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) \n Service URL: http://dev01.cc.cloud:49173 \n API DOCS URL: http://dev01.cc.cloud:49173/docs") 
 			    currentBuild.result = 'SUCCESS'
                         } else {
                             echo 'ERR: The service is not opening'
