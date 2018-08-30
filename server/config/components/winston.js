@@ -24,7 +24,7 @@ var envVarsSchema = joi
       .falsy('FALSE')
       .falsy('false')
       .default(true),
-    LOGS_DIR: joi.string().default('./logs')
+    LOGS_DIR: joi.string().default('./logs/app')
   })
   .unknown();
 
