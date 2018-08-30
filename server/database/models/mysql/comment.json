@@ -1,0 +1,55 @@
+{
+  "name": "comment",
+  "plural": "comments",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "message": {
+      "type": "string",
+      "required": true
+    },    
+    "comment_owner": {
+      "type": "number",
+      "required": true
+    },
+    "reply_count": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "vote_up_count": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "vote_down_count": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "message_tags": {
+      "type": [
+        "number"
+      ],
+      "required": true
+    },
+    "status": {
+      "type": "string",
+      "required": true,
+      "default": "approved"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "replies": {
+      "type": "hasMany",
+      "model": "comment_reply",
+      "foreignKey": "parent"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

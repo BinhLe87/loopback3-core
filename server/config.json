@@ -8,7 +8,15 @@
       "handleErrors": false,
       "normalizeHttpPath": false,
       "xml": false,
-      "supportedTypes": ["loopback/json", "application/vnd.api-json", "application/json", "application/javascript", "text/javascript", "json", "*/*"]
+      "supportedTypes": [
+        "loopback/json",
+        "application/vnd.api-json",
+        "application/json",
+        "application/javascript",
+        "text/javascript",
+        "json",
+        "*/*"
+      ]
     },
     "json": {
       "strict": false,

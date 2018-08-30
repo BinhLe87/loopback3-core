@@ -1,0 +1,19 @@
+{
+  "name": "user_setting",
+  "plural": "user_settings",
+  "base": "attribute",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "client"      
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

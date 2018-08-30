@@ -1,0 +1,25 @@
+{
+  "name": "comment_reply",
+  "plural": "comment_replies",
+  "base": "comment",
+  "excludeBaseProperties": ["reply_count"],
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "parent": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "comment": {
+      "type": "belongsTo",
+      "model": "comment",
+      "foreignKey": "parent"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

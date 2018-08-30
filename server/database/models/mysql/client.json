@@ -17,7 +17,19 @@
   },
   "validations": [],
   "relations": {
+    "user_settings": {
+      "type": "hasMany",
+      "model": "user_setting",
+      "foreignKey": "userId"
+    }
   },
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    }
+  ],
   "methods": {}
 }

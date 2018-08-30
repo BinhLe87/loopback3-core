@@ -11,6 +11,7 @@ includes:
   - errors
   - api/item/item
   - api/item/item_type
+  - api/comment/comment
 search: true
 ---
 
@@ -236,6 +237,6 @@ like, nlike	|LIKE / NOT LIKE operators for use with regular expressions. The reg
 regexp		|Regular expression. See examples below.
 
 # Authentication
-![authentication workflow](http://dev01.cc.cloud:49173/public/assets/images/authen_workflow_apc.jpg)
+![authentication workflow](http://dev01.cc.cloud:49176/images/authen_workflow_apc.jpg)
 
 # Versioning

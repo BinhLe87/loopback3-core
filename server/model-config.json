@@ -15,7 +15,8 @@
     ]
   },
   "User": {
-    "dataSource": "cc_mysql"
+    "dataSource": "cc_mysql",
+    "public": false
   },
   "AccessToken": {
     "dataSource": "cc_mysql",
@@ -104,6 +105,18 @@
     "public": false
   },
   "item_type": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
+  "user_setting": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
+  "comment": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
+  "comment_reply": {
     "dataSource": "cc_mysql",
     "public": true
   }
