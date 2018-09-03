@@ -259,24 +259,30 @@ function parseIncludedDataAndAttributes_parseIncludedData(ctx) {
   for (let relation_name of relations) {
     let result_data = ctx.result.__data;
 
+    //determine real model name of relation. Do this way sinece in case of Polymorphic relation,
+    //relation name probably is different with real model name of relation
+    let relation_model_name = _.get(
+      result_data,
+      `${relation_name}.constructor.name`
+    );
+
+    if (_.isEmpty(relation_model_name)) return null;
+
     let relation_data = result_data[relation_name];
 
-    for (let data_item of relation_data) {
-      if (data_item instanceof ctx.req.app.loopback.PersistedModel) {
-        var _attributes = _.clone(data_item.__data);
+    if (relation_data instanceof ctx.req.app.loopback.PersistedModel) {
+      var _attributes = _.clone(relation_data.__data);
 
-        var resource_name = relation_data.itemType.modelName;
-        var _ctx = _generateSubContext(ctx, resource_name, _attributes);
-        var _topMember = parseIdAndType(_ctx);
+      var _ctx = _generateSubContext(ctx, relation_model_name, _attributes);
+      var _topMember = parseIdAndType(_ctx);
 
-        //remove 'id' property from attributes
-        delete _attributes.id;
-        var _included_item = Object.assign({}, _topMember, {
-          attributes: _attributes
-        });
+      //remove 'id' property from attributes
+      delete _attributes.id;
+      var _included_item = Object.assign({}, _topMember, {
+        attributes: _attributes
+      });
 
-        includedData.push(_included_item);
-      }
+      includedData.push(_included_item);
     }
   }
 
