@@ -112,6 +112,10 @@
     "dataSource": "cc_mysql",
     "public": true
   },
+  "user_note": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
   "comment": {
     "dataSource": "cc_mysql",
     "public": true

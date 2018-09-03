@@ -17,9 +17,14 @@
   },
   "validations": [],
   "relations": {
-    "user_settings": {
+    "settings": {
       "type": "hasMany",
       "model": "user_setting",
+      "foreignKey": "userId"
+    },
+    "notes": {
+      "type": "hasMany",
+      "model": "user_note",
       "foreignKey": "userId"
     }
   },
@@ -27,9 +32,11 @@
     {
       "accessType": "*",
       "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW"
+      "principalId": "$owner",
+      "permission": "ALLOW",
+      "property": "*"
     }
   ],
   "methods": {}
+  
 }

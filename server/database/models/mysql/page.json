@@ -33,6 +33,13 @@
       "model": "item",
       "foreignKey": "pageId",
       "through": "page_item"
+    },
+    "user_notes": {
+      "type": "hasMany",
+      "model": "user_note",
+      "polymorphic": {
+        "selector": "noteable"
+      }
     }
   },
   "acls": [],
