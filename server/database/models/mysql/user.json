@@ -1,6 +1,6 @@
 {
-  "name": "client",
-  "plural": "clients",
+  "name": "user",
+  "plural": "users",
   "base": "User",
   "idInjection": true,
   "ttl": -1,

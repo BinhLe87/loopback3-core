@@ -5,17 +5,17 @@ module.exports = function enableAuthentication(server) {
   server.enableAuth();
 
   //create user
-  var { Client, Role, RoleMapping } = server.models;
+  var { user, Role, RoleMapping } = server.models;
 
-  Client.upsertWithWhere(
+  user.upsertWithWhere(
     { email: 'admin@coachingcloud.com' },
     { email: 'admin@coachingcloud.com', password: 'admin@123' },
-    function(err, client) {
+    function(err, user) {
       if (err) {
         return helper.inspect(err);
       }
 
-      if (client) {
+      if (user) {
         Role.upsertWithWhere({ name: 'admin' }, { name: 'admin' }, function(
           err,
           role
@@ -28,7 +28,7 @@ module.exports = function enableAuthentication(server) {
             role.principals.create(
               {
                 principalType: RoleMapping.USER,
-                principalId: client.id
+                principalId: user.id
               },
               function(err, principal) {
                 if (err) return helper.inspect(err);

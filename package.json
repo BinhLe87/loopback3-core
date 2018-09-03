@@ -12,7 +12,7 @@
     "build": "webpack --mode production --config webpack.config.js",
     "start": "NODE_ENV=development node .",
     "start-watch": "NODE_ENV=development nodemon .",
-    "start-staging": "NODE_ENV=staging node .",
+    "start-staging": "DEBUG=* NODE_ENV=staging node .",
     "debug": "NODE_ENV=development nodemon --nolazy --inspect-brk .",
     "posttest": "npm run lint > logs/eslint_log.txt && nsp check",
     "precommit": "lint-staged",

@@ -57,7 +57,7 @@ module.exports = function() {
                   return next(myError);
                 }
 
-                //NOTE: pass 'access_token' back to http request to simulate that client sent this access_token
+                //NOTE: pass 'access_token' back to http request to simulate that user sent this access_token
                 req.body['access_token'] = access_token;
                 return next();
               }

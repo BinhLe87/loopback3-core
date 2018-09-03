@@ -24,7 +24,7 @@
     "relations": {
       "user": {
         "type": "belongsTo",
-        "model": "client",
+        "model": "user",
         "foreignKey": "userId"
       }
     }
@@ -88,11 +88,11 @@
     "dataSource": "cc_mysql",
     "public": false
   },
-  "client": {
+  "user": {
     "dataSource": "cc_mysql",
     "public": true
   },
-  "client_program": {
+  "user_program": {
     "dataSource": "cc_mysql",
     "public": false
   },

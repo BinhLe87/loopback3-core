@@ -16,7 +16,7 @@
   "relations": {
     "user": {
       "type": "belongsTo",
-      "model": "client"
+      "model": "user"
     },
     "noteable": {
       "type": "belongsTo",

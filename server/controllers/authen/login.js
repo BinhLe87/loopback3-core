@@ -4,9 +4,9 @@ module.exports = function login(req, res, next) {
   var email = _.get(req.body, 'email');
   var password = _.get(req.body, 'password');
 
-  var Client = req.app.models.client;
+  var User = req.app.models.user;
 
-  Client.login(
+  User.login(
     {
       email: email,
       password: password
