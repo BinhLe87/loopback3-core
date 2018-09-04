@@ -219,10 +219,18 @@
         <ul class="search-results"></ul>
       <ul id="toc" class="toc-list-h1">
           <li>
+            <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#access-token" class="toc-h2 toc-link" data-title="Access token">Access token</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#introduction" class="toc-h1 toc-link" data-title="Introduction">Introduction</a>
           </li>
           <li>
-            <a href="#data-filters" class="toc-h1 toc-link" data-title="Data filters">Data filters</a>
+            <a href="#filter-search-result" class="toc-h1 toc-link" data-title="Filter search result">Filter search result</a>
               <ul class="toc-list-h2">
                   <li>
                     <a href="#fields-filter" class="toc-h2 toc-link" data-title="Fields filter">Fields filter</a>
@@ -237,15 +245,6 @@
                     <a href="#where-filter" class="toc-h2 toc-link" data-title="Where filter">Where filter</a>
                   </li>
               </ul>
-          </li>
-          <li>
-            <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
-          </li>
-          <li>
-            <a href="#versioning" class="toc-h1 toc-link" data-title="Versioning">Versioning</a>
-          </li>
-          <li>
-            <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
           </li>
           <li>
             <a href="#api-reference" class="toc-h1 toc-link" data-title="API Reference">API Reference</a>
@@ -273,12 +272,20 @@
             <a href="#comment" class="toc-h1 toc-link" data-title="Comment">Comment</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#response" class="toc-h2 toc-link" data-title="Response">Response</a>
-                  </li>
-                  <li>
-                    <a href="#notes" class="toc-h2 toc-link" data-title="Notes:">Notes:</a>
+                    <a href="#list-of-comments" class="toc-h2 toc-link" data-title="List of comments">List of comments</a>
                   </li>
               </ul>
+          </li>
+          <li>
+            <a href="#user" class="toc-h1 toc-link" data-title="User">User</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#list-of-user-notes" class="toc-h2 toc-link" data-title="List of user notes">List of user notes</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
           </li>
       </ul>
         <ul class="toc-footer">
@@ -288,7 +295,11 @@
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h1 id='introduction'>Introduction</h1><h1 id='data-filters'>Data filters</h1>
+        <h1 id='authentication'>Authentication</h1>
+<p><img src="http://dev01.cc.cloud:49173/public/assets/images/authen_workflow_apc.jpg" alt="authentication workflow" /></p>
+<h2 id='access-token'>Access token</h2>
+<p>http://dev01.cc.cloud:49173/docs/#access_token</p>
+<h1 id='introduction'>Introduction</h1><h1 id='filter-search-result'>Filter search result</h1>
 <p>There&#39;re two ways to query Loopback models using either <code>Node API</code> syntax or a <code>REST API</code> syntax that supports a variety of <code>filters</code>. <code>Filters</code> specify criteria for the returned data set. The capabilities and options of the two APIs are the same–the only difference is the syntax used in HTTP requests or in Node function calls. In both cases, LoopBack models return JSON.</p>
 
 <p><strong>REST API syntax: specify filters in the HTTP query string</strong></p>
@@ -550,62 +561,6 @@ Return the items has <code>id</code> field greater than 20</p>
 <tr>
 <td>regexp</td>
 <td>Regular expression. See examples below.</td>
-</tr>
-</tbody></table>
-<h1 id='authentication'>Authentication</h1>
-<p><img src="http://dev01.cc.cloud:49173/public/assets/images/authen_workflow_apc.jpg" alt="authentication workflow" /></p>
-<h1 id='versioning'>Versioning</h1><h1 id='errors'>Errors</h1>
-<p>The APC API uses the following error codes:</p>
-
-<table><thead>
-<tr>
-<th>Error Code</th>
-<th>Meaning</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>400</td>
-<td>Bad Request -- Your request is invalid.</td>
-</tr>
-<tr>
-<td>401</td>
-<td>Unauthorized -- Your API key is wrong.</td>
-</tr>
-<tr>
-<td>403</td>
-<td>Forbidden -- The kitten requested is hidden for administrators only.</td>
-</tr>
-<tr>
-<td>404</td>
-<td>Not Found -- The specified kitten could not be found.</td>
-</tr>
-<tr>
-<td>405</td>
-<td>Method Not Allowed -- You tried to access a kitten with an invalid method.</td>
-</tr>
-<tr>
-<td>406</td>
-<td>Not Acceptable -- You requested a format that isn&#39;t json.</td>
-</tr>
-<tr>
-<td>410</td>
-<td>Gone -- The kitten requested has been removed from our servers.</td>
-</tr>
-<tr>
-<td>418</td>
-<td>I&#39;m a teapot.</td>
-</tr>
-<tr>
-<td>429</td>
-<td>Too Many Requests -- You&#39;re requesting too many kittens! Slow down!</td>
-</tr>
-<tr>
-<td>500</td>
-<td>Internal Server Error -- We had a problem with our server. Try again later.</td>
-</tr>
-<tr>
-<td>503</td>
-<td>Service Unavailable -- We&#39;re temporarily offline for maintenance. Please try again later.</td>
 </tr>
 </tbody></table>
 <h1 id='api-reference'>API Reference</h1><h1 id='item'>Item</h1>
@@ -980,7 +935,7 @@ Return the items has <code>id</code> field greater than 20</p>
 <p><strong>GET</strong> <code>http://localhost:8080/api/item_types</code></p>
 <h3 id='request-body'>Request body</h3><h3 id='response'>Response</h3>
 <p>If successful, return an object contains <code>data</code> property is an array of item types.</p>
-<h1 id='comment'>Comment</h1><h3 id='response'>Response</h3>
+<h1 id='comment'>Comment</h1><h2 id='list-of-comments'>List of comments</h2><h3 id='response'>Response</h3>
 <p>If successful, returns a object containts all information of a comment</p>
 
 <table><thead>
@@ -1042,6 +997,193 @@ Return the items has <code>id</code> field greater than 20</p>
 <ul>
 <li><a href="https://developers.facebook.com/docs/graph-api/reference/v3.1/comment">facebook comment</a></li>
 </ul>
+<h1 id='user'>User</h1><h2 id='list-of-user-notes'>List of user notes</h2>
+<p>Return a list notes belong to a specific user.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/users/1/notes?access_token=Dz3EuG3lAHG4yina2jPhdknjFfxfebeow6g88ekzrLpCrMGaNG9e3HjMBrgWGBKf'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/users/1/notes?access_token=Dz3EuG3lAHG4yina2jPhdknjFfxfebeow6g88ekzrLpCrMGaNG9e3HjMBrgWGBKf"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"total-pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"limit"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"skip"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user_note"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user note 1"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"userId"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"noteableId"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"noteableType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"page"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="s2">"relationships"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                        </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/1?filter[include][user]"</span><span class="p">,</span><span class="w">
+                        </span><span class="s2">"related"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/1/user"</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="s2">"noteable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                        </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/1?filter[include][noteable]"</span><span class="p">,</span><span class="w">
+                        </span><span class="s2">"related"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/1/noteable"</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">        
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user_note"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"note 3 - workbook"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"userId"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"noteableId"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"noteableType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"workbook"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="s2">"relationships"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                        </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/3?filter[include][user]"</span><span class="p">,</span><span class="w">
+                        </span><span class="s2">"related"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/3/user"</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="s2">"noteable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                        </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/3?filter[include][noteable]"</span><span class="p">,</span><span class="w">
+                        </span><span class="s2">"related"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/3/noteable"</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="s2">"schema"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"content"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"required"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"generated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"updateOnly"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"userId"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+        </span><span class="s2">"noteableId"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+        </span><span class="s2">"noteableType"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"index"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/clients/{client_id}/notes</code></p>
+<h3 id='header-parameters'>Header parameters</h3><h3 id='request-query-string'>Request query string</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>required</td>
+<td></td>
+<td>the access_token. To get an access token, you can make an access token API call, read <a href="http://dev01.cc.cloud:49173/docs/#access_token">here</a></td>
+</tr>
+<tr>
+<td>filter[include]=noteable</td>
+<td>string</td>
+<td>optional</td>
+<td></td>
+<td>To get response data that contains source place info where the note was noted on - it may be a page/a workbook or somewhere like that. You can use this info for navigating to source place on purpose.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains <code>data</code> property is an array of notes belong to a specific user.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>In case you input <code>filter[include]=noteable</code> in request query string, in <code>data</code> response, the <code>type</code> property of each element in <code>included</code> array indicate type of source place, it can be a <code>page</code>/<code>workbook</code>...</td>
+</tr>
+</tbody></table>
+<h1 id='errors'>Errors</h1>
+<p>The APC API uses the following error codes:</p>
+
+<table><thead>
+<tr>
+<th>Error Code</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>400</td>
+<td>Bad Request -- Your request is invalid.</td>
+</tr>
+<tr>
+<td>401</td>
+<td>Unauthorized -- Your API key is wrong.</td>
+</tr>
+<tr>
+<td>403</td>
+<td>Forbidden -- The kitten requested is hidden for administrators only.</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Not Found -- The specified kitten could not be found.</td>
+</tr>
+<tr>
+<td>405</td>
+<td>Method Not Allowed -- You tried to access a kitten with an invalid method.</td>
+</tr>
+<tr>
+<td>406</td>
+<td>Not Acceptable -- You requested a format that isn&#39;t json.</td>
+</tr>
+<tr>
+<td>410</td>
+<td>Gone -- The kitten requested has been removed from our servers.</td>
+</tr>
+<tr>
+<td>418</td>
+<td>I&#39;m a teapot.</td>
+</tr>
+<tr>
+<td>429</td>
+<td>Too Many Requests -- You&#39;re requesting too many kittens! Slow down!</td>
+</tr>
+<tr>
+<td>500</td>
+<td>Internal Server Error -- We had a problem with our server. Try again later.</td>
+</tr>
+<tr>
+<td>503</td>
+<td>Service Unavailable -- We&#39;re temporarily offline for maintenance. Please try again later.</td>
+</tr>
+</tbody></table>
 
       </div>
       <div class="dark-box">
