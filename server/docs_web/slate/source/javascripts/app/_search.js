@@ -1,7 +1,7 @@
 //= require ../lib/_lunr
 //= require ../lib/_jquery
 //= require ../lib/_jquery.highlight
-;(function () {
+(function() {
   'use strict';
 
   var content, searchResults;
@@ -33,7 +33,7 @@
     determineSearchDelay();
   }
   function determineSearchDelay() {
-    if(index.tokenStore.length>5000) {
+    if (index.tokenStore.length > 5000) {
       searchDelay = 300;
     }
   }
@@ -42,21 +42,20 @@
     content = $('.content');
     searchResults = $('.search-results');
 
-    $('#input-search').on('keyup',function(e) {
-      var wait = function() {
-        return function(executingFunction, waitTime){
+    $('#input-search').on('keyup', function(e) {
+      var wait = (function() {
+        return function(executingFunction, waitTime) {
           clearTimeout(timeoutHandle);
           timeoutHandle = setTimeout(executingFunction, waitTime);
         };
-      }();
-      wait(function(){
+      })();
+      wait(function() {
         search(e);
-      }, searchDelay );
+      }, searchDelay);
     });
   }
 
   function search(event) {
-
     var searchInput = $('#input-search')[0];
 
     unhighlight();
@@ -72,14 +71,18 @@
 
       if (results.length) {
         searchResults.empty();
-        $.each(results, function (index, result) {
+        $.each(results, function(index, result) {
           var elem = document.getElementById(result.ref);
-          searchResults.append("<li><a href='#" + result.ref + "'>" + $(elem).text() + "</a></li>");
+          searchResults.append(
+            "<li><a href='#" + result.ref + "'>" + $(elem).text() + '</a></li>'
+          );
         });
         highlight.call(searchInput);
       } else {
         searchResults.html('<li></li>');
-        $('.search-results li').text('No Results Found for "' + searchInput.value + '"');
+        $('.search-results li').text(
+          'No Results Found for "' + searchInput.value + '"'
+        );
       }
     } else {
       unhighlight();
@@ -95,4 +98,3 @@
     content.unhighlight(highlightOpts);
   }
 })();
-

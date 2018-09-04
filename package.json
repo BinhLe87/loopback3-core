@@ -13,7 +13,7 @@
     "start": "NODE_ENV=development node .",
     "start-watch": "NODE_ENV=development nodemon .",
     "start-staging": "DEBUG=* NODE_ENV=staging node .",
-    "debug": "NODE_ENV=development nodemon --nolazy --inspect-brk .",
+    "debug": "DEBUG=* NODE_ENV=development nodemon --nolazy --inspect-brk .",
     "posttest": "npm run lint > logs/eslint_log.txt && nsp check",
     "precommit": "lint-staged",
     "format": "prettier --ignore-path .eslintignore --write '**/*.js'",
@@ -23,8 +23,7 @@
     "linters": {
       "*.md": [
         "npm run api-docs",
-        "npm run format",
-        "git add"
+        "git add server/public/api_docs/*"
       ],
       "*.js": [
         "npm run format",
