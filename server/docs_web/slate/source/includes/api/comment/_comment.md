@@ -1,5 +1,3 @@
-#Comment
-
 ## List of comments
 
 ### Response

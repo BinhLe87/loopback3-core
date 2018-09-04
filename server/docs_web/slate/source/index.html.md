@@ -12,6 +12,7 @@ includes:
   - api/intro/loopback_filter
   - api/item/item
   - api/item/item_type
+  - api/comment/comment_backend
   - api/comment/comment
   - api/user/user_note
   - errors
