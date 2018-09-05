@@ -7,8 +7,9 @@ const jsonAPIFormatterUtil = require('./jsonApiFormatter.util');
 const loopback_util = require('../helpers/loopbackUtil');
 
 const RESOURCE_TYPE = {
-  object: 'object',
-  collection: 'collection'
+  single: 'single',
+  collection: 'collection',
+  object: 'object' //not model, just raw data object as error object, status object
 };
 
 module.exports = function(app) {
@@ -53,7 +54,9 @@ function determineSingleOrCollectionResource(ctx) {
   var result = ctx.result;
   if (Array.isArray(result)) {
     return RESOURCE_TYPE.collection;
-  } else if (typeof result == 'object') {
+  } else if (typeof result == 'object' && ctx.resultType != 'object') {
+    return RESOURCE_TYPE.single;
+  } else if (typeof result == 'object' && ctx.resultType == 'object') {
     return RESOURCE_TYPE.object;
   }
 
@@ -67,13 +70,17 @@ async function parseResouceFactory(ctx) {
   var result = {};
 
   switch (resourceType) {
-    case RESOURCE_TYPE.object:
+    case RESOURCE_TYPE.single:
       result = parseSingleResource(ctx);
       break;
 
     case RESOURCE_TYPE.collection:
       result = await parseArrayOfResources(ctx);
       break;
+
+    case RESOURCE_TYPE.object: //this may be error object or status object return from loopback
+      result = ctx.result; //process nothing, preserve the original value
+      return result;
 
     default:
       throw new Error(
@@ -108,7 +115,7 @@ async function parseResouceFactory(ctx) {
 
 function parseSingleResource(ctx) {
   var resourceType = determineSingleOrCollectionResource(ctx);
-  if (resourceType != RESOURCE_TYPE.object) {
+  if (resourceType != RESOURCE_TYPE.single) {
     throw new TypeError(
       `function parseSingleResource() requires parameter as single object, but got ${resourceType}`
     );

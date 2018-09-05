@@ -78,6 +78,13 @@ class ErrorLogger {
     winston.error(error_message);
   }
 
+  //alias of 'error' function
+  err(error = {}, classNameOccurError) {
+    var error_message = this.generateErrorMessage(error, classNameOccurError);
+
+    winston.error(error_message);
+  }
+
   generateErrorMessage(error = {}, classNameOccurError) {
     var error_message =
       (_.isEmpty(classNameOccurError)
