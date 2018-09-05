@@ -2,30 +2,23 @@
 
 const debug = require('debug')('comment.js');
 const app = require('../../../server');
+const CommentUtil = require('./comment.util');
 
 module.exports = function(Comment) {
   //Validation 1: commment_owner must exists
-  Comment.observe('before save', (ctx, next) => {
+  Comment.observe('before save', async function(ctx) {
     var instance = ctx.instance || ctx.currentInstance;
 
     if (instance) {
       //check whether comment owner exists
-      var comment_owner = instance.comment_owner;
+      var comment_owner_id = instance.comment_owner;
 
-      if (_.isUndefined(comment_owner))
-        return next(new Error('comment_owner was not specified'));
-
-      var User = app.models.user;
-      User.findById(comment_owner, (err, found_user) => {
-        if (err) return next(err);
-
-        if (!found_user)
-          return next(
-            new Error(`Not found comment_owner has ID is ${comment_owner}`)
-          );
-
-        return next();
-      });
+      let isCommentOwnerExists = await CommentUtil.ensureCommentOwnerExists(
+        comment_owner_id
+      );
+      if (isCommentOwnerExists) {
+        return;
+      }
     }
   });
 

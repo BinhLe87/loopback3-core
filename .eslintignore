@@ -36,6 +36,7 @@ upload
 #vendors third-parties that was customized
 server/vendors
 server/docs_web
+server/public/api_docs
 
 #Just for local environment
 client

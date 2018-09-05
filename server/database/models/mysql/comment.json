@@ -34,8 +34,7 @@
       "type": [
         "number"
       ],
-      "default": [],
-      "required": true
+      "default": []
     },
     "status": {
       "type": "string",
