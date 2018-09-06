@@ -25,5 +25,66 @@ async function ensureParentCommentExists(comment_id) {
 
   return true;
 }
+/**
+ * adjust reply count runs asynchronously
+ *
+ * @param {*} parent_comment_id
+ * @param {integer} value_will_adjust if positive value means increasing reply_count, otherwise means decreasing reply_count
+ */
+async function adjustReplyCountInParentComment(
+  parent_comment_id,
+  value_will_adjust
+) {
+  if (_.isUndefined(parent_comment_id)) {
+    throw new Error('parent commend ID was not specified');
+  }
+
+  const Comment = app.models.comment;
+
+  Comment.beginTransaction(
+    {
+      isolationLevel: 'SERIALIZABLE'
+    },
+    function(err, tx) {
+      Comment.findById(
+        parent_comment_id,
+        { transaction: tx },
+        (err, parent_comment) => {
+          if (parent_comment) {
+            //treat empty value as zero counter
+            let cur_reply_count = _.isNaN(parent_comment.reply_count)
+              ? 0
+              : parent_comment.reply_count;
+
+            parent_comment.updateAttributes(
+              { reply_count: cur_reply_count + value_will_adjust },
+              { transaction: tx },
+              function(update_err, new_parent_comment) {
+                if (update_err) {
+                  logger.error(
+                    `Error adjusting reply_count by ${value_will_adjust}`,
+                    __filename
+                  );
+                  logger.error(update_err, __filename);
+                }
+
+                tx.commit(function(commit_err) {
+                  if (commit_err) {
+                    logger.error(
+                      `Error committing transaction after adjusting reply_count by ${value_will_adjust}`,
+                      __filename
+                    );
+                    logger.error(commit_err, __filename);
+                  }
+                });
+              }
+            );
+          }
+        }
+      );
+    }
+  );
+}
 
 exports.ensureParentCommentExists = ensureParentCommentExists;
+exports.adjustReplyCountInParentComment = adjustReplyCountInParentComment;

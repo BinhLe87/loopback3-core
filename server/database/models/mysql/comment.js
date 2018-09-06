@@ -7,6 +7,8 @@ const CommentUtil = require('./comment.util');
 module.exports = function(Comment) {
   //Validation 1: commment_owner must exists
   Comment.observe('before save', async function(ctx) {
+    if (_isDerivedModel(ctx)) return;
+
     var instance = ctx.instance || ctx.currentInstance;
 
     if (instance) {
@@ -23,6 +25,8 @@ module.exports = function(Comment) {
   });
 
   Comment.observe('after delete', async function(ctx) {
+    if (_isDerivedModel(ctx)) return;
+
     var instance = ctx.instance || ctx.currentInstance;
     var deleted_comment_id = ctx.where.id;
     if (!_.isUndefined(deleted_comment_id)) {
@@ -45,3 +49,16 @@ module.exports = function(Comment) {
     }
   });
 };
+/**
+ * Check whether the model in current context isn't base `comment` model, intended to distinguish with derived class as comment_reply
+ *
+ * @param {*} ctx
+ * @returns true if this is derived model of Comment model
+ */
+function _isDerivedModel(ctx) {
+  var actualModelName = _.get(ctx, 'Model.name');
+
+  if (actualModelName !== 'comment') return true;
+
+  return false;
+}
