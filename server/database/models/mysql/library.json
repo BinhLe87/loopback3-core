@@ -32,6 +32,14 @@
       "model": "program",
       "foreignKey": "libraryId",
       "through": "library_program"
+    },
+    "workbooks": {
+      "type": "hasMany",
+      "model": "library_workbook",
+      "polymorphic": {
+        "foreignKey": "workbook_owner_id",
+        "discriminator": "workbook_owner_type"
+      }
     }
   },
   "acls": [],

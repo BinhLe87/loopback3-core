@@ -60,7 +60,7 @@
     "dataSource": "cc_mysql",
     "public": false
   },
-  "program_workbook": {
+  "library_workbook": {
     "dataSource": "cc_mysql",
     "public": false
   },

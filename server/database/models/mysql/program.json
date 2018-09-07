@@ -25,9 +25,11 @@
     },
     "workbooks": {
       "type": "hasMany",
-      "model": "workbook",
-      "foreignKey": "programId",
-      "through": "program_workbook"
+      "model": "library_workbook",
+      "polymorphic": {
+        "foreignKey": "workbook_owner_id",
+        "discriminator": "workbook_owner_type"
+      }
     }
   },
   "acls": [
@@ -35,14 +37,7 @@
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$everyone",
-      "permission": "DENY"
-    },
-    {
-      "accessType": "*",
-      "permission": "ALLOW",
-      "principalType": "ROLE",
-      "principalId": "admin",
-      "property": "*"
+      "permission": "ALLOW"
     }
   ],
   "methods": {}
