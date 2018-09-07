@@ -14,13 +14,12 @@ module.exports = function(Comment) {
     if (instance) {
       //check whether comment owner exists
       var comment_owner_id = instance.comment_owner;
+      var tagged_userId_array = instance.message_tags;
 
-      let isCommentOwnerExists = await CommentUtil.ensureCommentOwnerExists(
-        comment_owner_id
-      );
-      if (isCommentOwnerExists) {
-        return;
-      }
+      await Promise.all([
+        CommentUtil.ensureCommentOwnerExists(comment_owner_id),
+        CommentUtil.ensureTaggedUsersExists(tagged_userId_array)
+      ]);
     }
   });
 

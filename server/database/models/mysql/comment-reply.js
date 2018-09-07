@@ -14,10 +14,12 @@ module.exports = function(CommentReply) {
       //check whether comment owner exists
       var comment_owner_id = instance.comment_owner;
       var parent_comment_id = instance.parent;
+      var tagged_userId_array = instance.message_tags;
 
       await Promise.all([
         CommentUtil.ensureCommentOwnerExists(comment_owner_id),
-        CommentReplyUtil.ensureParentCommentExists(parent_comment_id)
+        CommentReplyUtil.ensureParentCommentExists(parent_comment_id),
+        CommentUtil.ensureTaggedUsersExists(tagged_userId_array)
       ]);
     }
 

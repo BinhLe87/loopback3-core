@@ -27,4 +27,37 @@ async function ensureCommentOwnerExists(comment_owner_id) {
   return true;
 }
 
+async function ensureTaggedUsersExists(tagged_userId_array) {
+  if (_.isUndefined(tagged_userId_array)) return;
+
+  if (!Array.isArray(tagged_userId_array)) {
+    throw new Error(
+      `message_tags must be an array, but got ${typeof tagged_userId_array}`
+    );
+  }
+
+  var User = app.models.user;
+  var filter_conds = tagged_userId_array.map(user_id => {
+    id: user_id;
+  });
+  var filter_conds_string = filter_conds.join(',');
+
+  var findByIDsPromise = Promise.promisify(User.find).bind(User);
+
+  var found_users = await findByIDsPromise({ where: { or: filter_conds } });
+  var found_user_ids = found_users.map(user => user.id);
+  var not_found_user_ids = _.difference(tagged_userId_array, found_user_ids);
+
+  if (not_found_user_ids.length > 0) {
+    throw new Error(
+      `Not found tagged users have ID are ` +
+        not_found_user_ids.join(',') +
+        ' (user_id seperated by comma)'
+    );
+  }
+
+  return;
+}
+
 exports.ensureCommentOwnerExists = ensureCommentOwnerExists;
+exports.ensureTaggedUsersExists = ensureTaggedUsersExists;
