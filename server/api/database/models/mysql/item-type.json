@@ -36,6 +36,11 @@
        "model": "attribute",
        "foreignKey": "item_typeId",
        "through": "item_attribute_template"
+     },
+     "items": {
+      "type": "hasMany",
+      "model": "item",
+      "foreignKey": "item_typeId"
      }
   },
   "acls": [],

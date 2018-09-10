@@ -1,5 +1,7 @@
 'use strict';
 
+//Inspired by: https://github.com/digitalsadhu/loopback-component-jsonapi/tree/master/lib
+
 const path = require('path');
 const Promise = require('bluebird');
 const URI = require('urijs');
@@ -54,9 +56,15 @@ function determineSingleOrCollectionResource(ctx) {
   var result = ctx.result;
   if (Array.isArray(result)) {
     return RESOURCE_TYPE.collection;
-  } else if (typeof result == 'object' && ctx.resultType != 'object') {
+  } else if (
+    typeof result == 'object' &&
+    (ctx.resultType != 'object' && !_.isUndefined(ctx.resultType))
+  ) {
     return RESOURCE_TYPE.single;
-  } else if (typeof result == 'object' && ctx.resultType == 'object') {
+  } else if (
+    typeof result == 'object' &&
+    (ctx.resultType == 'object' || _.isUndefined(ctx.resultType))
+  ) {
     return RESOURCE_TYPE.object;
   }
 
@@ -148,7 +156,7 @@ async function parseArrayOfResources(ctx) {
 
   //meta info
   var count = await getCountObjects(ctx);
-  var total_pages = 1;
+  var total_pages;
   var limit = null;
   if (!_.isUndefined(count)) {
     //identify whether in pagination mode
@@ -156,9 +164,13 @@ async function parseArrayOfResources(ctx) {
     limit = _.toNumber(origin_limit);
     if (!_.isNaN(limit)) {
       total_pages = Math.ceil(count / limit);
+    } else {
+      //if limit is not specified means return all items in one page
+      total_pages = 1;
     }
   } else {
     count = null;
+    total_pages = null;
   }
   _.set(result, 'meta.count', count);
   _.set(result, 'meta.total-pages', total_pages);
@@ -592,18 +604,54 @@ function __replaceURLWithPage(url, desired_page, skip_regx, skip_RestAPI_regx) {
  * @returns {number|undefined} if success, return the real number; otherwise return undefined.
  */
 async function getCountObjects(ctx) {
-  var primaryResource = parsePrimaryResourceName(ctx);
-  var Model = ctx.req.app.loopback.getModel(primaryResource);
-
-  var whereFilters = _.get(ctx, 'args.filter.where', {});
-  var countPromise = Promise.promisify(Model.count).bind(Model);
-  try {
-    return await countPromise(whereFilters);
-  } catch (e) {
-    logger.error(
-      `Can not count the total number of objects for ${getSelfFullUrl(ctx)}`
+  /**
+   * check whether it is a sort of included query and parse if possible
+   *
+   * @param {*} ctx
+    * @returns {
+    object|null
+  } if this is sort of an include query, returns an object {
+    primary_resource, included_resource}, otherwise return null
+   */
+  function __checkAndParseQueryIncluded(ctx) {
+    let remote_method_get_included_model_regx = /(.*).prototype.__get__(.*)/;
+    let result_match = remote_method_get_included_model_regx.exec(
+      ctx.methodString
     );
-    logger.error(e);
+
+    if (_.isNull(result_match)) return null;
+
+    let primary_resource = result_match[1];
+    let included_resource = result_match[2];
+
+    return {
+      primary_resource: primary_resource,
+      included_resource: included_resource
+    };
+  }
+
+  var parsedQueryIncluded = __checkAndParseQueryIncluded(ctx);
+
+  if (_.isNull(parsedQueryIncluded)) {
+    //it's not included query
+
+    var primaryResource = parsePrimaryResourceName(ctx);
+    var Model = ctx.req.app.loopback.getModel(primaryResource);
+
+    var whereFilters = _.get(ctx, 'args.filter.where', {});
+    var countPromise = Promise.promisify(Model.count).bind(Model);
+    try {
+      return await countPromise(whereFilters);
+    } catch (e) {
+      logger.error(
+        `Can not count the total number of objects for ${getSelfFullUrl(ctx)}`
+      );
+      logger.error(e);
+      return undefined;
+    }
+  } else {
+    //included query
+
     return undefined;
   }
 }
