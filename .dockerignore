@@ -1,1 +1,5 @@
 server/docs_web
+**/logs
+docs
+demo
+**/node_modules

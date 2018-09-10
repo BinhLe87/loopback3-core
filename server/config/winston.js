@@ -4,7 +4,7 @@ var winston = require('winston');
 const joi = require('joi');
 const path = require('path');
 const DailyRotateFile = require('winston-daily-rotate-file');
-var fs = require('fs');
+var fs = require('fs-extra');
 const util = require('util');
 
 var envVarsSchema = joi
@@ -24,7 +24,7 @@ var envVarsSchema = joi
       .falsy('FALSE')
       .falsy('false')
       .default(true),
-    LOGS_DIR: joi.string().default('./logs/app')
+    LOGS_DIR: joi.string().default(`../../logs/${process.env.SERVICE_NAME}`)
   })
   .unknown();
 
@@ -41,7 +41,7 @@ if (error) {
 //------------LOG OPTIONS
 if (!fs.existsSync(envVars.LOGS_DIR)) {
   // Create the directory if it does not exist
-  fs.mkdirSync(envVars.LOGS_DIR);
+  fs.mkdirsSync(envVars.LOGS_DIR);
 }
 
 const consoleFormat = winston.format.combine(
@@ -90,17 +90,17 @@ var logger = winston.createLogger({
   transports: [
     new DailyRotateFile({
       dirname: envVars.LOGS_DIR,
-      filename: 'error.log',
+      filename: 'error.%DATE%.log',
       level: 'error'
     }),
     new DailyRotateFile({
       dirname: envVars.LOGS_DIR,
-      filename: 'silly.log',
+      filename: 'silly.%DATE%.log',
       level: 'silly'
     }),
     new DailyRotateFile({
       dirname: envVars.LOGS_DIR,
-      filename: 'combined.log',
+      filename: 'combined.%DATE%.log',
       level: envVars.LOGGER_LEVEL
     }),
     new winston.transports.File({

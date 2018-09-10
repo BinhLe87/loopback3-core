@@ -7,7 +7,7 @@ const uploadItem = require('../../../controllers/item/uploadItem');
 const Promise = require('bluebird');
 const loopback_util = require('../../../helpers/loopbackUtil');
 const URI = require('urijs');
-const { ImageConverter } = require('../../../../utils/imageConverter');
+const { ImageConverter } = require('../../../helpers/imageConverter');
 
 //determine the path of static files
 const fs = require('fs');

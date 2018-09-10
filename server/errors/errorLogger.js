@@ -1,5 +1,5 @@
 'use strict';
-var winston = require('../config/components/winston');
+var winston = require('../config/winston');
 var path = require('path');
 var _ = require('lodash');
 var util = require('util');

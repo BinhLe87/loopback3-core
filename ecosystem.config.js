@@ -2,9 +2,12 @@ module.exports = {
   apps: [
     {
       name: 'api-server',
-      script: 'server/server.js',
+      script: 'server/api/server.js',
       env: {
         NODE_ENV: 'staging'
+      },
+      env_development: {
+        NODE_ENV: 'development'
       },
       env_production: {
         NODE_ENV: 'production'
@@ -15,7 +18,7 @@ module.exports = {
     {
       name: 'redis-server',
       interpreter: '/bin/sh',
-      script: './start-redis.sh',
+      script: 'script/start-redis.sh',
       out_file: 'logs/redis.log'
     }
   ]

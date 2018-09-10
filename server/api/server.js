@@ -2,7 +2,7 @@
 
 const path = require('path');
 const dotenv = require('dotenv').config({
-  path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`)
+  path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`)
 });
 
 //ensure mandatory parameters must be defined before lauching app
@@ -14,14 +14,12 @@ const util = require('util');
 const _ = require('lodash');
 
 var app = (module.exports = loopback());
-var { logger } = require('../server/errors/errorLogger');
+var { logger } = require('../errors/errorLogger');
 //Set global instance variables
 global.logger = logger;
 
 const { exec } = require('child_process');
-const {
-  formatMessage
-} = require('../server/config/components/globalize/globalize');
+const { formatMessage } = require('../config/components/globalize/globalize');
 global.__i18n = global.__locale = formatMessage;
 global._ = _;
 _.set(global, 'helper.inspect', require('./helpers/printHelper').inspect);

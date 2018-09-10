@@ -1,0 +1,91 @@
+{
+  "name": "apc",
+  "version": "1.0.0",
+  "main": "server.js",
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "clean": "rimraf build",
+    "prebuild": "npm run clean",
+    "build": "webpack --mode production --config webpack.config.js",
+    "start": "NODE_ENV=development node .",
+    "start-watch": "NODE_ENV=development nodemon .",
+    "start-staging": "DEBUG=* NODE_ENV=staging node .",
+    "debug": "DEBUG=* NODE_ENV=development nodemon --nolazy --inspect-brk .",
+    "posttest": "npm run lint > logs/eslint_log.txt && nsp check",
+    "precommit": "lint-staged",
+    "format": "prettier --ignore-path .eslintignore --write '**/*.js'",
+    "api-docs": "cd $PWD/server/docs_web/slate && middleman build --build-dir ../../public/api_docs"
+  },
+  "lint-staged": {
+    "linters": {
+      "*.md": [
+        "npm run api-docs",
+        "git add server/public/api_docs/*"
+      ],
+      "*.js": [
+        "npm run format",
+        "git add"
+      ]
+    }
+  },
+  "config": {
+    "debug_api": "aaa"
+  },
+  "dependencies": {
+    "@sindresorhus/slugify": "^0.3.0",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.3",
+    "compression": "^1.0.3",
+    "cors": "^2.5.2",
+    "cross-env": "^5.2.0",
+    "debug": "^3.1.0",
+    "dotenv": "^6.0.0",
+    "fs-extra": "^6.0.1",
+    "helmet": "^3.10.0",
+    "http-errors": "^1.6.3",
+    "image-size": "^0.6.3",
+    "include-all": "^4.0.3",
+    "joi": "^13.4.0",
+    "lodash": "^4.17.10",
+    "loopback": "^3.22.0",
+    "loopback-boot": "^2.6.5",
+    "loopback-component-explorer": "^6.0.0",
+    "loopback-component-visualizer": "^1.2.1",
+    "loopback-connector-mysql": "^2.4.1",
+    "loopback-ds-timestamp-mixin": "^3.4.1",
+    "moment": "^2.22.2",
+    "multer": "^1.3.1",
+    "request": "^2.88.0",
+    "semver": "^5.5.0",
+    "serve-favicon": "^2.0.1",
+    "sharp": "^0.20.5",
+    "strong-error-handler": "^2.0.0",
+    "urijs": "^1.19.1",
+    "winston": "^3.0.0",
+    "winston-daily-rotate-file": "3.3.0"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^4.5.2",
+    "eslint": "^3.17.1",
+    "eslint-config-loopback": "^8.0.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-prettier": "^2.6.2",
+    "faker": "^4.1.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.2",
+    "nsp": "^2.1.0",
+    "prettier": "^1.14.0",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0",
+    "webpack-shell-plugin": "^0.5.0"
+  },
+  "repository": {
+    "type": "",
+    "url": ""
+  },
+  "license": "UNLICENSED",
+  "description": "cc-automated-push-content"
+}

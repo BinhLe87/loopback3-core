@@ -1,7 +1,8 @@
 'use strict';
 
 const debug = require('debug')('comment.js');
-const app = require('../../../server');
+const path = require('path');
+const app = require(path.join(__dirname, '../../../server'));
 const CommentUtil = require('./comment.util');
 
 module.exports = function(Comment) {
