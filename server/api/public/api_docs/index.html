@@ -258,6 +258,9 @@
                   <li>
                     <a href="#upload-item" class="toc-h2 toc-link" data-title="Upload item">Upload item</a>
                   </li>
+                  <li>
+                    <a href="#add-an-item-into-a-page" class="toc-h2 toc-link" data-title="Add an item into a page">Add an item into a page</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -870,6 +873,49 @@ Return the items has <code>id</code> field greater than 20</p>
 <td>string</td>
 <td>image link for low dimension</td>
 </tr>
+</tbody></table>
+
+<hr>
+<h2 id='add-an-item-into-a-page'>Add an item into a page</h2>
+<p>Add an existing item into an existing page.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code></code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request-3'>HTTP Request</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/page_items</code></p>
+<h3 id='header-parameters-3'>Header parameters</h3><h3 id='request-body-3'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>display_order_id</td>
+<td>number</td>
+<td>optional</td>
+<td>auto increment</td>
+<td>The appearance order of a item on a page. If not specified, its value auto sequentially increments by 1. Notice that this value must be unique in a same page.</td>
+</tr>
+</tbody></table>
+<h3 id='response-3'>Response</h3>
+<p>If successful, return an object reflect the relation between a item and a page.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
 </tbody></table>
 <h1 id='item-type'>Item type</h1><h2 id='list-item-types'>List item types</h2>
 <p>Return a list of item types.</p>

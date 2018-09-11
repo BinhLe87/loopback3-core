@@ -38,6 +38,3 @@ upload
 server/vendors
 # server/docs_web/*
 # !*/**/*.md
-
-
-.eslintignore
