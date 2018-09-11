@@ -266,3 +266,35 @@ If successful, returns a object contains links for 3 dimension verions with orde
 high_url | string | image link for highest dimension
 medium_url | string | image link for medium dimension
 low_url | string | image link for low dimension
+
+------------
+## Add an item into a page
+Add an existing item into an existing page.
+
+> Example Request
+
+```shell
+```
+
+> Example Response
+
+```json
+```
+
+### HTTP Request
+**POST** `http://localhost:8080/api/page_items`
+
+### Header parameters
+
+### Request body
+
+| Parameter       | Data type | Required? | Default | Description |
+| --------------- | --------- | --------- | ------- | ----------- |
+|display_order_id | number | optional | auto increment | The appearance order of a item on a page. If not specified, its value auto sequentially increments by 1. Notice that this value must be unique in a same page.
+
+
+### Response
+If successful, return an object reflect the relation between a item and a page
+
+| Parameter | Data type | Description |
+| --------- | --------- | --------- |

@@ -23,7 +23,7 @@
     "linters": {
       "*.md": [
         "npm run api-docs",
-        "git add server/public/api_docs/*"
+        "git add public/api_docs/*"
       ],
       "*.js": [
         "npm run format",

@@ -85,7 +85,7 @@
   },
   "page_item": {
     "dataSource": "cc_mysql",
-    "public": false
+    "public": true
   },
   "user": {
     "dataSource": "cc_mysql",

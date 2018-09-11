@@ -19,7 +19,16 @@
   "mixins": {
     "TimeStamp": true
   },
-  "properties": {},
+  "properties": {
+    "display_order_id": {
+      "type": "number",
+      "required": true,
+      "default" : 0
+    }
+  },
+  "scope": {
+    "order": "display_order_id ASC"
+  },
   "validations": [],
   "relations": {
     "page": {
