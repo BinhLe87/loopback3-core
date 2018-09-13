@@ -26,6 +26,12 @@
       "type": "hasMany",
       "model": "user_note",
       "foreignKey": "userId"
+    },
+    "workbook_shares": {
+      "type": "hasMany",
+      "model": "workbook",
+      "foreignKey": "userId",
+      "through": "workbook_share"
     }
   },
   "acls": [

@@ -15,6 +15,7 @@ includes:
   - api/comment/comment_backend
   - api/comment/comment
   - api/user/user_note
+  - api/user/user_share_workbook
   - errors
 search: true
 ---

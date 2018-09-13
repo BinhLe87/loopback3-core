@@ -290,7 +290,7 @@ Add an existing item into an existing page.
 
 | Parameter       | Data type | Required? | Default | Description |
 | --------------- | --------- | --------- | ------- | ----------- |
-|display_order_id | number | optional | auto increment | The appearance order of a item on a page. If not specified, its value auto sequentially increments by 1. Notice that this value must be unique in a same page.
+|display_order_id | number | optional | auto increment | The appearance order of an item on a page. If not specified, its value auto sequentially increments by 1. Notice that this value must be unique in a same page.
 
 
 ### Response

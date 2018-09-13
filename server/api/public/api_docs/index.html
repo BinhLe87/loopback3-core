@@ -285,6 +285,9 @@
                   <li>
                     <a href="#list-of-user-notes" class="toc-h2 toc-link" data-title="List of user notes">List of user notes</a>
                   </li>
+                  <li>
+                    <a href="#share-workbook" class="toc-h2 toc-link" data-title="Share workbook">Share workbook</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -903,7 +906,7 @@ Return the items has <code>id</code> field greater than 20</p>
 <td>number</td>
 <td>optional</td>
 <td>auto increment</td>
-<td>The appearance order of a item on a page. If not specified, its value auto sequentially increments by 1. Notice that this value must be unique in a same page.</td>
+<td>The appearance order of an item on a page. If not specified, its value auto sequentially increments by 1. Notice that this value must be unique in a same page.</td>
 </tr>
 </tbody></table>
 <h3 id='response-3'>Response</h3>
@@ -1178,6 +1181,10 @@ Return the items has <code>id</code> field greater than 20</p>
 <td>In case you input <code>filter[include]=noteable</code> in request query string, in <code>data</code> response, the <code>type</code> property of each element in <code>included</code> array indicate type of source place, it can be a <code>page</code>/<code>workbook</code>...</td>
 </tr>
 </tbody></table>
+<h2 id='share-workbook'>Share workbook</h2>
+<p>The attendee share workbooks with their hosts.</p>
+
+<p><img src="http://dev01.cc.cloud:49173/public/assets/images/user_share_workbook.jpg" alt="authentication workflow" /></p>
 <h1 id='errors'>Errors</h1>
 <p>The APC API uses the following error codes:</p>
 

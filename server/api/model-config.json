@@ -71,6 +71,10 @@
     "dataSource": "cc_mysql",
     "public": false
   },
+  "workbook_share": {
+    "dataSource": "cc_mysql",
+    "public": false
+  },
   "page": {
     "dataSource": "cc_mysql",
     "public": true
