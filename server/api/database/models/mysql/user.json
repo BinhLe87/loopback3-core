@@ -43,6 +43,25 @@
       "property": "*"
     }
   ],
-  "methods": {}
+  "methods": {
+    "prototype.share_workbook": {
+      "accepts": [
+        {
+          "arg": "workbook_id",
+          "type": "number",
+          "description": "the workbook id would be shared",
+          "required": true
+        },
+        {
+          "arg": "sharingProperties",
+          "type": "object",
+          "description": "sharing settings",
+          "required": true
+        }
+      ],
+      "returns": {},
+      "http": {"verb": "post", "path": "/share_workbook"}
+    }
+  }
   
 }
