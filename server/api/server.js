@@ -22,6 +22,7 @@ const { exec } = require('child_process');
 const { formatMessage } = require('../config/components/globalize/globalize');
 global.__i18n = global.__locale = formatMessage;
 global._ = _;
+global.Boom = require('boom');
 _.set(global, 'helper.inspect', require('./helpers/printHelper').inspect);
 
 const debug = require('debug')('server.js');
