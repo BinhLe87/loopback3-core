@@ -57,6 +57,11 @@
           "type": "object",
           "description": "sharing settings",
           "required": true
+        },
+        {
+          "arg": "options",
+          "type": "object",
+          "http": "optionsFromRequest"
         }
       ],
       "returns": {},

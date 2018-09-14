@@ -13,8 +13,8 @@
     "title": {
       "type": "string"
     },
-    "author": {
-      "type": "string"
+    "owner_id": {
+      "type": "number"
     },
     "description": {
       "type": "string"
