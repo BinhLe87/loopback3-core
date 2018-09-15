@@ -17,13 +17,18 @@
     "posttest": "npm run lint > logs/eslint_log.txt && nsp check",
     "precommit": "lint-staged",
     "format": "prettier --ignore-path .eslintignore --write '**/*.js'",
-    "api-docs": "cd $PWD/docs_web/slate && middleman build --build-dir ../../public/api_docs"
+    "client-api-docs": "cd $PWD/docs_web/client_api_docs && middleman build --build-dir ../../public/client_api_docs",
+    "server-api-docs": "cd $PWD/docs_web/server_api_docs && middleman build --build-dir ../../public/server_api_docs"
   },
   "lint-staged": {
     "linters": {
-      "**/*.md": [
-        "npm run api-docs",
-        "git add server/api/public/api_docs/*"
+      "**/client_api_docs/**/*.md": [
+        "npm run client-api-docs",
+        "git add server/api/public/client_api_docs/*"
+      ],
+      "**/server_api_docs/**/*.md": [
+        "npm run server-api-docs",
+        "git add server/api/public/server_api_docs/*"
       ],
       "*.js": [
         "npm run format",

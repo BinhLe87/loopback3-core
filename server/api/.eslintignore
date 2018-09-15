@@ -38,7 +38,7 @@ server/vendors
 **/docs_web
 
 #public documentation website
-server/api/public/api_docs
+server/api/public/client_api_docs
 
 #Just for local environment
 client

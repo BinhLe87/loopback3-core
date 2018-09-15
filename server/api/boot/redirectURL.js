@@ -7,6 +7,10 @@ module.exports = function redirectRootUrlToExplorerPage(app) {
   });
 
   app.get(`(${restApiRoot})?/doc(s)?`, function(req, res, next) {
-    res.redirect('/public/api_docs');
+    res.redirect('/public/client_api_docs');
+  });
+
+  app.get(`(${restApiRoot})?/server_doc(s)?`, function (req, res, next) {
+    res.redirect('/public/server_api_docs');
   });
 };
