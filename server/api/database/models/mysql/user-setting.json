@@ -1,12 +1,38 @@
 {
   "name": "user_setting",
   "plural": "user_settings",
-  "base": "attribute",
+  "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
-  "properties": {},
+  "properties": {
+    "code": {
+      "type": "string",
+      "required": true
+    },
+    "value": {
+      "type": "any",
+      "required": true
+    },
+    "is_active": {
+      "type": "boolean",
+      "required": true,
+      "default": 1
+    }
+  },
+  "indexes": {
+    "user_settingcode_idx": {
+      "keys": {
+        "userId": 1,
+        "code": 1,
+        "is_active": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
   "validations": [],
   "relations": {
     "user": {
