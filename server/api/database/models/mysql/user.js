@@ -45,28 +45,13 @@ module.exports = function(User) {
     }
 
     for (let sharedUserId of sharedUserIds) {
-      //Ensure sharing roles
-      if (!(await UserUtil.ensureWorkbookSharingRoles())) {
-        throw Boom.forbidden(
-          'Invalid role permissions either of sharing user or of shared user'
-        );
-      }
+      var created_workbook_share = UserUtil.shareWorkBook(
+        sharingUserId,
+        sharedUserId,
+        workbook_id
+      );
 
-      //Ensure sharing connections
-      if (!(await UserUtil.ensureWorkbookSharingConnections())) {
-        throw Boom.forbidden(
-          'There is no connection between sharing user and shared user'
-        );
-      }
-
-      //If all conditions are okay
-      let WorkbookShareModel = app.models.workbook_share;
-      let created_workbookshare = await WorkbookShareModel.create({
-        userId: sharedUserId,
-        workbookId: workbook_id
-      });
-
-      debug(created_workbookshare);
+      debug(created_workbook_share);
     }
   };
 };

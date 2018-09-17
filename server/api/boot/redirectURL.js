@@ -10,7 +10,7 @@ module.exports = function redirectRootUrlToExplorerPage(app) {
     res.redirect('/public/client_api_docs');
   });
 
-  app.get(`(${restApiRoot})?/server_doc(s)?`, function (req, res, next) {
+  app.get(`(${restApiRoot})?/server_doc(s)?`, function(req, res, next) {
     res.redirect('/public/server_api_docs');
   });
 };
