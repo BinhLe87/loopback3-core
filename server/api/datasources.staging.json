@@ -6,6 +6,7 @@
   "cc_mysql": {
     "url": "mysql://docker:0l0vKmcJYUrEtU5V@dev01.cc.cloud:3306/apc",
     "name": "cc_mysql",
-    "connector": "mysql"
+    "connector": "mysql",
+    "normalizeUndefinedInQuery": "nullify"
   }
 }
