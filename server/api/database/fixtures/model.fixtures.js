@@ -13,7 +13,8 @@ const fixtures_util = require('./util.fixtures');
  *
  * @param {number} [numberRecordsWillGenerate=0]
  * @param {Model} model model will to generate data
- * @param {Object} fields Each property contains key is field name, value is fakerjs type
+ * @param {Object} fields Each property contains key is field name, value is fakerjs type.
+ * In order to refer to other field's value, using format `'${<field_referred_to>}'`
  * @returns list of generated ids
  */
 function generateModelData(numberRecordsWillGenerate = 0, model, fields) {

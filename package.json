@@ -20,5 +20,10 @@
   "homepage": "https://github.com/CoachingCloud/automated-push-content#readme",
   "dependencies": {
     "shelljs": "^0.8.2"
+  },
+  "devDependencies": {
+    "debug": "^4.0.1",
+    "faker": "^4.1.0",
+    "lodash": "^4.17.11"
   }
 }
