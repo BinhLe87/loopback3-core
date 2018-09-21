@@ -55,7 +55,11 @@ app.on('booted', function() {
     title: { func: faker.lorem.words, args: 7 },
     author: faker.name.findName,
     description: faker.lorem.paragraph,
-    price: faker.commerce.price
+    price: faker.commerce.price,
+    owner_id: {
+      func: faker.random.number,
+      args: { min: 1, max: NUMBER_RECORDS }
+    }
   });
 
   require('./many-to-many.fixtures')(
@@ -135,10 +139,7 @@ app.on('booted', function() {
       func: faker.random.arrayElement,
       args: ['padding', 'background_color', 'align', 'margin']
     },
-    label: {
-      func: faker.random.arrayElement,
-      args: ['padding', 'background_color', 'align', 'margin']
-    },
+    label: '${code}',
     data_type: 'string',
     is_active: {
       func: faker.random.arrayElement,
@@ -184,6 +185,76 @@ app.on('booted', function() {
     {
       fields: {
         display_index: {
+          func: faker.random.number,
+          args: { min: 1, max: 5 }
+        }
+      }
+    }
+  );
+
+  require('./model.fixtures')(NUMBER_RECORDS, 'comment', {
+    message: { func: faker.lorem.words, args: 30 },
+    comment_owner: {
+      func: faker.random.number,
+      args: { min: 1, max: NUMBER_RECORDS }
+    }
+  });
+
+  require('./model.fixtures')(NUMBER_RECORDS, 'comment_reply', {
+    message: { func: faker.lorem.words, args: 30 },
+    parent: {
+      func: faker.random.number,
+      args: { min: 1, max: NUMBER_RECORDS }
+    },
+    comment_owner: {
+      func: faker.random.number,
+      args: { min: 1, max: NUMBER_RECORDS }
+    }
+  });
+
+  require('./model.fixtures')(20, 'user_note', {
+    content: { func: faker.lorem.words, args: 30 },
+    userId: {
+      func: faker.random.number,
+      args: { min: 1, max: 10 }
+    },
+    noteableId: {
+      func: faker.random.number,
+      args: { min: 1, max: 10 }
+    },
+    noteableType: {
+      func: faker.random.arrayElement,
+      args: ['page', 'workbook']
+    }
+  });
+
+  require('./model.fixtures')(3, 'user_setting', {
+    code: {
+      func: faker.random.arrayElement,
+      args: ['auto_share_workbook']
+    },
+    is_active: {
+      func: faker.random.arrayElement,
+      args: [0, 1]
+    },
+    userId: {
+      func: faker.random.number,
+      args: { min: 1, max: 3 }
+    },
+    value: {
+      func: faker.random.arrayElement,
+      args: ['[1]', '[1,2]', '[2,3]']
+    }
+  });
+
+  require('./many-to-many.fixtures')(
+    NUMBER_RECORDS,
+    'user',
+    'workbook',
+    'workbook_share',
+    {
+      fields: {
+        shared_by: {
           func: faker.random.number,
           args: { min: 1, max: 5 }
         }

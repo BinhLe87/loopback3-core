@@ -15,7 +15,8 @@ var _builtInModelNames = [
   'ACL',
   'Scope',
   'Change',
-  'Checkpoint'
+  'Checkpoint',
+  'user'
 ];
 
 exports.isBuiltInModel = function isBuiltInModel(model_name) {

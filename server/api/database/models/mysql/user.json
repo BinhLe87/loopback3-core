@@ -8,12 +8,6 @@
     "allowEternalTokens": true
   },
   "properties": {
-    "name": {
-      "type": "string"      
-    },
-    "role": {
-      "type": "string"
-    }
   },
   "validations": [],
   "relations": {
