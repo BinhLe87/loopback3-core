@@ -17,6 +17,8 @@ const fixtures_util = require('./util.fixtures');
  * @param {Model} joinModel
  * @param {Object} [options.maxIdSourceModel] maximum Id of source Model
  * @param {Object} [options.maxIdDestinationModel] maximum Id of destination Model
+ * @param {Object} [options.ForeignKeySourceModel] foreign key of source Model
+ * @param {Object} [options.ForeignKeyDestinationModel] foreign key of destination Model
  * @param {Object} [options.fields] fields other than foreign key. It is a key value pair, key is field nam and value is fakerjs type
  * @returns list of generated ids
  */
@@ -75,13 +77,18 @@ async function __generateEntireFakeData(
     options.maxIdDestinationModel ||
     numberRecordsWillGenerate;
 
+  var foreignKeySourceModel =
+    options.ForeignKeySourceModel || `${sourceModel.name}Id`;
+  var foreignKeyDestinationModel =
+    options.ForeignKeyDestinationModel || `${destinationModel.name}Id`;
+
   for (var i = 0; i < numberRecordsWillGenerate; i++) {
     let record = {};
-    record[`${sourceModel.name}Id`] = faker.random.number({
+    record[foreignKeySourceModel] = faker.random.number({
       min: 1,
       max: maxIdSourceModel
     });
-    record[`${destinationModel.name}Id`] = faker.random.number({
+    record[foreignKeyDestinationModel] = faker.random.number({
       min: 1,
       max: maxIdDestinationModel
     });

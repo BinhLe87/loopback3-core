@@ -5,6 +5,7 @@ const Promise = require('bluebird');
 const path = require('path');
 const debug = require('debug')(path.basename(__filename));
 const util = require('util');
+const { app } = require('../../helpers/includeAllModules');
 
 exports = module.exports = {};
 
@@ -67,19 +68,30 @@ exports.parseRecordFields = function parseRecordFields(fields) {
 /**
  *
  *
- * @param {*} model
+ * @param {model_instance|model_name} model
  * @param {*} record
  * @returns {number|undefined} If succeed, return created record id. Otherwise, return undefined
  */
 exports.insertRecordInDB = async function insertRecordInDB(model, record) {
-  var insertPromise = Promise.promisify(model.create).bind(model);
+  var modelInstance;
+  if (typeof model == 'string') {
+    //param is model name
+
+    modelInstance = app.models.model;
+  } else {
+    modelInstance = model;
+  }
+
+  var insertPromise = Promise.promisify(modelInstance.create).bind(
+    modelInstance
+  );
 
   try {
     var result = await insertPromise(record);
-    debug(`model '${model.name}': ${util.inspect(result)}`);
+    debug(`model '${modelInstance.name}': ${util.inspect(result)}`);
     return result.id;
   } catch (err) {
-    debug(`model '${model.name}': ${util.inspect(err)}`);
+    debug(`model '${modelInstance.name}': ${util.inspect(err)}`);
     return undefined;
   }
 };
