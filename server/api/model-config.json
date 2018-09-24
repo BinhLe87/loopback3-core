@@ -129,6 +129,14 @@
   },
   "admin": {
     "dataSource": "db",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "generate_fake_data": true
+        }
+      }
+    }
   }
 }
