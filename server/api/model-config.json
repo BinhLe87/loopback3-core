@@ -126,5 +126,9 @@
   "comment_reply": {
     "dataSource": "cc_mysql",
     "public": true
+  },
+  "admin": {
+    "dataSource": "db",
+    "public": false
   }
 }
