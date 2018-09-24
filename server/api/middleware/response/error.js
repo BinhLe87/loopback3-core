@@ -19,13 +19,12 @@
  */
 module.exports = function() {
   return function responseErrorHandler(err, req, res, next) {
-    Boom.boomify(err);
-
-    var error_response = _.get(err, 'output.payload', {
-      statusCode: 500,
-      error: 'Internal Server Error',
-      message: 'Internal Server Error. Please try again later'
+    Boom.boomify(err, {
+      statusCode: err.statusCode || 500,
+      message: err.message || 'Internal Server Error. Please try again later'
     });
+
+    var error_response = _.get(err, 'output.payload', {});
 
     if (process.env.NODE_ENV === 'production') {
       error_response.data = {};

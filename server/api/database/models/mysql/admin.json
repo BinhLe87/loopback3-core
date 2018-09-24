@@ -1,16 +1,48 @@
 {
     "name": "admin",
+    "plural": "admin",
     "base": "PersistedModel",
     "idInjection": true,
     "options": {
         "validateUpsert": true
     },
-    "properties": {
-    },
-    "indexes": {
-    },
+    "properties": {},
+    "indexes": {},
     "validations": [],
     "relations": {},
-    "acls": [],
-    "methods": {}
+    "acls": [
+        {
+            "accessType": "*",
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "DENY"
+        },
+        {
+            "accessType": "*",
+            "permission": "ALLOW",
+            "principalType": "ROLE",
+            "principalId": "admin",
+            "property": "*"
+        }
+    ],
+    "methods": {
+        "generate_fake_data": {
+            "accepts": [
+                {
+                    "arg": "options",
+                    "type": "object",
+                    "http": "optionsFromRequest"
+                }
+            ],
+            "returns": {
+                "arg": "result",
+                "type": "object",
+                "root": true
+            },
+            "http": {
+                "verb": "get",
+                "path": "/generate_fake_data"
+            }
+        }
+    }
 }
