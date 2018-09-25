@@ -134,7 +134,7 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
-          "generate_fake_data": true
+          "generate_dummy_data": true
         }
       }
     }

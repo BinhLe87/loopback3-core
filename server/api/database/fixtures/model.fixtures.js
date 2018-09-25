@@ -15,16 +15,14 @@ const fixtures_util = require('./util.fixtures');
  * @param {Model} model model will to generate data
  * @param {Object} fields Each property contains key is field name, value is fakerjs type.
  * In order to refer to other field's value, using format `'${<field_referred_to>}'`
- * @returns list of generated ids
  */
-function generateModelData(numberRecordsWillGenerate = 0, model, fields) {
+async function generateModelData(numberRecordsWillGenerate = 0, model, fields) {
   if (numberRecordsWillGenerate <= 0) return;
 
   if (_.isEmpty(fields)) {
-    let err_msg =
-      'Error: Must pass fields to declare fields along with faker type';
+    let err_msg = `Error in ${model}: Must pass fields to declare fields along with faker type`;
     debug(err_msg);
-    throw new Error(err_msg);
+    return;
   }
 
   if (typeof model != 'function') {
@@ -40,28 +38,17 @@ function generateModelData(numberRecordsWillGenerate = 0, model, fields) {
     `${path.basename(__filename)} with model '${model.name}'`
   );
 
-  var createdIds = [];
-
   for (var i = 0; i < numberRecordsWillGenerate; i++) {
     let record = {};
     try {
       record = fixtures_util.parseRecordFields(fields);
+
+      var result = await model.create(record);
+      debug(`model '${model.name}': ${util.inspect(result)}`);
     } catch (e) {
-      debug(e);
-      throw e;
+      debug(`Error model '${model.name}': ${util.inspect(e)}`);
     }
-
-    model.create(record, function(err, result) {
-      if (!err) {
-        createdIds.push(result.id);
-        debug(`model '${model.name}': ${util.inspect(result)}`);
-      } else {
-        debug(`model '${model.name}': ${util.inspect(err)}`);
-      }
-    });
   }
-
-  return createdIds;
 }
 
 module.exports = generateModelData;

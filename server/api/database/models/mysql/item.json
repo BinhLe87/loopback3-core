@@ -40,7 +40,8 @@
     },
     "itemtype": {
       "type": "belongsTo",
-      "model": "item_type"
+      "model": "item_type",
+      "foreignKey": "item_typeId"
     }
   },
   "acls": [],

@@ -19,7 +19,11 @@ exports.parseRecordFields = function parseRecordFields(fields) {
     if (typeof field_faker_type == 'function') {
       //invoke directly without arguments
       record[field_name] = field_faker_type();
-    } else if (typeof field_faker_type == 'object') {
+    } else if (
+      typeof field_faker_type == 'object' &&
+      !Array.isArray(field_faker_type)
+    ) {
+      //exception case: array means it is primitive type
       //invoke with arguments
       if (
         typeof field_faker_type != 'object' ||
@@ -86,12 +90,7 @@ exports.insertRecordInDB = async function insertRecordInDB(model, record) {
     modelInstance
   );
 
-  try {
-    var result = await insertPromise(record);
-    debug(`model '${modelInstance.name}': ${util.inspect(result)}`);
-    return result.id;
-  } catch (err) {
-    debug(`model '${modelInstance.name}': ${util.inspect(err)}`);
-    return undefined;
-  }
+  var result = await insertPromise(record);
+
+  return result;
 };

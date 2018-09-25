@@ -1,18 +1,26 @@
 var server = require('../../server');
 var _ = require('lodash');
 const { builtInModelNames } = require('../../helpers/loopbackUtil');
+const Promise = require('bluebird');
 
-var ds = server.dataSources.cc_mysql;
-ds.setMaxListeners(0);
+async function createMyTables() {
+  var ds = server.dataSources.cc_mysql;
+  ds.setMaxListeners(0);
 
-var lbAllModels = _.map(server._models, 'modelName');
+  var lbAllModels = _.map(server._models, 'modelName');
 
-var lbMyModels = lbAllModels.filter(function(value, index) {
-  return !builtInModelNames.includes(value);
-});
+  //since 'admin' model as virtual model, so treat it as built-in model
+  builtInModelNames.push('admin');
 
-ds.automigrate(lbMyModels, function(er) {
-  if (er) throw er;
+  var lbMyModels = lbAllModels.filter(function(value, index) {
+    return !builtInModelNames.includes(value);
+  });
 
-  ds.disconnect();
-});
+  var automigratePromise = Promise.promisify(ds.automigrate).bind(ds);
+
+  await automigratePromise(lbMyModels);
+
+  // ds.disconnect();
+}
+
+module.exports = createMyTables;

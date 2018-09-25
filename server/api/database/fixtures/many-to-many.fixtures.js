@@ -20,7 +20,6 @@ const fixtures_util = require('./util.fixtures');
  * @param {Object} [options.ForeignKeySourceModel] foreign key of source Model
  * @param {Object} [options.ForeignKeyDestinationModel] foreign key of destination Model
  * @param {Object} [options.fields] fields other than foreign key. It is a key value pair, key is field nam and value is fakerjs type
- * @returns list of generated ids
  */
 async function generateManyToManyData(
   numberRecordsWillGenerate = 0,
@@ -41,13 +40,11 @@ async function generateManyToManyData(
 
   if (_.isEmpty(modelsModel)) return undefined;
 
-  var createdIds = await __generateEntireFakeData(
+  await __generateEntireFakeData(
     modelsModel,
     numberRecordsWillGenerate,
     options
   );
-
-  return createdIds;
 }
 
 /**
@@ -55,61 +52,67 @@ async function generateManyToManyData(
  * @param {*} modelsModel
  * @param {*} numberRecordsWillGenerate
  * @param {*} options
- * @returns {array} array of created Id
  */
 async function __generateEntireFakeData(
   modelsModel,
   numberRecordsWillGenerate,
   options
 ) {
-  var createdIds = [];
-  var { sourceModel, destinationModel, joinModel } = modelsModel;
+  try {
+    var { sourceModel, destinationModel, joinModel } = modelsModel;
 
-  var [maxIdSourceModel, maxIdDestinationModel] = await Promise.all([
-    _getMaxIdOfModel(sourceModel),
-    _getMaxIdOfModel(destinationModel)
-  ]);
+    var [maxIdSourceModel, maxIdDestinationModel] = await Promise.all([
+      _getMaxIdOfModel(sourceModel),
+      _getMaxIdOfModel(destinationModel)
+    ]);
 
-  maxIdSourceModel =
-    maxIdSourceModel || options.maxIdSourceModel || numberRecordsWillGenerate;
-  maxIdDestinationModel =
-    maxIdDestinationModel ||
-    options.maxIdDestinationModel ||
-    numberRecordsWillGenerate;
+    maxIdSourceModel =
+      maxIdSourceModel || options.maxIdSourceModel || numberRecordsWillGenerate;
+    maxIdDestinationModel =
+      maxIdDestinationModel ||
+      options.maxIdDestinationModel ||
+      numberRecordsWillGenerate;
 
-  var foreignKeySourceModel =
-    options.ForeignKeySourceModel || `${sourceModel.name}Id`;
-  var foreignKeyDestinationModel =
-    options.ForeignKeyDestinationModel || `${destinationModel.name}Id`;
+    var foreignKeySourceModel =
+      options.ForeignKeySourceModel || `${sourceModel.name}Id`;
+    var foreignKeyDestinationModel =
+      options.ForeignKeyDestinationModel || `${destinationModel.name}Id`;
 
-  for (var i = 0; i < numberRecordsWillGenerate; i++) {
-    let record = {};
-    record[foreignKeySourceModel] = faker.random.number({
-      min: 1,
-      max: maxIdSourceModel
-    });
-    record[foreignKeyDestinationModel] = faker.random.number({
-      min: 1,
-      max: maxIdDestinationModel
-    });
-    //add other fields
-    let otherFields = {};
-    try {
-      otherFields = fixtures_util.parseRecordFields(options.fields);
-    } catch (e) {
-      debug(e);
-      throw e;
+    for (var i = 0; i < numberRecordsWillGenerate; i++) {
+      try {
+        let record = {};
+        record[foreignKeySourceModel] = faker.random.number({
+          min: 1,
+          max: maxIdSourceModel
+        });
+        record[foreignKeyDestinationModel] = faker.random.number({
+          min: 1,
+          max: maxIdDestinationModel
+        });
+        //add other fields
+        let otherFields = {};
+
+        otherFields = fixtures_util.parseRecordFields(options.fields);
+
+        Object.assign(record, otherFields);
+
+        var created_record = await fixtures_util.insertRecordInDB(
+          joinModel,
+          record
+        );
+
+        debug(
+          `model '${joinModel.name}': ${helper.inspect(created_record.id)}`
+        );
+      } catch (insert_err) {
+        debug(`Error model '${joinModel.name}': ${helper.inspect(insert_err)}`);
+      }
     }
-    Object.assign(record, otherFields);
-
-    var createdRecordId = fixtures_util.insertRecordInDB(joinModel, record);
-
-    if (!_.isUndefined(createdRecordId)) {
-      createdIds.push(createdRecordId);
-    }
+  } catch (model_err) {
+    debug(`Can not generate many-to-many relationship data for models:`);
+    debug(modelsModel);
+    debug(helper.inspect(model_err));
   }
-
-  return createdIds;
 }
 
 /**

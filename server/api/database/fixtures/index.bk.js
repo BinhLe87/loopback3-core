@@ -6,19 +6,19 @@ const app = require('../../server');
 const path = require('path');
 const debug = require('debug')('index_fixtures');
 
-async function generate_dummy_data() {
-  const NUMBER_RECORDS = process.env.NUMBER_RECORDS || 200;
-  if (NUMBER_RECORDS <= 0) {
-    debug('Error: value of NUMBER_RECORDS must be greater than 0');
-    throw new Error('Error: value of NUMBER_RECORDS must be greater than 0');
-  }
+const NUMBER_RECORDS = process.env.NUMBER_RECORDS || 200;
+if (NUMBER_RECORDS <= 0) {
+  debug('Error: value of NUMBER_RECORDS must be greater than 0');
+  throw new Error('Error: value of NUMBER_RECORDS must be greater than 0');
+}
 
-  await require('./model.fixtures')(NUMBER_RECORDS, 'user', {
+app.on('booted', function() {
+  require('./model.fixtures')(NUMBER_RECORDS, 'user', {
     password: '$2a$10$yYvIQhagYDSd8GCUsHIW5eXMKAiOfeXdOja1bsXiFFdzJwQvZ.YiS',
     email: 'admin@coachingcloud.com'
   });
 
-  await require('./model.fixtures')(NUMBER_RECORDS, 'library', {
+  require('./model.fixtures')(NUMBER_RECORDS, 'library', {
     name: { func: faker.lorem.words, args: 7 },
     createdBy: {
       func: faker.random.arrayElement,
@@ -30,25 +30,25 @@ async function generate_dummy_data() {
     }
   });
 
-  await require('./model.fixtures')(NUMBER_RECORDS, 'program', {
+  require('./model.fixtures')(NUMBER_RECORDS, 'program', {
     name: { func: faker.lorem.words, args: 7 }
   });
 
-  await require('./many-to-many.fixtures')(
+  require('./many-to-many.fixtures')(
     NUMBER_RECORDS,
     'library',
     'program',
     'library_program'
   );
 
-  await require('./many-to-many.fixtures')(
+  require('./many-to-many.fixtures')(
     NUMBER_RECORDS,
     'user',
     'program',
     'user_program'
   );
 
-  await require('./model.fixtures')(NUMBER_RECORDS, 'workbook', {
+  require('./model.fixtures')(NUMBER_RECORDS, 'workbook', {
     title: { func: faker.lorem.words, args: 7 },
     author: faker.name.findName,
     description: faker.lorem.paragraph,
@@ -59,14 +59,14 @@ async function generate_dummy_data() {
     }
   });
 
-  await require('./many-to-many.fixtures')(
+  require('./many-to-many.fixtures')(
     NUMBER_RECORDS,
     'program',
     'workbook',
     'program_workbook'
   );
 
-  await require('./model.fixtures')(NUMBER_RECORDS, 'chapter', {
+  require('./model.fixtures')(NUMBER_RECORDS, 'chapter', {
     name: { func: faker.lorem.words, args: 7 },
     is_visible: {
       func: faker.random.arrayElement,
@@ -74,7 +74,7 @@ async function generate_dummy_data() {
     }
   });
 
-  await require('./many-to-many.fixtures')(
+  require('./many-to-many.fixtures')(
     NUMBER_RECORDS,
     'workbook',
     'chapter',
@@ -89,18 +89,33 @@ async function generate_dummy_data() {
     }
   );
 
-  await require('./model.fixtures')(NUMBER_RECORDS, 'page', {
+  require('./model.fixtures')(NUMBER_RECORDS, 'page', {
     name: { func: faker.lorem.words, args: 7 }
   });
 
-  await require('./many-to-many.fixtures')(
+  require('./many-to-many.fixtures')(
     NUMBER_RECORDS,
     'chapter',
     'page',
     'chapter_page'
   );
 
-  await require('./model.fixtures')(NUMBER_RECORDS, 'item_type', {
+  require('./model.fixtures')(NUMBER_RECORDS, 'item', {
+    name: { func: faker.lorem.words, args: 7 },
+    item_typeId: {
+      func: faker.random.arrayElement,
+      args: [1, 2, 3, 4, 5]
+    }
+  });
+
+  require('./many-to-many.fixtures')(
+    NUMBER_RECORDS,
+    'page',
+    'item',
+    'page_item'
+  );
+
+  require('./model.fixtures')(NUMBER_RECORDS, 'item_type', {
     code: {
       func: faker.random.arrayElement,
       args: ['text', 'video', 'audio', 'question', 'html', 'experience_points']
@@ -115,31 +130,8 @@ async function generate_dummy_data() {
     }
   });
 
-  await require('./model.fixtures')(NUMBER_RECORDS, 'item', {
-    name: 'item_video',
-    item_typeId: {
-      func: faker.random.arrayElement,
-      args: [1, 2, 3, 4, 5]
-    },
-    is_public: 1,
-    item_attributes: [
-      { id: 1, values: [{ value: 'title' }] },
-      {
-        id: 3,
-        values: [{ value: 'https://coachingcloud.com/img/platform-intro.png' }]
-      }
-    ]
-  });
-
-  await require('./many-to-many.fixtures')(
-    NUMBER_RECORDS,
-    'page',
-    'item',
-    'page_item'
-  );
-
   //attribute for item type is formatted text
-  await require('./model.fixtures')(NUMBER_RECORDS, 'attribute', {
+  require('./model.fixtures')(NUMBER_RECORDS, 'attribute', {
     code: {
       func: faker.random.arrayElement,
       args: ['padding', 'background_color', 'align', 'margin']
@@ -156,7 +148,7 @@ async function generate_dummy_data() {
     }
   });
 
-  await require('./model.fixtures')(1, 'attribute', {
+  require('./model.fixtures')(1, 'attribute', {
     code: {
       func: faker.random.arrayElement,
       args: ['url']
@@ -182,7 +174,7 @@ async function generate_dummy_data() {
     }
   });
 
-  await require('./many-to-many.fixtures')(
+  require('./many-to-many.fixtures')(
     NUMBER_RECORDS,
     'item_type',
     'attribute',
@@ -197,7 +189,7 @@ async function generate_dummy_data() {
     }
   );
 
-  await require('./model.fixtures')(NUMBER_RECORDS, 'comment', {
+  require('./model.fixtures')(NUMBER_RECORDS, 'comment', {
     message: { func: faker.lorem.words, args: 30 },
     comment_owner: {
       func: faker.random.number,
@@ -205,7 +197,7 @@ async function generate_dummy_data() {
     }
   });
 
-  await require('./model.fixtures')(NUMBER_RECORDS, 'comment_reply', {
+  require('./model.fixtures')(NUMBER_RECORDS, 'comment_reply', {
     message: { func: faker.lorem.words, args: 30 },
     parent: {
       func: faker.random.number,
@@ -217,7 +209,7 @@ async function generate_dummy_data() {
     }
   });
 
-  await require('./model.fixtures')(20, 'user_note', {
+  require('./model.fixtures')(20, 'user_note', {
     content: { func: faker.lorem.words, args: 30 },
     userId: {
       func: faker.random.number,
@@ -233,7 +225,7 @@ async function generate_dummy_data() {
     }
   });
 
-  await require('./model.fixtures')(3, 'user_setting', {
+  require('./model.fixtures')(3, 'user_setting', {
     code: {
       func: faker.random.arrayElement,
       args: ['auto_share_workbook']
@@ -252,7 +244,7 @@ async function generate_dummy_data() {
     }
   });
 
-  await require('./many-to-many.fixtures')(
+  require('./many-to-many.fixtures')(
     NUMBER_RECORDS,
     'user',
     'workbook',
@@ -266,6 +258,4 @@ async function generate_dummy_data() {
       }
     }
   );
-}
-
-module.exports = generate_dummy_data;
+});
