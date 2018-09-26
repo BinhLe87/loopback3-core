@@ -9,7 +9,7 @@ async function createMyTables() {
 
   var lbAllModels = _.map(server._models, 'modelName');
 
-  //since 'admin' model as virtual model, so treat it as built-in model
+  //since 'admin' model as virtual model, so skip migrating this model
   builtInModelNames.push('admin');
 
   var lbMyModels = lbAllModels.filter(function(value, index) {

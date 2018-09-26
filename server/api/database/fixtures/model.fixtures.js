@@ -41,7 +41,9 @@ async function generateModelData(numberRecordsWillGenerate = 0, model, fields) {
   for (var i = 0; i < numberRecordsWillGenerate; i++) {
     let record = {};
     try {
-      record = fixtures_util.parseRecordFields(fields);
+      record = fixtures_util.parseRecordFields(fields, {
+        numberRecordsWillGenerate: numberRecordsWillGenerate
+      });
 
       var result = await model.create(record);
       debug(`model '${model.name}': ${util.inspect(result)}`);

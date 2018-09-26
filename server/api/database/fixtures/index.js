@@ -6,6 +6,14 @@ const app = require('../../server');
 const path = require('path');
 const debug = require('debug')('index_fixtures');
 
+/**
+ * Support following random data types:
+ * - Case 1: fakerjs pure function
+ * - Case 2: fakerjs function with arguments: declared by object has {func, args}
+ * - Case 3: refer to other field's value: ${<field_referred_to>}
+ * - Case 4: lodash string pattern: example is 'Library <%= %d %>'. Now, just support random %d numberic value
+ * - Case 5: primitive data type (string, array, number, etc)
+ */
 async function generate_dummy_data() {
   const NUMBER_RECORDS = process.env.NUMBER_RECORDS || 200;
   if (NUMBER_RECORDS <= 0) {
@@ -19,7 +27,7 @@ async function generate_dummy_data() {
   });
 
   await require('./model.fixtures')(NUMBER_RECORDS, 'library', {
-    name: { func: faker.lorem.words, args: 7 },
+    name: 'Library number <%= %d %>',
     createdBy: {
       func: faker.random.arrayElement,
       args: ['user', 'system']

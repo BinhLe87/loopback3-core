@@ -92,7 +92,9 @@ async function __generateEntireFakeData(
         //add other fields
         let otherFields = {};
 
-        otherFields = fixtures_util.parseRecordFields(options.fields);
+        otherFields = fixtures_util.parseRecordFields(options.fields, {
+          numberRecordsWillGenerate: numberRecordsWillGenerate
+        });
 
         Object.assign(record, otherFields);
 
