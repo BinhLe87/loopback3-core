@@ -5,9 +5,7 @@ Get list of libraries of current user
 
 ```shell
 curl -X GET \
-  http://localhost:8080/api/users/1/libraries \
-  -H 'cache-control: no-cache' \
-  -H 'postman-token: c8d0a303-5abf-5127-2243-1baf0d8d6cff'
+  'http://localhost:8080/api/users/me/libraries?access_token=1Q0P2HEc6fULYT3a7DmviI5jJt1Rtv2k9ApEqZ0Imzvj4hjHKu6E6cBN1ojRcZMM'
 ```
 
 > Example Response
@@ -16,14 +14,14 @@ curl -X GET \
 ```
 
 ### HTTP Request
-**GET** `http://localhost:8080/api/users/{user_id}/libraries`
+**GET** `http://localhost:8080/api/users/me/libraries?access_token={access_token}`
 
 
 ### Request body
 
 | Parameter       | Data type | Required? | Default | Description |
 | --------------- | --------- | --------- | ------- | ----------- |
-|user_id | number | Required | | current user id|
+|access_token | string | Required | | access token|
 
 
 
