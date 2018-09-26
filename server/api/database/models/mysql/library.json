@@ -44,5 +44,10 @@
     }
   },
   "acls": [],
-  "methods": {}
+  "methods": {},
+  "scope": {
+    "where": {
+      "createdBy": "user"
+    }
+  }
 }
