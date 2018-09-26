@@ -20,10 +20,7 @@
     "createdBy": {
       "type": "string",
       "description": "To distinguish who created this library, ex: system or user"
-    },
-    "owner": {
-      "type": "string"
-    }
+    }   
   },
   "validations": [],
   "relations": {
@@ -40,6 +37,10 @@
         "foreignKey": "workbook_owner_id",
         "discriminator": "workbook_owner_type"
       }
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "user"
     }
   },
   "acls": [],

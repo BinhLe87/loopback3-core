@@ -26,6 +26,11 @@
       "model": "workbook",
       "foreignKey": "userId",
       "through": "workbook_share"
+    },
+    "libraries": {
+      "type": "hasMany",
+      "model": "library",
+      "foreignKey": "userId"
     }
   },
   "acls": [

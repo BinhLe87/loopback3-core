@@ -32,7 +32,7 @@ async function generate_dummy_data() {
       func: faker.random.arrayElement,
       args: ['user', 'system']
     },
-    owner: {
+    userId: {
       func: faker.random.number,
       args: { min: 1, max: 20 }
     }
