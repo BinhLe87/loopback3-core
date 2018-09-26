@@ -283,6 +283,9 @@
             <a href="#user" class="toc-h1 toc-link" data-title="User">User</a>
               <ul class="toc-list-h2">
                   <li>
+                    <a href="#list-of-user-libraries" class="toc-h2 toc-link" data-title="List of user libraries">List of user libraries</a>
+                  </li>
+                  <li>
                     <a href="#list-of-user-notes" class="toc-h2 toc-link" data-title="List of user notes">List of user notes</a>
                   </li>
                   <li>
@@ -1048,7 +1051,43 @@ Return the items has <code>id</code> field greater than 20</p>
 <ul>
 <li><a href="https://developers.facebook.com/docs/graph-api/reference/v3.1/comment">facebook comment</a></li>
 </ul>
-<h1 id='user'>User</h1><h2 id='list-of-user-notes'>List of user notes</h2>
+<h1 id='user'>User</h1><h2 id='list-of-user-libraries'>List of user libraries</h2>
+<p>Get list of libraries of current user</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  http://localhost:8080/api/users/1/libraries <span class="se">\</span>
+  -H <span class="s1">'cache-control: no-cache'</span> <span class="se">\</span>
+  -H <span class="s1">'postman-token: c8d0a303-5abf-5127-2243-1baf0d8d6cff'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/users/{user_id}/libraries</code></p>
+<h3 id='request-body'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>user_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>current user id</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return list of libraries of current user</p>
+<h2 id='list-of-user-notes'>List of user notes</h2>
 <p>Return a list notes belong to a specific user.</p>
 
 <blockquote>

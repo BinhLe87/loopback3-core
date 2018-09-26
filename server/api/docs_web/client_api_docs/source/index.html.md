@@ -14,6 +14,8 @@ includes:
   - api/item/item_type
   - api/comment/comment_backend
   - api/comment/comment
+  - api/user/user_index
+  - api/user/user_library
   - api/user/user_note
   - api/user/user_share_workbook
   - errors

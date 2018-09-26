@@ -1,5 +1,3 @@
-#User
-
 ## List of user notes
 Return a list notes belong to a specific user.
 
