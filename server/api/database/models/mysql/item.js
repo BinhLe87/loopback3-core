@@ -30,13 +30,15 @@ fs.readFile(path.join(__dirname, '../../../middleware.json'), (err, data) => {
 });
 
 module.exports = function(Item) {
-  Item.beforeRemote('create', function(ctx, modelInstance, next) {
+  //transform image url storage in DB
+  Item.observe('persist', async function(ctx, modelInstance) {
     if (!_isReqTypeIsUploadFile(ctx.req)) {
-      //not upload file, just create raw item
+      //request type is creating raw data, not uploading file
 
-      next();
+      await validateItemData(ctx);
+      return;
     } else {
-      uploadItem(ctx, next, function(
+      uploadItem(ctx, next, async function(
         error,
         savedRelativeFilePath,
         savedAbsoluteFilePath
@@ -45,10 +47,10 @@ module.exports = function(Item) {
           logger.error('Error uploading file', __filename);
           logger.error(error);
 
-          return next(error);
+          throw error;
         }
 
-        Promise.all([
+        await Promise.all([
           determineItemTypeIdAndAttributeIdAsync(
             ctx,
             savedRelativeFilePath
@@ -70,24 +72,24 @@ module.exports = function(Item) {
 
             var origin_uri = new URI(
               path.join(
-                loopback_util.getBaseURL(ctx.req),
-                static_files_dir,
+                // loopback_util.getBaseURL(ctx.req),
+                // static_files_dir,
                 savedRelativeFilePath
               )
             );
             var relativeUploadDir = path.dirname(savedRelativeFilePath);
             var desktop_uri = new URI(
               path.join(
-                loopback_util.getBaseURL(ctx.req),
-                static_files_dir,
+                // loopback_util.getBaseURL(ctx.req),
+                // static_files_dir,
                 relativeUploadDir,
                 desktopFileName
               )
             );
             var mobile_uri = new URI(
               path.join(
-                loopback_util.getBaseURL(ctx.req),
-                static_files_dir,
+                // loopback_util.getBaseURL(ctx.req),
+                // static_files_dir,
                 relativeUploadDir,
                 mobileFileName
               )
@@ -112,38 +114,33 @@ module.exports = function(Item) {
           })
           .catch(error => {
             logger.error(error, __filename);
-            next(error);
+            throw error;
           });
       });
     }
   });
 
-  Item.observe('before save', function(ctx, next) {
-    var data = ctx.instance || ctx.data;
-    if (
-      typeof data.item_typeId == 'undefined' ||
-      typeof data.item_attributes == 'undefined'
-    ) {
-      return next(
-        new Error(
-          `Must input 2 required fields are 'item_typeId' and 'item_attributes'`
-        )
-      );
-    }
-
-    AttributeUtil.validateAttributesByItemtypeId(
-      data.item_attributes,
-      data.item_typeId
-    )
-      .then(function(result) {
-        //all attributes are valid
-        next();
-      })
-      .catch(function(err) {
-        next(err);
-      });
+  Item.afterRemote('**', function(ctx, modelInstance, next) {
+    console.log(ctx);
   });
 };
+
+async function validateItemData(ctx) {
+  var data = ctx.instance || ctx.data;
+  if (
+    typeof data.item_typeId == 'undefined' ||
+    typeof data.item_attributes == 'undefined'
+  ) {
+    throw new Error(
+      `Must input 2 required fields are 'item_typeId' and 'item_attributes'`
+    );
+  }
+
+  AttributeUtil.validateAttributesByItemtypeId(
+    data.item_attributes,
+    data.item_typeId
+  );
+}
 
 function determineItemTypeIdAndAttributeIdAsync(ctx, savedRelativeFilePath) {
   //get or create item_type=image in DB
