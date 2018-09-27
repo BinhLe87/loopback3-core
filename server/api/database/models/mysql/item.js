@@ -34,7 +34,7 @@ module.exports = function(Item) {
     if (_isReqTypeIsUploadFile(ctx.req)) {
       //request type is uploading file
 
-      ctx = await uploadFileAndAddFilePathIntoCtx(ctx);
+      await uploadFileAndAddFilePathIntoCtx(ctx);
     }
   });
 
@@ -59,25 +59,20 @@ module.exports = function(Item) {
 
     if (Array.isArray(item_attributes)) {
       for (let attribute_item of item_attributes) {
-        var attribute_values = _.get(attribute_item, 'values');
-        for (let attribute_value_item of attribute_values) {
-          //atribute_value is object type
+        var attribute_values = _.get(attribute_item, 'values'); //object type
 
-          if (typeof attribute_value_item == 'object') {
-            _.forOwn(attribute_value_item, function(field_value, field_name) {
-              if (['high_url', 'medium_url', 'low_url'].includes(field_name)) {
-                var transformed_url = path.join(
-                  loopback_util.getBaseURL(ctx.req),
-                  static_files_dir,
-                  field_value
-                );
+        _.forOwn(attribute_values, (field_value, field_name) => {
+          if (['high_url', 'medium_url', 'low_url'].includes(field_name)) {
+            var transformed_url = path.join(
+              loopback_util.getBaseURL(ctx.req),
+              static_files_dir,
+              field_value
+            );
 
-                //update new image url back to ctx.result
-                attribute_value_item[field_name] = transformed_url;
-              }
-            });
+            //update new image url back to ctx.result
+            attribute_values[field_name] = transformed_url;
           }
-        }
+        });
       }
     }
 
@@ -86,10 +81,10 @@ module.exports = function(Item) {
 };
 
 /**
- * Process storing uploaded file and adding file storage path into `ctx.args.data`
+ * Process storing uploaded file and adding file storage path into `ctx.args.data` argument was passed.
+ * It also convert additional metadata fields in req.body into `ctx.args.data` in order to save into DB
  *
  * @param {*} ctx
- * @returns {object} ctx return customized ctx after adding file storage path into `ctx.args.data`
  */
 async function uploadFileAndAddFilePathIntoCtx(ctx) {
   var { relativeFilePathWillSave, absoluteFilePathWillSave } = await uploadItem(
@@ -126,15 +121,24 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
       ctx.args.data['item_attributes'] = [
         {
           id: attribute.id,
-          values: [
-            { high_url: URI.decode(origin_uri.normalize().toString()) },
-            {
-              medium_url: URI.decode(desktop_uri.normalize().toString())
-            },
-            { low_url: URI.decode(mobile_uri.normalize().toString()) }
-          ]
+          values: {
+            high_url: origin_uri,
+            medium_url: desktop_uri,
+            low_url: mobile_uri
+          }
         }
       ];
+
+      //FIXME: temporarily adding all metadata fields into same attribute with image
+      //Add additional metadata fields from req.body
+      if (typeof ctx.req.body == 'object') {
+        var image_attribute = ctx.args.data['item_attributes'][0];
+        image_attribute.values = Object.assign(
+          {},
+          image_attribute.values,
+          ctx.req.body
+        );
+      }
 
       return ctx;
     })
