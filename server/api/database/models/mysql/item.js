@@ -30,100 +30,119 @@ fs.readFile(path.join(__dirname, '../../../middleware.json'), (err, data) => {
 });
 
 module.exports = function(Item) {
-  //transform image url storage in DB
-  Item.observe('persist', async function(ctx, modelInstance) {
-    if (!_isReqTypeIsUploadFile(ctx.req)) {
-      //request type is creating raw data, not uploading file
+  Item.beforeRemote('create', async function(ctx, modelInstance) {
+    if (_isReqTypeIsUploadFile(ctx.req)) {
+      //request type is uploading file
 
-      await validateItemData(ctx);
-      return;
-    } else {
-      uploadItem(ctx, next, async function(
-        error,
-        savedRelativeFilePath,
-        savedAbsoluteFilePath
-      ) {
-        if (error) {
-          logger.error('Error uploading file', __filename);
-          logger.error(error);
-
-          throw error;
-        }
-
-        await Promise.all([
-          determineItemTypeIdAndAttributeIdAsync(
-            ctx,
-            savedRelativeFilePath
-          ).catch(error => {
-            logger.error(
-              'Error determine item_type and attribute for uploaded file',
-              __filename
-            );
-            throw error;
-          }),
-          convertImageFileAsync(savedAbsoluteFilePath).catch(error => {
-            logger.error('Error convert the image', __filename);
-            throw error;
-          })
-        ])
-          .spread((itemTypeAttributeArray, sharpFilesArray) => {
-            var [item_type, attribute] = itemTypeAttributeArray;
-            var [mobileFileName, desktopFileName] = sharpFilesArray;
-
-            var origin_uri = new URI(
-              path.join(
-                // loopback_util.getBaseURL(ctx.req),
-                // static_files_dir,
-                savedRelativeFilePath
-              )
-            );
-            var relativeUploadDir = path.dirname(savedRelativeFilePath);
-            var desktop_uri = new URI(
-              path.join(
-                // loopback_util.getBaseURL(ctx.req),
-                // static_files_dir,
-                relativeUploadDir,
-                desktopFileName
-              )
-            );
-            var mobile_uri = new URI(
-              path.join(
-                // loopback_util.getBaseURL(ctx.req),
-                // static_files_dir,
-                relativeUploadDir,
-                mobileFileName
-              )
-            );
-
-            //Add 3 urls: original url, desktop image url and mobile image url into http response
-            ctx.args.data['item_typeId'] = item_type.id;
-            ctx.args.data['item_attributes'] = [
-              {
-                id: attribute.id,
-                values: [
-                  { high_url: URI.decode(origin_uri.normalize().toString()) },
-                  {
-                    medium_url: URI.decode(desktop_uri.normalize().toString())
-                  },
-                  { low_url: URI.decode(mobile_uri.normalize().toString()) }
-                ]
-              }
-            ];
-
-            next();
-          })
-          .catch(error => {
-            logger.error(error, __filename);
-            throw error;
-          });
-      });
+      ctx = await uploadFileAndAddFilePathIntoCtx(ctx);
     }
   });
 
+  Item.beforeRemote('upsert', async function(ctx, modelInstance) {
+    if (_isReqTypeIsUploadFile(ctx.req)) {
+      //request type is uploading file
+
+      ctx = await uploadFileAndAddFilePathIntoCtx(ctx);
+    }
+  });
+
+  Item.observe('persist', async function(ctx, modelInstance) {
+    await validateItemData(ctx);
+  });
+
+  /**
+   * - Transform image file path to image url
+   */
   Item.afterRemote('**', function(ctx, modelInstance, next) {
-    console.log(ctx);
+    var ctx_result = ctx.result;
+    var item_attributes = _.get(ctx_result, 'item_attributes');
+
+    if (Array.isArray(item_attributes)) {
+      for (let attribute_item of item_attributes) {
+        var attribute_values = _.get(attribute_item, 'values');
+        for (let attribute_value_item of attribute_values) {
+          //atribute_value is object type
+
+          if (typeof attribute_value_item == 'object') {
+            _.forOwn(attribute_value_item, function(field_value, field_name) {
+              if (['high_url', 'medium_url', 'low_url'].includes(field_name)) {
+                var transformed_url = path.join(
+                  loopback_util.getBaseURL(ctx.req),
+                  static_files_dir,
+                  field_value
+                );
+
+                //update new image url back to ctx.result
+                attribute_value_item[field_name] = transformed_url;
+              }
+            });
+          }
+        }
+      }
+    }
+
+    next();
   });
 };
+
+/**
+ * Process storing uploaded file and adding file storage path into `ctx.args.data`
+ *
+ * @param {*} ctx
+ * @returns {object} ctx return customized ctx after adding file storage path into `ctx.args.data`
+ */
+async function uploadFileAndAddFilePathIntoCtx(ctx) {
+  var { relativeFilePathWillSave, absoluteFilePathWillSave } = await uploadItem(
+    ctx
+  );
+
+  await Promise.all([
+    determineItemTypeIdAndAttributeIdAsync(ctx, relativeFilePathWillSave).catch(
+      error => {
+        logger.error(
+          'Error determine item_type and attribute for uploaded file',
+          __filename
+        );
+        throw error;
+      }
+    ),
+    convertImageFileAsync(absoluteFilePathWillSave).catch(error => {
+      logger.error('Error convert the image', __filename);
+      throw error;
+    })
+  ])
+    .spread((itemTypeAttributeArray, sharpFilesArray) => {
+      var [item_type, attribute] = itemTypeAttributeArray;
+      var [mobileFileName, desktopFileName] = sharpFilesArray;
+
+      var origin_uri = relativeFilePathWillSave;
+
+      var relativeUploadDir = path.dirname(relativeFilePathWillSave);
+      var desktop_uri = path.join(relativeUploadDir, desktopFileName);
+      var mobile_uri = path.join(relativeUploadDir, mobileFileName);
+
+      //Add 3 urls: original url, desktop image url and mobile image url into http response
+      ctx.args.data['item_typeId'] = item_type.id;
+      ctx.args.data['item_attributes'] = [
+        {
+          id: attribute.id,
+          values: [
+            { high_url: URI.decode(origin_uri.normalize().toString()) },
+            {
+              medium_url: URI.decode(desktop_uri.normalize().toString())
+            },
+            { low_url: URI.decode(mobile_uri.normalize().toString()) }
+          ]
+        }
+      ];
+
+      return ctx;
+    })
+    .catch(error => {
+      logger.error(error, __filename);
+      throw error;
+    });
+}
 
 async function validateItemData(ctx) {
   var data = ctx.instance || ctx.data;
@@ -136,7 +155,7 @@ async function validateItemData(ctx) {
     );
   }
 
-  AttributeUtil.validateAttributesByItemtypeId(
+  await AttributeUtil.validateAttributesByItemtypeId(
     data.item_attributes,
     data.item_typeId
   );

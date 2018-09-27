@@ -1,14 +1,17 @@
 'use strict';
 var multer = require('multer'),
   path = require('path'),
-  FilePathHandler = require('../../helpers/uploadFilePathHandler');
+  FilePathHandler = require('../../helpers/uploadFilePathHandler'),
+  Promise = require('bluebird');
 
-// Error Messages
-// var ERR_UPLOAD_FAILED =
-//   'Error file uploading has failed at <%=method%> <%=url%>. Please try again';
 const uploadFilePathHandler = new FilePathHandler();
-
-module.exports = function uploadItem(app, next, callback) {
+/**
+ * Process to store uploaded file in calculated path
+ *
+ * @param {*} app
+ * @returns {object} if upload OK, return object {relativeFilePathWillSave, absoluteFilePathWillSave}, otherwise throw err
+ */
+module.exports = async function uploadItem(app) {
   multer.bind(app);
 
   var relativeFilePathWillSave;
@@ -50,7 +53,12 @@ module.exports = function uploadItem(app, next, callback) {
   var my_upload = upload.single('image');
 
   //handle when upload finished
-  my_upload(app.req, app.res, err => {
-    callback(err, relativeFilePathWillSave, absoluteFilePathWillSave);
-  });
+  var my_uploadPromise = Promise.promisify(my_upload).bind(my_upload);
+
+  await my_uploadPromise(app.req, app.res);
+
+  return {
+    relativeFilePathWillSave: relativeFilePathWillSave,
+    absoluteFilePathWillSave: absoluteFilePathWillSave
+  };
 };

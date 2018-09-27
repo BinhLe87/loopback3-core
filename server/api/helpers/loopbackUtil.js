@@ -24,7 +24,12 @@ exports.isBuiltInModel = function isBuiltInModel(model_name) {
 };
 
 exports.builtInModelNames = _builtInModelNames;
-
+/**
+ *
+ *
+ * @param {ctx.req} req ctx.request
+ * @returns
+ */
 exports.getBaseURL = function(req) {
   var url_parts = {
     protocol: req.protocol,
