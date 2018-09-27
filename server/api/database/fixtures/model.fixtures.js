@@ -12,7 +12,7 @@ const fixtures_util = require('./util.fixtures');
  * Generate fake data for model
  *
  * @param {number} [numberRecordsWillGenerate=0]
- * @param {Model} model model will to generate data
+ * @param {string} model model name model will to generate data
  * @param {Object} fields Each property contains key is field name, value is fakerjs type.
  * In order to refer to other field's value, using format `'${<field_referred_to>}'`
  */

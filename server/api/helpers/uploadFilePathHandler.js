@@ -12,15 +12,15 @@ const _ = require('lodash');
 
 const HASH_RANDOM_FORMAT = '(\\w{6})';
 const FILE_NAME_FORMAT_REGEXP = RegExp(
-  `^(.*)_([a-zA-Z0-9]{1,3})-(\\d{8})-${HASH_RANDOM_FORMAT}\\.?(\\w*)$`
+  `^(.*)_(.*)_([a-zA-Z0-9]{1,3})-(\\d{8})-${HASH_RANDOM_FORMAT}\\.?(\\w*)$`
 );
 
 /**
  * This class will transform file name into following format
  *
- * `<baseFileName>_<service_name>-YYYYMMDD-<random_hash_six_chars>.<file_type>`
+ * `<server_id>_<baseFileName>_<service_name>-YYYYMMDD-<random_hash_six_chars>.<file_type>`
  *
- * @example  `master-yoga-in-30-days_abc-20180705-zmnrhb.mp4`
+ * @example  `svr01_master-yoga-in-30-days_abc-20180705-zmnrhb.mp4`
  *
  * @param {object} [options={}] the setting options for current service
  * @param {string} [options.uploadDir] the absolute path of upload directory of current service. This value will override `ROOT_UPLOAD_DIR` env
@@ -117,6 +117,7 @@ function _generateRandomHashHasSixChars() {
 
 uploadFilePathHandler.prototype.transformFileNameToSave = function(file_name) {
   var service_name = this.SERVICE_NAME;
+  var upload_server_id = process.env.UPLOAD_SERVER_ID;
 
   var fileExt = FileUtil.getFileExtension(file_name);
   var baseFileName = file_name.replace(fileExt ? `.${fileExt}` : fileExt, '');
@@ -130,6 +131,7 @@ uploadFilePathHandler.prototype.transformFileNameToSave = function(file_name) {
   let dirStructureOfFile = [service_name, dateString, sixchars_hash].join('-');
   let fileExtHasPoint = _.isEmpty(fileExt) ? fileExt : `.${fileExt}`;
   let fileNameToSave = [
+    `${upload_server_id}_`,
     `${slugifiedBaseFileName}_`,
     dirStructureOfFile,
     fileExtHasPoint

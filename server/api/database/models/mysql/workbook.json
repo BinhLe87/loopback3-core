@@ -21,6 +21,9 @@
     },
     "price": {
       "type": "number"
+    },
+    "image_url": {
+      "type": "string"
     }
   },
   "validations": [],

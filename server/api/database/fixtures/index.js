@@ -64,6 +64,10 @@ async function generate_dummy_data() {
     owner_id: {
       func: faker.random.number,
       args: { min: 1, max: NUMBER_RECORDS }
+    },
+    image_url: {
+      func: faker.random.arrayElement,
+      args: require('./_sample.data').workbook_image_url
     }
   });
 

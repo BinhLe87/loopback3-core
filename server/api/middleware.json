@@ -59,12 +59,14 @@
   "files": {
     "loopback#static": [
       {
+        "name": "upload",
         "paths": [
           "/upload"
         ],
-        "params": "$!../upload"
+        "params": "$!./upload"
       },
       {
+        "name": "public",
         "paths": [
           "/public"
         ],

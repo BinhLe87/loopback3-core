@@ -15,7 +15,11 @@ var envVarsSchema = joi
       .string()
       .required()
       .allow('development, staging, production'),
-    API_RESIZE_IMAGE_ROOT_URL: joi.string().default('/api/image/resize')
+    API_RESIZE_IMAGE_ROOT_URL: joi.string().default('/api/image/resize'),
+    ROOT_UPLOAD_DIR: joi
+      .string()
+      .default(path.resolve(__dirname, '../../upload')),
+    UPLOAD_SERVER_ID: joi.string().default('svr01')
   })
   .unknown()
   .required();
