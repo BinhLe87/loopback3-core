@@ -12,13 +12,13 @@ const _ = require('lodash');
 
 const HASH_RANDOM_FORMAT = '(\\w{6})';
 const FILE_NAME_FORMAT_REGEXP = RegExp(
-  `^(.*)_(.*)_([a-zA-Z0-9]{1,3})-(\\d{8})-${HASH_RANDOM_FORMAT}\\.?(\\w*)$`
+  `^(.*)_(.*)_([a-zA-Z0-9]{1,3})_(\\d{8})_${HASH_RANDOM_FORMAT}_?([^\.]*)\\.?(\\w*)$`
 );
 
 /**
  * This class will transform file name into following format
  *
- * `<server_id>_<baseFileName>_<service_name>-YYYYMMDD-<random_hash_six_chars>.<file_type>`
+ * `<baseFileName>_<server_id>_<service_name>_YYYYMMDD_<random_hash_six_chars>.<file_type>`
  *
  * @example  `svr01_master-yoga-in-30-days_abc-20180705-zmnrhb.mp4`
  *
@@ -70,24 +70,33 @@ function _isValidFileNameFormat(file_name) {
  *
  *
  * @param {*} transformedFileName
- * @param {*} cb
- * @returns {Array} array of fields are baseFileName, serviceName, dateString, randomHash, fileExtension
+ * @returns {object} an object contains extracted fileds. For example:  
+    {  
+        base_file_name: 'workbook-1',  
+        server_id: 's01',  
+        service_name: 'api',  
+        datetime: '20180928',  
+        random_hash: 'd98a3e',  
+        image_dimension: '',  
+        file_extension: 'jpeg'  
+    }  
  */
-function _extractFieldsFromFileName(transformedFileName, cb) {
+function _extractFieldsFromFileName(transformedFileName) {
   if (!_isValidFileNameFormat(transformedFileName)) {
     throw new Error(`File name '${transformedFileName}' has invalid format`);
   }
 
-  var ext_fields = [];
+  var extracted_fields = FILE_NAME_FORMAT_REGEXP.exec(transformedFileName);
 
-  transformedFileName.replace(FILE_NAME_FORMAT_REGEXP, function(
-    match,
-    ...fields
-  ) {
-    ext_fields = fields.splice(0, fields.length - 2); //remove the 2 last elements are found offset and origin string
-  });
-
-  return ext_fields;
+  return {
+    base_file_name: extracted_fields[1],
+    server_id: extracted_fields[2],
+    service_name: extracted_fields[3],
+    datetime: extracted_fields[4],
+    random_hash: extracted_fields[5],
+    image_dimension: extracted_fields[6],
+    file_extension: extracted_fields[7]
+  };
 }
 
 function _generateRandomHashHasSixChars() {
@@ -117,7 +126,7 @@ function _generateRandomHashHasSixChars() {
 
 uploadFilePathHandler.prototype.transformFileNameToSave = function(file_name) {
   var service_name = this.SERVICE_NAME;
-  var upload_server_id = process.env.UPLOAD_SERVER_ID;
+  var server_id = process.env.SERVER_ID;
 
   var fileExt = FileUtil.getFileExtension(file_name);
   var baseFileName = file_name.replace(fileExt ? `.${fileExt}` : fileExt, '');
@@ -128,11 +137,11 @@ uploadFilePathHandler.prototype.transformFileNameToSave = function(file_name) {
 
   var sixchars_hash = _generateRandomHashHasSixChars();
 
-  let dirStructureOfFile = [service_name, dateString, sixchars_hash].join('-');
+  let dirStructureOfFile = [service_name, dateString, sixchars_hash].join('_');
   let fileExtHasPoint = _.isEmpty(fileExt) ? fileExt : `.${fileExt}`;
   let fileNameToSave = [
-    `${upload_server_id}_`,
     `${slugifiedBaseFileName}_`,
+    `${server_id}_`,
     dirStructureOfFile,
     fileExtHasPoint
   ].join('');
@@ -163,7 +172,7 @@ uploadFilePathHandler.prototype.transformFileNameToSave = function(file_name) {
  * @param {string} baseFileName
  * @returns
  */
-uploadFilePathHandler.prototype.identifyFilePathWillSave = function(
+uploadFilePathHandler.prototype.identifyAbsoluteFilePathWillSave = function(
   baseFileName
 ) {
   var transformedFileName = this.transformFileNameToSave(baseFileName);
@@ -175,18 +184,31 @@ uploadFilePathHandler.prototype.identifyFilePathWillSave = function(
   return pathWillSave;
 };
 
-uploadFilePathHandler.prototype.identifyRelativeDirPathWillSave = function() {
-  var serviceName = this.SERVICE_NAME;
-  var date = moment();
+uploadFilePathHandler.prototype.identifyRelativeDirPathWillSave = function(
+  transformedFileName
+) {
+  var {
+    service_name,
+    datetime //YYYYMMDD
+  } = _extractFieldsFromFileName(transformedFileName);
 
-  var relativeDirPathWillSave = path.join(
-    serviceName,
-    date.year().toString(),
-    _.padStart((date.month() + 1).toString(), 2, '0'),
-    _.padStart(date.date().toString(), 2, '0')
+  var file_created_at = moment(datetime, 'YYYYMMDD');
+
+  return path.join(
+    service_name,
+    file_created_at.year().toString(),
+    _.padStart((file_created_at.month() + 1).toString(), 2, '0'),
+    _.padStart(file_created_at.date().toString(), 2, '0')
   );
+};
 
-  return relativeDirPathWillSave;
+uploadFilePathHandler.prototype.identifyRelativeFilePathWillSave = function(
+  transformedFileName
+) {
+  return path.join(
+    this.identifyRelativeDirPathWillSave(transformedFileName),
+    transformedFileName
+  );
 };
 
 /**
@@ -196,10 +218,13 @@ uploadFilePathHandler.prototype.identifyRelativeDirPathWillSave = function() {
  * @returns
  */
 uploadFilePathHandler.prototype.identifyAbsoluteDirPathWillSave = function(
+  transformedFileName,
   shouldCreateDirs = true
 ) {
   var uploadDir = this.options.uploadDir || this.ROOT_UPLOAD_DIR;
-  var relativeDirPathWillSave = this.identifyRelativeDirPathWillSave();
+  var relativeDirPathWillSave = this.identifyRelativeDirPathWillSave(
+    transformedFileName
+  );
 
   var dirPathWillSave = path.resolve(uploadDir, relativeDirPathWillSave);
 

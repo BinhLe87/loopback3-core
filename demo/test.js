@@ -8,42 +8,29 @@ process.env.SERVICE_NAME= 'apc';
 process.env.NODE_ENV = 'development';
 
 
-function parseAndReplaceLodashStringPattern(input_string, object_replacements) {
+const HASH_RANDOM_FORMAT = '(\\w{6})';
+    const FILE_NAME_FORMAT_REGEXP = RegExp(
+        `^(.*)_(.*)_([a-zA-Z0-9]{1,3})_(\\d{8})_${HASH_RANDOM_FORMAT}_?([^\.]*)\\.?(\\w*)$`
+    );
 
-var formatted_input_string = input_string;
-    const LODASH_STRING_PATTERN = '<%=\\s*(.*?)\\s*%>';
-var lodash_string_matched = input_string.match(RegExp(LODASH_STRING_PATTERN, 'gi'))
+    //`<baseFileName>_<server_id>_<service_name>_YYYYMMDD_<random_hash_six_chars>.<file_type>`
+function _extractFieldsFromFileName(transformedFileName) {
+    
+    var extracted_fields = FILE_NAME_FORMAT_REGEXP.exec(transformedFileName);
 
-if (!_.isEmpty(lodash_string_matched)) {
+    return {
+        base_file_name: extracted_fields[1],
+        server_id: extracted_fields[2],
+        service_name: extracted_fields[3],
+        datetime: extracted_fields[4],
+        random_hash: extracted_fields[5],
+        image_dimension: extracted_fields[6],
+        file_extension: extracted_fields[7]
+    }
 
-    lodash_string_matched.forEach(origin_ele_pattern => {
-
-        let origin_ele_pattern_matched = RegExp(LODASH_STRING_PATTERN).exec(origin_ele_pattern);
-        
-        if (!_.isEmpty(origin_ele_pattern_matched)) {
-
-            var varible_name = origin_ele_pattern_matched[1];
-            //replace matched pattern with new value
-            let new_value = _.get(object_replacements, varible_name);
-            if (_.isUndefined(new_value)) {
-                throw new Error(`Unspecified replacement value for variable name '${varible_name}'`);
-            }
-            var new_ele_pattern = origin_ele_pattern.replace(varible_name, new_value);
-
-            formatted_input_string = formatted_input_string.replace(origin_ele_pattern, new_value);
-        }
-    });
-
-    return formatted_input_string;
 }
-}    
 
-var input_string = 'Library number <%= %d %>';
-console.log(parseAndReplaceLodashStringPattern(input_string, {
-    '%d': faker.random.number({min: 1, max: 10}),
-    password: 'mat khau'
-}));
-  
+var result = _extractFieldsFromFileName('workbook-1_s01_api_20180928_d98a3e.jpeg');
 
-
+console.log(result);
 

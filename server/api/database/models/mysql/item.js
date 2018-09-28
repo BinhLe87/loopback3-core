@@ -8,6 +8,8 @@ const Promise = require('bluebird');
 const loopback_util = require('../../../helpers/loopbackUtil');
 const URI = require('urijs');
 const { ImageConverter } = require('../../../helpers/imageConverter');
+const FilePathHandler = require('../../../helpers/uploadFilePathHandler');
+const uploadFilePathHandler = new FilePathHandler();
 
 //determine the path of static files
 const fs = require('fs');
@@ -51,7 +53,7 @@ module.exports = function(Item) {
   });
 
   /**
-   * - Transform image file path to image url
+   * - Transform image file name to image url
    */
   Item.afterRemote('**', function(ctx, modelInstance, next) {
     var ctx_result = ctx.result;
@@ -63,10 +65,15 @@ module.exports = function(Item) {
 
         _.forOwn(attribute_values, (field_value, field_name) => {
           if (['high_url', 'medium_url', 'low_url'].includes(field_name)) {
+            var transformed_file_name = field_value;
+            var relative_file_path = uploadFilePathHandler.identifyRelativeFilePathWillSave(
+              transformed_file_name
+            );
+
             var transformed_url = path.join(
               loopback_util.getBaseURL(ctx.req),
-              static_files_dir,
-              field_value
+              static_files_dir, //based on static directory configuration in Loopback#static middleware
+              relative_file_path
             );
 
             //update new image url back to ctx.result
@@ -110,11 +117,9 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
       var [item_type, attribute] = itemTypeAttributeArray;
       var [mobileFileName, desktopFileName] = sharpFilesArray;
 
-      var origin_uri = relativeFilePathWillSave;
-
-      var relativeUploadDir = path.dirname(relativeFilePathWillSave);
-      var desktop_uri = path.join(relativeUploadDir, desktopFileName);
-      var mobile_uri = path.join(relativeUploadDir, mobileFileName);
+      var origin_file_name = path.basename(relativeFilePathWillSave);
+      var desktop_file_name = desktopFileName;
+      var mobile_file_name = mobileFileName;
 
       //Add 3 urls: original url, desktop image url and mobile image url into http response
       ctx.args.data['item_typeId'] = item_type.id;
@@ -122,9 +127,9 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
         {
           id: attribute.id,
           values: {
-            high_url: origin_uri,
-            medium_url: desktop_uri,
-            low_url: mobile_uri
+            high_url: origin_file_name,
+            medium_url: desktop_file_name,
+            low_url: mobile_file_name
           }
         }
       ];

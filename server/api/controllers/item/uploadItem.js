@@ -16,9 +16,17 @@ module.exports = async function uploadItem(app) {
 
   var relativeFilePathWillSave;
   var absoluteFilePathWillSave;
+
   var storage = multer.diskStorage({
     destination: function(req, file, cb) {
-      var pathWillSave = uploadFilePathHandler.identifyAbsoluteDirPathWillSave();
+      var origin_filename = file.originalname;
+      var fileNameWillSave = uploadFilePathHandler.transformFileNameToSave(
+        origin_filename
+      );
+
+      var pathWillSave = uploadFilePathHandler.identifyAbsoluteDirPathWillSave(
+        fileNameWillSave
+      );
       cb(null, pathWillSave);
     },
     filename: function(req, file, cb) {
@@ -29,11 +37,11 @@ module.exports = async function uploadItem(app) {
       cb(null, fileNameWillSave);
 
       absoluteFilePathWillSave = path.join(
-        uploadFilePathHandler.identifyAbsoluteDirPathWillSave(),
+        uploadFilePathHandler.identifyAbsoluteDirPathWillSave(fileNameWillSave),
         fileNameWillSave
       );
       relativeFilePathWillSave = path.join(
-        uploadFilePathHandler.identifyRelativeDirPathWillSave(),
+        uploadFilePathHandler.identifyRelativeDirPathWillSave(fileNameWillSave),
         fileNameWillSave
       );
     }
