@@ -31,7 +31,7 @@ logs
 .env.development
 
 #uploads dir
-upload
+server/api/upload/api
 
 #vendors third-parties that was customized
 server/vendors
