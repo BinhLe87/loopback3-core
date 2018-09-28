@@ -2,6 +2,7 @@
 const app = require('../../../server');
 const Promise = require('bluebird');
 const WorkbookUtil = require('./workbook.util');
+const loopback_util = require('../../../helpers/loopbackUtil');
 
 module.exports = function(Workbook) {
   Workbook.observe('after save', async function(ctx) {
@@ -35,5 +36,43 @@ module.exports = function(Workbook) {
 
     for (let library_workbook in library_workbooks) {
     }
+  });
+
+  Workbook.observe('persist', function(ctx, next) {
+    var instance = ctx.currentInstance;
+    var image_url = instance.image_url;
+    if (typeof image_url == 'string') {
+      instance.image_url = image_url.trim();
+    }
+
+    next();
+  });
+
+  /**
+   * - Transform image file name to image url
+   */
+  Workbook.afterRemote('**', function(ctx, modelInstance, next) {
+    var ctx_result = ctx.result;
+
+    if (_.isEmpty(ctx_result)) return next();
+
+    var item_array = Array.isArray(ctx_result) ? ctx_result : [ctx_result];
+
+    for (let item_ele of item_array) {
+      var image_url = _.get(item_ele, 'image_url');
+
+      if (image_url) {
+        var transformed_file_name = image_url;
+        var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
+          ctx,
+          transformed_file_name
+        );
+
+        //update new image url back to ctx.result
+        item_ele.image_url = transformed_file_url;
+      }
+    }
+
+    next();
   });
 };

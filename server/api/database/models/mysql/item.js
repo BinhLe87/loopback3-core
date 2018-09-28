@@ -55,24 +55,31 @@ module.exports = function(Item) {
    */
   Item.afterRemote('**', function(ctx, modelInstance, next) {
     var ctx_result = ctx.result;
-    var item_attributes = _.get(ctx_result, 'item_attributes');
 
-    if (Array.isArray(item_attributes)) {
-      for (let attribute_item of item_attributes) {
-        var attribute_values = _.get(attribute_item, 'values'); //object type
+    if (_.isEmpty(ctx_result)) return next();
 
-        _.forOwn(attribute_values, (field_value, field_name) => {
-          if (['high_url', 'medium_url', 'low_url'].includes(field_name)) {
-            var transformed_file_name = field_value;
-            var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
-              ctx,
-              transformed_file_name
-            );
+    var item_array = Array.isArray(ctx_result) ? ctx_result : [ctx_result];
 
-            //update new image url back to ctx.result
-            attribute_values[field_name] = transformed_file_url;
-          }
-        });
+    for (let item_ele of item_array) {
+      var item_attributes = _.get(item_ele, 'item_attributes');
+
+      if (Array.isArray(item_attributes)) {
+        for (let attribute_item of item_attributes) {
+          var attribute_values = _.get(attribute_item, 'values'); //object type
+
+          _.forOwn(attribute_values, (field_value, field_name) => {
+            if (['high_url', 'medium_url', 'low_url'].includes(field_name)) {
+              var transformed_file_name = field_value;
+              var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
+                ctx,
+                transformed_file_name
+              );
+
+              //update new image url back to ctx.result
+              attribute_values[field_name] = transformed_file_url;
+            }
+          });
+        }
       }
     }
 
