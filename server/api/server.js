@@ -12,19 +12,25 @@ var loopback = require('loopback');
 var boot = require('loopback-boot');
 const util = require('util');
 const _ = require('lodash');
+const LoopbackUtil = require('./helpers/loopbackUtil');
 
 var app = (module.exports = loopback());
 var { logger } = require('../errors/errorLogger');
 //Set global instance variables
 global.logger = logger;
-
 const { exec } = require('child_process');
 const { formatMessage } = require('../config/components/globalize/globalize');
 global.__i18n = global.__locale = formatMessage;
 global._ = _;
 global.Boom = require('boom');
 _.set(global, 'helper.inspect', require('./helpers/printHelper').inspect);
-
+LoopbackUtil.getStaticFileDir((err, static_file_dir) => {
+  if (!err) {
+    global.STATIC_FILE_DIR = static_file_dir;
+  }
+});
+global.FUNC_CONTRACT = new require('./helpers/functionContract')();
+//----------------------------
 const debug = require('debug')('server.js');
 const semver = require('semver');
 

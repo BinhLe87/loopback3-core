@@ -1,6 +1,9 @@
 'use strict';
 
 const URI = require('urijs');
+const path = require('path');
+const FilePathHandler = require('./uploadFilePathHandler');
+const uploadFilePathHandler = new FilePathHandler();
 
 module.exports = exports = {};
 
@@ -30,10 +33,57 @@ exports.builtInModelNames = _builtInModelNames;
  * @param {ctx.req} req ctx.request
  * @returns
  */
-exports.getBaseURL = function(req) {
+exports.getBaseURL = function getBaseURL(req) {
   var url_parts = {
     protocol: req.protocol,
     hostname: req.get('host')
   };
   return URI.build(url_parts);
+};
+/**
+ * Convert transformed file name like `workbook-1_s01_api_20180928_b8c752_299_168.jpeg` to file url like `http:/localhost:8080/upload/api/2018/09/28/workbook-1_s01_api_20180928_b8c752_299_168.jpeg`
+ *
+ * @param {*} ctx
+ * @param {*} transformed_file_name
+ * @returns
+ */
+exports.convertTransformedFileNameToFileURL = function convertTransformedFileNameToFileURL(
+  ctx,
+  transformed_file_name
+) {
+  var relative_file_path = uploadFilePathHandler.identifyRelativeFilePathWillSave(
+    transformed_file_name
+  );
+
+  var transformed_url = path.join(
+    exports.getBaseURL(ctx.req),
+    _.defaultTo(STATIC_FILE_DIR, ''), //based on GLOBAL static directory configuration in Loopback#static middleware
+    relative_file_path
+  );
+
+  return transformed_url;
+};
+
+exports.getStaticFileDir = function getStaticFileDir(callback) {
+  const fs = require('fs-extra');
+  fs.readFile(path.join(__dirname, '../middleware.json'), (err, data) => {
+    if (err) {
+      callback(err);
+    } else {
+      let middlewares = JSON.parse(data);
+      var static_data = _.get(middlewares, 'files.loopback#static');
+      var filesInArray;
+
+      if (Array.isArray(static_data)) {
+        filesInArray = static_data;
+      } else if (typeof static_data == 'object') {
+        filesInArray = [static_data];
+      }
+
+      var staticUploadURL = _.filter(filesInArray, { name: 'upload' });
+      var static_files_dir = _.get(staticUploadURL[0], 'paths[0]', '');
+
+      callback(null, static_files_dir);
+    }
+  });
 };

@@ -8,8 +8,6 @@ const Promise = require('bluebird');
 const loopback_util = require('../../../helpers/loopbackUtil');
 const URI = require('urijs');
 const { ImageConverter } = require('../../../helpers/imageConverter');
-const FilePathHandler = require('../../../helpers/uploadFilePathHandler');
-const uploadFilePathHandler = new FilePathHandler();
 
 //determine the path of static files
 const fs = require('fs');
@@ -66,18 +64,13 @@ module.exports = function(Item) {
         _.forOwn(attribute_values, (field_value, field_name) => {
           if (['high_url', 'medium_url', 'low_url'].includes(field_name)) {
             var transformed_file_name = field_value;
-            var relative_file_path = uploadFilePathHandler.identifyRelativeFilePathWillSave(
+            var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
+              ctx,
               transformed_file_name
             );
 
-            var transformed_url = path.join(
-              loopback_util.getBaseURL(ctx.req),
-              static_files_dir, //based on static directory configuration in Loopback#static middleware
-              relative_file_path
-            );
-
             //update new image url back to ctx.result
-            attribute_values[field_name] = transformed_url;
+            attribute_values[field_name] = transformed_file_url;
           }
         });
       }
