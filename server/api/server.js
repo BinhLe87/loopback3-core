@@ -29,7 +29,6 @@ LoopbackUtil.getStaticFileDir((err, static_file_dir) => {
     global.STATIC_FILE_DIR = static_file_dir;
   }
 });
-global.FUNC_CONTRACT = new require('./helpers/functionContract')();
 //----------------------------
 const debug = require('debug')('server.js');
 const semver = require('semver');

@@ -18,7 +18,7 @@ module.exports = function(app) {
   var remotes = app.remotes();
   remotes.after('**', function(ctx, next) {
     var req_accept_header = _.get(ctx, 'req.headers.accept');
-    if (req_accept_header == 'loopback/json') {
+    if (req_accept_header == 'loopback/json' || _.isNull(ctx.result)) {
       ctx.resolveReponseOperation =
         jsonAPIFormatterUtil.override_resolveReponseOperation;
       return next();

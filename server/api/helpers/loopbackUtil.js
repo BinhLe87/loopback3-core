@@ -41,8 +41,9 @@ exports.getBaseURL = function getBaseURL(req) {
   return URI.build(url_parts);
 };
 /**
- * Convert transformed file name like `workbook-1_s01_api_20180928_b8c752_299_168.jpeg` to file url like `http:/localhost:8080/upload/api/2018/09/28/workbook-1_s01_api_20180928_b8c752_299_168.jpeg`
- *
+ * Attempt to convert transformed file name like `workbook-1_s01_api_20180928_b8c752_299_168.jpeg`
+ * to file url like `http:/localhost:8080/upload/api/2018/09/28/workbook-1_s01_api_20180928_b8c752_299_168.jpeg`
+ * Notice: If failed, it returns original file name that was passed as an argument
  * @param {*} ctx
  * @param {*} transformed_file_name
  * @returns
@@ -51,14 +52,19 @@ exports.convertTransformedFileNameToFileURL = function convertTransformedFileNam
   ctx,
   transformed_file_name
 ) {
-  var relative_file_path = uploadFilePathHandler.identifyRelativeFilePathWillSave(
-    transformed_file_name
-  );
+  var relative_file_path;
+  try {
+    relative_file_path = uploadFilePathHandler.identifyRelativeFilePathWillSave(
+      transformed_file_name
+    );
+  } catch (transform_error) {}
 
   var transformed_url = path.join(
     exports.getBaseURL(ctx.req),
     _.defaultTo(STATIC_FILE_DIR, ''), //based on GLOBAL static directory configuration in Loopback#static middleware
-    relative_file_path
+    _.isUndefined(relative_file_path)
+      ? transformed_file_name
+      : relative_file_path
   );
 
   return transformed_url;
