@@ -2,30 +2,14 @@
   "name": "library_workbook",
   "base": "PersistedModel",
   "idInjection": true,
-  "indexes": {
-    "workbook_mapping": {
-      "keys": {
-        "workbookId": 1,
-        "workbook_owner_id": 1,
-        "workbook_owner_type": 1
-      },
-      "options": {
-        "unique": true
-      }
-    }
-  },
+  "indexes": {},
   "options": {
     "validateUpsert": true
   },
   "mixins": {
     "TimeStamp": true
   },
-  "properties": {
-    "workbookId": {
-      "type": "number",
-      "required": true
-    }
-  },
+  "properties": {},
   "validations": [],
   "relations": {
     "workbook_owner": {
@@ -34,6 +18,10 @@
         "foreignKey": "workbook_owner_id",
         "discriminator": "workbook_owner_type"
       }
+    },
+    "workbook": {
+      "type": "belongsTo",
+      "model": "workbook"
     }
   },
   "acls": [],

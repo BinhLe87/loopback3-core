@@ -32,10 +32,10 @@
     },
     "workbooks": {
       "type": "hasMany",
-      "model": "library_workbook",
+      "model": "workbook",
+      "through": "library_workbook",
       "polymorphic": {
-        "foreignKey": "workbook_owner_id",
-        "discriminator": "workbook_owner_type"
+        "selector": "workbook_owner"
       }
     },
     "user": {
