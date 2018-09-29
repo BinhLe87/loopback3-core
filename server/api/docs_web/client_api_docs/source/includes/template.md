@@ -1,5 +1,3 @@
-#Item type
-
 ## List item types
 Return a list of item types.
 

@@ -10,14 +10,21 @@ toc_footers:
 includes:
   - api/authen/authen
   - api/intro/loopback_filter
-  - api/item/item
-  - api/item/item_type
-  - api/comment/comment_backend
-  - api/comment/comment
+
+  - api/api_index
+
   - api/user/user_index
   - api/user/user_library
   - api/user/user_note
   - api/user/user_share_workbook
+
+  - api/library/library_index
+  - api/library/library_workbook
+ 
+  - api/item/item
+  - api/item/item_type
+  - api/comment/comment_backend
+  - api/comment/comment
   - errors
 search: true
 ---

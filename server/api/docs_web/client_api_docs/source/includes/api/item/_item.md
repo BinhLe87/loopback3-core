@@ -1,5 +1,3 @@
-#API Reference
-
 #Item
 
 To create two types of items:
