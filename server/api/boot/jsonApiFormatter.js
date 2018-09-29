@@ -17,6 +17,8 @@ const RESOURCE_TYPE = {
 module.exports = function(app) {
   var remotes = app.remotes();
   remotes.after('**', function(ctx, next) {
+    transformFileNameInDBToFileURL(ctx);
+
     var req_accept_header = _.get(ctx, 'req.headers.accept');
     if (req_accept_header == 'loopback/json' || _.isNull(ctx.result)) {
       ctx.resolveReponseOperation =
@@ -653,5 +655,45 @@ async function getCountObjects(ctx) {
     //included query
 
     return undefined;
+  }
+}
+
+/**
+ * check whether ctx.result contains any tranformed file name - in root level -
+ * needs to be transformed to file url be downloadable.
+ *
+ * @param {*} ctx
+ * @return {} The result of tranforming process will be reflected back to ctx argument
+ */
+function transformFileNameInDBToFileURL(ctx) {
+  var ctx_result = ctx.result;
+
+  const FILENAME_ATTRIBUTE_NAME_ARRAY = [
+    'image_url',
+    'high_url',
+    'medium_url',
+    'low_url'
+  ];
+
+  if (_.isEmpty(ctx_result)) return;
+
+  var item_array = Array.isArray(ctx_result) ? ctx_result : [ctx_result];
+
+  for (let item_ele of item_array) {
+    //iterate each of FILENAME_ATTRIBUTE_NAME to fetch its value if exists
+    for (let FILENAME_ATTRIBUTE_NAME of FILENAME_ATTRIBUTE_NAME_ARRAY) {
+      var image_url = _.get(item_ele, FILENAME_ATTRIBUTE_NAME);
+
+      if (!_.isUndefined(image_url)) {
+        var transformed_file_name = image_url;
+        var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
+          ctx,
+          transformed_file_name
+        );
+
+        //update new image url back to ctx.result
+        item_ele.image_url = transformed_file_url;
+      }
+    }
   }
 }
