@@ -134,7 +134,8 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
-          "generate_dummy_data": true
+          "generate_dummy_data": true,
+          "create_admin_account": true
         }
       }
     }

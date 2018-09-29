@@ -21,7 +21,8 @@ module.exports = function() {
   return function responseErrorHandler(err, req, res, next) {
     Boom.boomify(err, {
       statusCode: err.statusCode || 500,
-      message: err.message || 'Internal Server Error. Please try again later'
+      message: err.message || 'Internal Server Error. Please try again later',
+      override: false
     });
 
     var error_response = _.get(err, 'output.payload', {});
