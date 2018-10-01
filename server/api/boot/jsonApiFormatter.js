@@ -685,14 +685,17 @@ function transformFileNameInDBToFileURL(ctx) {
       var image_url = _.get(item_ele, FILENAME_ATTRIBUTE_NAME);
 
       if (!_.isUndefined(image_url)) {
-        var transformed_file_name = image_url;
-        var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
-          ctx,
-          transformed_file_name
-        );
+        if (!RegExp('http.*', 'gi').test(image_url)) {
+          //ensure only transform once
+          var transformed_file_name = image_url;
+          var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
+            ctx,
+            transformed_file_name
+          );
 
-        //update new image url back to ctx.result
-        item_ele.image_url = transformed_file_url;
+          //update new image url back to ctx.result
+          item_ele.image_url = transformed_file_url;
+        }
       }
     }
   }

@@ -13,9 +13,13 @@ const debug = require('debug')('index_fixtures');
  * - Case 3: refer to other field's value: ${<field_referred_to>}
  * - Case 4: lodash string pattern: example is 'Library <%= %d %>'. Now, just support random %d numberic value
  * - Case 5: primitive data type (string, array, number, etc)
+ *
+ *
+ * @param {number} [number_records] the number of records needs to generate dummy data
  */
-async function generate_dummy_data() {
-  const NUMBER_RECORDS = process.env.NUMBER_RECORDS || 200;
+async function generate_dummy_data(number_records) {
+  const NUMBER_RECORDS = number_records || process.env.NUMBER_RECORDS || 200;
+
   if (NUMBER_RECORDS <= 0) {
     debug('Error: value of NUMBER_RECORDS must be greater than 0');
     throw new Error('Error: value of NUMBER_RECORDS must be greater than 0');
@@ -29,13 +33,27 @@ async function generate_dummy_data() {
     },
     userId: {
       func: faker.random.number,
-      args: { min: 1, max: 20 }
+      args: { min: 200, max: 210 }
     }
   });
 
   await require('./model.fixtures')(NUMBER_RECORDS, 'program', {
     name: { func: faker.lorem.words, args: 7 }
   });
+
+  await require('./many-to-many.fixtures')(
+    NUMBER_RECORDS,
+    'library',
+    'workbook',
+    'library_workbook',
+    {
+      ForeignKeySourceModel: 'workbook_owner_id',
+      ForeignKeyDestinationModel: 'workbookId',
+      fields: {
+        workbook_owner_type: 'library'
+      }
+    }
+  );
 
   await require('./many-to-many.fixtures')(
     NUMBER_RECORDS,

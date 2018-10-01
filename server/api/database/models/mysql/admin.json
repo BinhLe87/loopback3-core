@@ -32,6 +32,11 @@
         "generate_dummy_data": {
             "accepts": [
                 {
+                    "arg": "number_records",
+                    "type": "number",
+                    "description": "the number of records needs to generate dummy data"
+                },
+                {
                     "arg": "reset_all",
                     "type": "boolean",
                     "description": "if true, all built-in models also will be reset"

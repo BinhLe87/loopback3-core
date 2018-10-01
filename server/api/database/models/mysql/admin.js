@@ -5,7 +5,12 @@ const generateDummyData = require('../../migrations/generate_fake_data');
 const AdminUtil = require('./admin.util');
 
 module.exports = async function(Admin) {
-  Admin.generate_dummy_data = async function(reset_all = false, options, cb) {
+  Admin.generate_dummy_data = async function(
+    number_records,
+    reset_all = false,
+    options,
+    cb
+  ) {
     var create_table_options = {
       reset_all: reset_all
     };
@@ -13,7 +18,7 @@ module.exports = async function(Admin) {
     await createMyTables(create_table_options);
 
     //start generating dummy data
-    await generateDummyData();
+    await generateDummyData(number_records);
 
     cb(null, 'Done generating dummy data!');
   };
