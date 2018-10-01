@@ -222,7 +222,7 @@
             <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#access-token" class="toc-h2 toc-link" data-title="Access token">Access token</a>
+                    <a href="#get-an-access-token" class="toc-h2 toc-link" data-title="Get an access token">Get an access token</a>
                   </li>
               </ul>
           </li>
@@ -314,8 +314,77 @@
       <div class="content">
         <h1 id='authentication'>Authentication</h1>
 <p><img src="http://dev01.cc.cloud:49173/public/assets/images/authen_workflow_apc.jpg" alt="authentication workflow" /></p>
-<h2 id='access-token'>Access token</h2>
-<p>http://dev01.cc.cloud:49173/docs/#access_token</p>
+<h2 id='get-an-access-token'>Get an access token</h2>
+<ul>
+<li>An access token enables you to complete actions on behalf and with the approval of the resource owner. Most of API call require an access token in request message.</li>
+<li>To get an access token, you pass your credentials in a get access token call.</li>
+</ul>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X POST <span class="se">\</span>
+  http://localhost:8080/api/login <span class="se">\</span>
+  -H <span class="s1">'cache-control: no-cache'</span> <span class="se">\</span>
+  -H <span class="s1">'content-type: application/x-www-form-urlencoded'</span> <span class="se">\</span>
+  -d <span class="s1">'email=admin@coachingcloud.com&amp;password=admin@123'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"admin@coachingcloud.com"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"access_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PprPFhmmdyMmgPDfZ1BgOZvgTIOfGEUjyyCPktomh4ENeYMK8UYEx1v93bPhDLvQ"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">180</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/login</code></p>
+<h3 id='request-body'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>email</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>client email</td>
+</tr>
+<tr>
+<td>password</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>client password</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains access token info</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>access token issued to client</td>
+</tr>
+<tr>
+<td>expires_in</td>
+<td>integer</td>
+<td>The number of seconds after which the token expires. Request another token when this one expires. Notice that: For convenience while developing, access token timeout might set <code>-1</code> which means infinite lifetime.</td>
+</tr>
+</tbody></table>
 <h1 id='introduction'>Introduction</h1><h1 id='filter-search-result'>Filter search result</h1>
 <p>There&#39;re two ways to query Loopback models using either <code>Node API</code> syntax or a <code>REST API</code> syntax that supports a variety of <code>filters</code>. <code>Filters</code> specify criteria for the returned data set. The capabilities and options of the two APIs are the same–the only difference is the syntax used in HTTP requests or in Node function calls. In both cases, LoopBack models return JSON.</p>
 

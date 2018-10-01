@@ -8,7 +8,9 @@ toc_footers:
   - <a href='http://dev01.cc.cloud:49173'>Try it out using Swagger</a>
 
 includes:
-  - api/authen/authen
+  - api/authen/authen_index
+  - api/authen/authen_access_token
+   
   - api/intro/loopback_filter
 
   - api/api_index

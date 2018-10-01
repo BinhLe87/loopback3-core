@@ -20,7 +20,8 @@ module.exports = function login(req, res, next) {
       return res.send(
         JSON.stringify({
           email: email,
-          accessToken: token.id
+          access_token: token.id,
+          expires_in: token.ttl
         })
       );
     }
