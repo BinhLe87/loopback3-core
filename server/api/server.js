@@ -66,6 +66,9 @@ app.start = function() {
       debug('Browse your REST API at %s%s', baseUrl, explorerPath);
     }
 
+    //enable check ACL authorization by default
+    app.enableAuth();
+
     //set unlimited event listeners
     app.setMaxListeners(0);
   });

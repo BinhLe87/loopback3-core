@@ -12,16 +12,14 @@
     "relations": {},
     "acls": [
         {
-            "accessType": "*",
+            "permission": "DENY",
             "principalType": "ROLE",
-            "principalId": "$everyone",
-            "permission": "DENY"
+            "principalId": "$everyone"
         },
         {
             "permission": "ALLOW",
             "principalType": "ROLE",
-            "principalId": "admin",
-            "property": "*"
+            "principalId": "admin"
         },
         {
             "permission": "ALLOW",
@@ -33,6 +31,11 @@
     "methods": {
         "generate_dummy_data": {
             "accepts": [
+                {
+                    "arg": "reset_all",
+                    "type": "boolean",
+                    "description": "if true, all built-in models also will be reset"
+                },
                 {
                     "arg": "options",
                     "type": "object",

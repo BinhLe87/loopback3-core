@@ -12,7 +12,6 @@ exports.workbook_image_url = [
   'carl-heyerdahl-181868-unsplash.jpg',
   'alesia-kazantceva-283291-unsplash.jpg',
   'jeff-sheldon-3231-unsplash.jpg',
-  'lukas-blazek-320606-unsplash.jpg',
   'icons8-team-649367-unsplash.jpg',
   'jenny-hill-205881-unsplash.jpg',
   'rhone-692288-unsplash.jpg',

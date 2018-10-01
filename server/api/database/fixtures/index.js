@@ -21,11 +21,6 @@ async function generate_dummy_data() {
     throw new Error('Error: value of NUMBER_RECORDS must be greater than 0');
   }
 
-  await require('./model.fixtures')(NUMBER_RECORDS, 'user', {
-    password: '$2a$10$yYvIQhagYDSd8GCUsHIW5eXMKAiOfeXdOja1bsXiFFdzJwQvZ.YiS',
-    email: 'admin@coachingcloud.com'
-  });
-
   await require('./model.fixtures')(NUMBER_RECORDS, 'library', {
     name: 'Library number <%= %d %>',
     createdBy: {

@@ -11,7 +11,7 @@ exports.create_admin_account = function() {
       {
         email: 'admin@coachingcloud.com',
         password: 'admin@123',
-        name: 'admin'
+        username: 'admin'
       },
       (create_user_error, created_user) => {
         if (create_user_error) {
