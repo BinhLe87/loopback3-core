@@ -11,15 +11,9 @@
     "BelongsToIntegrityCheck": false
   },
   "properties": {
-    "name": {
+    "title": {
       "type": "string",
-      "index": {
-        "unique": true
-      }
-    },
-    "is_visible": {
-      "type": "boolean",
-      "default": 1
+      "required": true
     }
   },
   "validations": [],
@@ -37,6 +31,17 @@
       "through": "chapter_page"
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "permission": "DENY",
+      "principalType": "ROLE",
+      "principalId": "$everyone"
+    },
+    {
+      "permission": "ALLOW",
+      "principalType": "ROLE",
+      "principalId": "$authenticated"
+    }
+  ],
   "methods": {}
 }

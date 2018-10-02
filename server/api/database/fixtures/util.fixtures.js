@@ -71,7 +71,8 @@ exports.parseRecordFields = function parseRecordFields(fields, options) {
           '%d': faker.random.number({
             min: 1,
             max: number_records_will_generate
-          })
+          }),
+          '%long_text': faker.lorem.paragraphs()
         }
       );
     } else {

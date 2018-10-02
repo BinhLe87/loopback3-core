@@ -12,30 +12,35 @@ const fixtures_util = require('./util.fixtures');
  * Generate fake data for model
  *
  * @param {number} [numberRecordsWillGenerate=0]
- * @param {string} model model name model will to generate data
+ * @param {string} model_name model name model will to generate data
  * @param {Object} fields Each property contains key is field name, value is fakerjs type.
  * In order to refer to other field's value, using format `'${<field_referred_to>}'`
  */
-async function generateModelData(numberRecordsWillGenerate = 0, model, fields) {
+async function generateModelData(
+  numberRecordsWillGenerate = 0,
+  model_name,
+  fields
+) {
   if (numberRecordsWillGenerate <= 0) return;
 
   if (_.isEmpty(fields)) {
-    let err_msg = `Error in ${model}: Must pass fields to declare fields along with faker type`;
+    let err_msg = `Error in ${model_name}: Must pass fields to declare fields along with faker type`;
     debug(err_msg);
     return;
   }
 
-  if (typeof model != 'function') {
-    model = app.loopback.getModel(model);
+  var modelInstance;
+  if (typeof model_name != 'function') {
+    modelInstance = app.loopback.getModel(model_name);
   }
 
-  if (!model) {
-    debug('Not found model ' + model);
+  if (!modelInstance) {
+    debug('Not found model ' + model_name);
     return;
   }
 
   const debug = require('debug')(
-    `${path.basename(__filename)} with model '${model.name}'`
+    `${path.basename(__filename)} with model '${model_name}'`
   );
 
   for (var i = 0; i < numberRecordsWillGenerate; i++) {
@@ -45,10 +50,17 @@ async function generateModelData(numberRecordsWillGenerate = 0, model, fields) {
         numberRecordsWillGenerate: numberRecordsWillGenerate
       });
 
-      var result = await model.create(record);
-      debug(`model '${model.name}': ${util.inspect(result)}`);
+      var result = await modelInstance.create(record);
+
+      if (!result) {
+        debug(
+          `Failed to create model '${model_name}': ${helper.inspect(record)}`
+        );
+      } else {
+        debug(`Created model '${model_name}': ${util.inspect(result)}`);
+      }
     } catch (e) {
-      debug(`Error model '${model.name}': ${util.inspect(e)}`);
+      debug(`Error model '${model_name}': ${util.inspect(e)}`);
     }
   }
 }

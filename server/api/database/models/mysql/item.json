@@ -11,16 +11,16 @@
     "BelongsToIntegrityCheck": false
   },
   "properties": {
-    "name": {
+    "title": {
       "type": "string"
     },
     "item_attributes": {
-      "type": "object",
-      "description": ["contains all attributes' values description"]
+      "type": "string",
+      "description": ["an array of attribute values"]
     },
     "is_public": {
       "type": "boolean",
-      "default": 0
+      "default": 1
     }
   },
   "hidden": ["createdAt", "updatedAt"],

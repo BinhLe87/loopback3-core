@@ -11,7 +11,7 @@
     "BelongsToIntegrityCheck": false
   },
   "properties": {
-    "name": {
+    "title": {
       "type": "string",
       "required": true
     }

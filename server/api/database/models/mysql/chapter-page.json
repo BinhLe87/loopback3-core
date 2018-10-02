@@ -20,7 +20,12 @@
     "TimeStamp": true,
     "BelongsToIntegrityCheck": false
   },
-  "properties": {},
+  "properties": {
+    "page_display_index": {
+      "type": "number",
+      "default": 0
+    }
+  },
   "validations": [],
   "relations": {
     "chapter": {

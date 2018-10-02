@@ -43,7 +43,18 @@
       "model": "user"
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "permission": "DENY",
+      "principalType": "ROLE",
+      "principalId": "$everyone"
+    },
+    {
+      "permission": "ALLOW",
+      "principalType": "ROLE",
+      "principalId": "$authenticated"
+    }
+  ],
   "methods": {},
   "scope": {
     "where": {
