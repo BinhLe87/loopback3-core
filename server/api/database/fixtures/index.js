@@ -71,7 +71,10 @@ async function generate_dummy_data(number_records) {
   );
 
   await require('./model.fixtures')(MIN_NUMBER_RECORDS, 'workbook', {
-    title: faker.name.findName,
+    title: {
+      func: faker.random.arrayElement,
+      args: require('./_sample.data').workbook_title
+    },
     description: faker.lorem.paragraph,
     price: faker.commerce.price,
     owner_id: {

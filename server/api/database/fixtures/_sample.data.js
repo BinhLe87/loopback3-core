@@ -22,6 +22,28 @@ exports.workbook_image_url = [
   'rawpixel-743065-unsplash.jpg'
 ];
 
+exports.workbook_title = [
+  'Tactical Training for New Managers',
+  'Growth Team Management',
+  'Certified Lean Management Professional',
+  'How to Manage & Influence Your Virtual Team',
+  'Management - Leadership, Negotiating, Sales',
+  'Deliver Your Project & Master Project Management',
+  'Performance Management: Objective setting for new managers',
+  'Leadership: Advanced Training for Experienced Managers',
+  'How to Run truly Productive Meetings – and add value',
+  'Onboarding New Employees: Increase retention and performance',
+  'Sales and Relationship Management',
+  '7 steps to effective Performance Management Conversations',
+  'Management for Startups and Entrepreneurs!',
+  'Leadership & Management Essentials: Leadership For Success!',
+  'Entrepreneurship Fundamentals: Business Startup Strategies',
+  'Become a Master of Business Management',
+  'Leadership: Teaching Managers to be Leaders',
+  'Team Management - Getting More Done with the Least Friction',
+  'Operations Management in small businesses: key techniques'
+];
+
 exports.chapter_title = [
   'Project Leadership, Teamwork',
   'Planning and Scheduling',
