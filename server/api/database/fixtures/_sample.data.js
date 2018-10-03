@@ -62,5 +62,3 @@ exports.page_title = [
 ];
 
 exports.item_paragraph_title = exports.page_title;
-
-///////////////////

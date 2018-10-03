@@ -63,11 +63,11 @@ async function _generate_item(NUMBER_RECORDS) {
       args: require('./_sample.data').page_title
     },
     item_typeId: 1,
-    item_attributes: `[
-            {
-                "id": 1,
-                "values": "<%= %long_text %>"
-            }
-        ]`
+    item_attributes: [
+      {
+        id: 1,
+        values: '<%= %long_text %>'
+      }
+    ]
   });
 }

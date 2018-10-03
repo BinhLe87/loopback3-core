@@ -125,13 +125,15 @@ function __validateInputAttributesWithInDB(
 
   for (let attributeInDB of attributesInDB) {
     var sameAttrIds = _.filter(attributesWillCheck, { id: attributeInDB.id });
-    if (_.isEmpty(sameAttrIds)) {
-      throw new Error(
-        `Error: Invalid attributes. The itemtypeId '${itemTypeId}' must contain at least one attribute has id '${
-          attributeInDB.id
-        }' (${attributeInDB.label}) as in template`
-      );
-    }
+
+    // if (_.isEmpty(sameAttrIds)) {
+    //   throw new Error(
+    //     `Error: Invalid attributes. The itemtypeId '${itemTypeId}' must contain at least one attribute has id '${
+    //       attributeInDB.id
+    //     }' (${attributeInDB.label}) as in template`
+    //   );
+    // }
+
     //extra constraints of an attribute in database will has prefix column name is 'op_'
     var extraConstraints = _parseAttributeOptions(attributeInDB);
     for (let attrWillCheck of sameAttrIds) {

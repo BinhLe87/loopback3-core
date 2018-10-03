@@ -15,8 +15,8 @@
       "type": "string"
     },
     "item_attributes": {
-      "type": "string",
-      "description": ["an array of attribute values"]
+      "type": ["object"],
+      "description": "an array of attribute objects"
     },
     "is_public": {
       "type": "boolean",
