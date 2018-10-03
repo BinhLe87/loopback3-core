@@ -280,6 +280,14 @@
               </ul>
           </li>
           <li>
+            <a href="#chapter" class="toc-h1 toc-link" data-title="Chapter">Chapter</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#list-of-pages" class="toc-h2 toc-link" data-title="List of pages">List of pages</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#item" class="toc-h1 toc-link" data-title="Item">Item</a>
               <ul class="toc-list-h2">
                   <li>
@@ -875,6 +883,47 @@ Return the items has <code>id</code> field greater than 20</p>
 </tbody></table>
 <h3 id='response'>Response</h3>
 <p>If successful, return an object contains list of chapters belongs to this specified workbook.</p>
+<h1 id='chapter'>Chapter</h1><h2 id='list-of-pages'>List of pages</h2>
+<p>Return list of pages of a chapter.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/chapters/1/pages?access_token=1YgNIc7EFtjnjuf087mHMVwUmxOTQkaHSAaoIWsnjtlDP2tId4cHCZDmYZY54OtM'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/chapters/{chapter_id}/pages?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>chapter_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The ID of the chapter will retrieve list of pages belongs to.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains list of pages belongs to this specified chapter.</p>
 <h1 id='item'>Item</h1>
 <p>To create two types of items:</p>
 
