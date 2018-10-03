@@ -15,7 +15,7 @@ vote_up_count | integer | Number of times this comment was voted up
 vote_down_count | integer | Number of times this comment was voted down
 status | string | state of the comment
 
-### Notes:
-**References:**
+<aside class="notice">
+References: https://developers.facebook.com/docs/graph-api/reference/v3.1/comment
+</aside>
 
-- [facebook comment](https://developers.facebook.com/docs/graph-api/reference/v3.1/comment)

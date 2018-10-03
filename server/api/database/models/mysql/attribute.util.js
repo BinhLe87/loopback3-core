@@ -126,6 +126,7 @@ function __validateInputAttributesWithInDB(
   for (let attributeInDB of attributesInDB) {
     var sameAttrIds = _.filter(attributesWillCheck, { id: attributeInDB.id });
 
+    //NOTE: No need to check because it will be validated later based on `op_required` property
     // if (_.isEmpty(sameAttrIds)) {
     //   throw new Error(
     //     `Error: Invalid attributes. The itemtypeId '${itemTypeId}' must contain at least one attribute has id '${

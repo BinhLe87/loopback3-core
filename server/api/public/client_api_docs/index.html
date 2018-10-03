@@ -272,6 +272,14 @@
               </ul>
           </li>
           <li>
+            <a href="#workbook" class="toc-h1 toc-link" data-title="Workbook">Workbook</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#list-of-chapters" class="toc-h2 toc-link" data-title="List of chapters">List of chapters</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#item" class="toc-h1 toc-link" data-title="Item">Item</a>
               <ul class="toc-list-h2">
                   <li>
@@ -339,6 +347,8 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre><h3 id='http-request'>HTTP Request</h3>
 <p><strong>POST</strong> <code>http://localhost:8080/api/login</code></p>
+<h3 id='header-parameters'>Header parameters</h3>
+<p>specify <code>Content-Type: application/x-www-form-urlencoded</code></p>
 <h3 id='request-body'>Request body</h3>
 <table><thead>
 <tr>
@@ -386,19 +396,14 @@
 </tr>
 </tbody></table>
 <h1 id='introduction'>Introduction</h1><h1 id='filter-search-result'>Filter search result</h1>
-<p>There&#39;re two ways to query Loopback models using either <code>Node API</code> syntax or a <code>REST API</code> syntax that supports a variety of <code>filters</code>. <code>Filters</code> specify criteria for the returned data set. The capabilities and options of the two APIs are the same–the only difference is the syntax used in HTTP requests or in Node function calls. In both cases, LoopBack models return JSON.</p>
+<p>APC API supports a variety of <code>filters</code>. <code>Filters</code> specify criteria for the returned data set</p>
 
 <p><strong>REST API syntax: specify filters in the HTTP query string</strong></p>
 
 <p>Formular: <code>?filter_filterType_=_spec_&amp;_filterType_=_spec_....</code>
 Sample: <a href="http://dev01.cc.cloud:49173/api/libraries?filter[where][id]=2">http://dev01.cc.cloud:49173/api/libraries?filter[where][id]=2</a></p>
 
-<p><strong>Node API syntax: specify filters in the JSON  string object</strong></p>
-
-<p>Formular: <code>?filter={ Stringified-JSON }</code>
-Sample: <a href="http://dev01.cc.cloud:49173/api/libraries?filter={&quot;where&quot;:{&quot;id&quot;:&quot;2&quot;}}">http://dev01.cc.cloud:49173/api/libraries?filter={&quot;where&quot;:{&quot;id&quot;:&quot;2&quot;}}</a></p>
-
-<p><strong>LoopBack supports the following kinds of filters:</strong></p>
+<p><strong>APC API supports the following kinds of filters:</strong></p>
 
 <ul>
 <li><code>Fields</code> filter</li>
@@ -449,10 +454,6 @@ Sample: <a href="http://dev01.cc.cloud:49173/api/libraries?filter={&quot;where&q
 <td>Include results from related models, for relations such asbelongsToandhasMany.</td>
 </tr>
 </tbody></table>
-
-<aside class="notice">
-For each syntax in a filter, it has two lines: first line is the syntax, second line is the sample. The `Return` section show the sample returned data of the response.
-</aside>
 <h2 id='fields-filter'>Fields filter</h2>
 <blockquote>
 <p>Sample response:</p>
@@ -475,12 +476,6 @@ For each syntax in a filter, it has two lines: first line is the syntax, second 
 <p><code>filter[fields][propertyName]=&lt;true|false&gt;&amp;filter[fields][propertyName]=&lt;true|false&gt;...</code></p>
 
 <p><a href="http://dev01.cc.cloud:49173/api/libraries?filter[fields][id]=true&amp;filter[fields][createdBy]=true">http://dev01.cc.cloud:49173/api/libraries?filter[fields][id]=true&amp;filter[fields][createdBy]=true</a></p>
-
-<p><strong>NODE API</strong></p>
-
-<p><code>{ fields: {propertyName: &lt;true|false&gt;, propertyName: &lt;true|false&gt;, ... } }</code></p>
-
-<p><a href="http%3A%2F%2Fdev01.cc.cloud%3A49173%2Fapi%2Flibraries%3Ffilter%3D%7B%22fields%22%3A%20%7B%22id%22%3A%22true%22%2C%22createdBy%22%3A%22true%22%7D%7D">http://dev01.cc.cloud:49173/api/libraries?filter={&quot;fields&quot;: {&quot;id&quot;:&quot;true&quot;,&quot;createdBy&quot;:&quot;true&quot;}}</a></p>
 <h2 id='limit-filter'>Limit filter</h2>
 <blockquote>
 <p>Sample response:</p>
@@ -511,12 +506,6 @@ For each syntax in a filter, it has two lines: first line is the syntax, second 
 <p><code>filter[limit]=n</code></p>
 
 <p><a href="http://dev01.cc.cloud:49173/api/libraries?filter[limit]=2">http://dev01.cc.cloud:49173/api/libraries?filter[limit]=2</a></p>
-
-<p><strong>NODE API</strong></p>
-
-<p><code>{ limit: n }</code></p>
-
-<p><a href="http%3A%2F%2Fdev01.cc.cloud%3A49173%2Fapi%2Flibraries%3Ffilter%3D%7B%22limit%22%3A%202%7D">http://dev01.cc.cloud:49173/api/libraries?filter={&quot;limit&quot;: 2}</a></p>
 <h2 id='skip-filter'>Skip filter</h2>
 <blockquote>
 <p>Sample response:
@@ -548,12 +537,6 @@ Return the third page has 2 items</p>
 <p><code>?filter[skip]=n</code></p>
 
 <p><a href="http://dev01.cc.cloud:49173/api/libraries?filter[limit]=2&amp;filter[skip]=4">http://dev01.cc.cloud:49173/api/libraries?filter[limit]=2&amp;filter[skip]=4</a></p>
-
-<p><strong>NODE API</strong></p>
-
-<p><code>{ skip: n }</code></p>
-
-<p><a href="http://dev01.cc.cloud:49173/api/libraries?filter={&quot;limit&quot;:&quot;2&quot;,&quot;skip&quot;:&quot;4&quot;}">http://dev01.cc.cloud:49173/api/libraries?filter={&quot;limit&quot;:&quot;2&quot;,&quot;skip&quot;:&quot;4&quot;}</a></p>
 <h2 id='where-filter'>Where filter</h2>
 <blockquote>
 <p>Sample response:
@@ -588,15 +571,6 @@ Return the items has <code>id</code> field greater than 20</p>
 <p><a href="http://dev01.cc.cloud:49173/api/libraries?filter[where][createdBy]=system">http://dev01.cc.cloud:49173/api/libraries?filter[where][createdBy]=system</a> returns items has <code>createdBy</code> equals &#39;system&#39;</p>
 
 <p><a href="http://dev01.cc.cloud:49173/api/libraries?filter[where][id][gt]=20">http://dev01.cc.cloud:49173/api/libraries?filter[where][id][gt]=20</a> returns items has <code>id</code> greater than 20</p>
-
-<p><strong>NODE API</strong></p>
-
-<p><code>{where: {property: value}}</code> or
-<code>{where: {property: {op: value}}}</code></p>
-
-<p><a href="http://dev01.cc.cloud:49173/api/libraries?filter={&quot;where&quot;:{&quot;createdBy&quot;:&quot;system&quot;}}">http://dev01.cc.cloud:49173/api/libraries?filter={&quot;where&quot;:{&quot;createdBy&quot;:&quot;system&quot;}}</a> or</p>
-
-<p><a href="http://dev01.cc.cloud:49173/api/libraries?filter={&quot;where&quot;:{&quot;id&quot;:{&quot;gt&quot;:&quot;20&quot;}}}">http://dev01.cc.cloud:49173/api/libraries?filter={&quot;where&quot;:{&quot;id&quot;:{&quot;gt&quot;:&quot;20&quot;}}}</a></p>
 
 <p><strong>OPERATORS</strong></p>
 
@@ -663,7 +637,7 @@ Return the items has <code>id</code> field greater than 20</p>
 </blockquote>
 <pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
 <p><strong>GET</strong> <code>http://localhost:8080/api/users/me/libraries?access_token={access_token}</code></p>
-<h3 id='request-body'>Request body</h3>
+<h3 id='request-params'>Request params</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -678,7 +652,7 @@ Return the items has <code>id</code> field greater than 20</p>
 <td>string</td>
 <td>Required</td>
 <td></td>
-<td>access token</td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
 </tr>
 </tbody></table>
 <h3 id='response'>Response</h3>
@@ -833,7 +807,7 @@ Return the items has <code>id</code> field greater than 20</p>
 </blockquote>
 <pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
 <p><strong>GET</strong> <code>http://localhost:8080/api/libraries/{library_id}/workbooks</code></p>
-<h3 id='request-body'>Request body</h3>
+<h3 id='request-params'>Request params</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -844,6 +818,13 @@ Return the items has <code>id</code> field greater than 20</p>
 </tr>
 </thead><tbody>
 <tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
 <td>library_id</td>
 <td>number</td>
 <td>Required</td>
@@ -853,6 +834,47 @@ Return the items has <code>id</code> field greater than 20</p>
 </tbody></table>
 <h3 id='response'>Response</h3>
 <p>If successful, return an object contains list of workbooks belongs to this specified library.</p>
+<h1 id='workbook'>Workbook</h1><h2 id='list-of-chapters'>List of chapters</h2>
+<p>Return list of chapters of a workbook.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/workbooks/1/chapters?access_token=1YgNIc7EFtjnjuf087mHMVwUmxOTQkaHSAaoIWsnjtlDP2tId4cHCZDmYZY54OtM'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/workbooks/{workbook_id}/chapters?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>workbook_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The ID of the workbook will retrieve list of chapters belongs to.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains list of chapters belongs to this specified workbook.</p>
 <h1 id='item'>Item</h1>
 <p>To create two types of items:</p>
 
@@ -1326,12 +1348,10 @@ Return the items has <code>id</code> field greater than 20</p>
 <td>state of the comment</td>
 </tr>
 </tbody></table>
-<h3 id='notes'>Notes:</h3>
-<p><strong>References:</strong></p>
 
-<ul>
-<li><a href="https://developers.facebook.com/docs/graph-api/reference/v3.1/comment">facebook comment</a></li>
-</ul>
+<aside class="notice">
+References: https://developers.facebook.com/docs/graph-api/reference/v3.1/comment
+</aside>
 <h1 id='errors'>Errors</h1>
 <p>The APC API uses the following error codes:</p>
 

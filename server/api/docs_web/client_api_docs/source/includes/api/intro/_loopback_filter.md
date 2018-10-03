@@ -2,19 +2,15 @@
 
 # Filter search result
 
-There're two ways to query Loopback models using either `Node API` syntax or a `REST API` syntax that supports a variety of `filters`. `Filters` specify criteria for the returned data set. The capabilities and options of the two APIs are the same–the only difference is the syntax used in HTTP requests or in Node function calls. In both cases, LoopBack models return JSON.
+APC API supports a variety of `filters`. `Filters` specify criteria for the returned data set
 
 **REST API syntax: specify filters in the HTTP query string**
 
 Formular: `?filter_filterType_=_spec_&_filterType_=_spec_....`
 Sample: [http://dev01.cc.cloud:49173/api/libraries?filter[where][id]=2](http://dev01.cc.cloud:49173/api/libraries?filter[where][id]=2)
 
-**Node API syntax: specify filters in the JSON  string object**
 
-Formular: `?filter={ Stringified-JSON }`
-Sample: [http://dev01.cc.cloud:49173/api/libraries?filter={"where":{"id":"2"}}](http://dev01.cc.cloud:49173/api/libraries?filter={"where":{"id":"2"}})
-
-**LoopBack supports the following kinds of filters:**
+**APC API supports the following kinds of filters:**
 
 - `Fields` filter
 - `Limit` filter
@@ -34,9 +30,6 @@ skip (offset)	|Number						|Skip the specified number of instances. (x)
 where			|Object						|Specify search criteria; similar to a WHERE clause in SQL.
 include			|String, Object, or Array	|Include results from related models, for relations such asbelongsToandhasMany. 
 
-<aside class="notice">
-For each syntax in a filter, it has two lines: first line is the syntax, second line is the sample. The `Return` section show the sample returned data of the response.
-</aside>
 
 ## Fields filter
 
@@ -62,12 +55,6 @@ Specify fields to include in or exclude from the response.
 `filter[fields][propertyName]=<true|false>&filter[fields][propertyName]=<true|false>...`
 
 [http://dev01.cc.cloud:49173/api/libraries?filter[fields][id]=true&filter[fields][createdBy]=true](http://dev01.cc.cloud:49173/api/libraries?filter[fields][id]=true&filter[fields][createdBy]=true)
-
-**NODE API**
-
-`{ fields: {propertyName: <true|false>, propertyName: <true|false>, ... } }`
-
-[http://dev01.cc.cloud:49173/api/libraries?filter={"fields": {"id":"true","createdBy":"true"}}](http%3A%2F%2Fdev01.cc.cloud%3A49173%2Fapi%2Flibraries%3Ffilter%3D%7B%22fields%22%3A%20%7B%22id%22%3A%22true%22%2C%22createdBy%22%3A%22true%22%7D%7D)
 
 
 ## Limit filter
@@ -105,13 +92,6 @@ Limits the number of records returned to the specified number (or less).
 [http://dev01.cc.cloud:49173/api/libraries?filter[limit]=2](http://dev01.cc.cloud:49173/api/libraries?filter[limit]=2)
 
 
-**NODE API**
-
-`{ limit: n }`
-
-[http://dev01.cc.cloud:49173/api/libraries?filter={"limit": 2}](http%3A%2F%2Fdev01.cc.cloud%3A49173%2Fapi%2Flibraries%3Ffilter%3D%7B%22limit%22%3A%202%7D)
-
-
 ## Skip filter
 
 > Sample response:
@@ -145,13 +125,6 @@ Omits the specified number of returned records. This is useful, for example, to 
 `?filter[skip]=n`
 
 [http://dev01.cc.cloud:49173/api/libraries?filter[limit]=2&filter[skip]=4](http://dev01.cc.cloud:49173/api/libraries?filter[limit]=2&filter[skip]=4)
-
-
-**NODE API**
-
-`{ skip: n }`
-
-[http://dev01.cc.cloud:49173/api/libraries?filter={"limit":"2","skip":"4"}](http://dev01.cc.cloud:49173/api/libraries?filter={"limit":"2","skip":"4"})
 
 
 ## Where filter
@@ -190,16 +163,6 @@ Specifies a set of logical conditions to match, similar to a WHERE clause in a S
 [http://dev01.cc.cloud:49173/api/libraries?filter[where][createdBy]=system](http://dev01.cc.cloud:49173/api/libraries?filter[where][createdBy]=system) returns items has `createdBy` equals 'system'
 
 [http://dev01.cc.cloud:49173/api/libraries?filter[where][id][gt]=20](http://dev01.cc.cloud:49173/api/libraries?filter[where][id][gt]=20) returns items has `id` greater than 20
-
-
-**NODE API**
-
-`{where: {property: value}}` or
-`{where: {property: {op: value}}}`
-
-[http://dev01.cc.cloud:49173/api/libraries?filter={"where":{"createdBy":"system"}}](http://dev01.cc.cloud:49173/api/libraries?filter={"where":{"createdBy":"system"}}) or
-
-[http://dev01.cc.cloud:49173/api/libraries?filter={"where":{"id":{"gt":"20"}}}](http://dev01.cc.cloud:49173/api/libraries?filter={"where":{"id":{"gt":"20"}}})
 
 **OPERATORS**
 

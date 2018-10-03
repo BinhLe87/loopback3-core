@@ -6155,13 +6155,14 @@ under the License.
   }),
   (window.onpopstate = function() {
     activateLanguage(getLanguageFromQueryString());
-  }),
+  })
   /**
    * lunr - http://lunrjs.com - A bit like Solr, but much smaller and not as bright - 0.5.7
    * Copyright (C) 2014 Oliver Nightingale
    * MIT Licensed
    * @license
-   */ (function() {
+   */,
+  (function() {
     var e = function(t) {
       var n = new e.Index();
       return (

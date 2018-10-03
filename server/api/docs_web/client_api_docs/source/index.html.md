@@ -22,7 +22,10 @@ includes:
 
   - api/library/library_index
   - api/library/library_workbook
- 
+
+  - api/workbook/workbook_index
+  - api/workbook/workbook_chapter
+
   - api/item/item
   - api/item/item_type
   - api/comment/comment_backend

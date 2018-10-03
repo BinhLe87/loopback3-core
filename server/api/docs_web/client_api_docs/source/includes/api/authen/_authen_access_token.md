@@ -25,6 +25,8 @@ curl -X POST \
 ### HTTP Request
 **POST** `http://localhost:8080/api/login`
 
+### Header parameters
+specify `Content-Type: application/x-www-form-urlencoded`
 
 ### Request body
 
