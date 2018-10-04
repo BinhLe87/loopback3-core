@@ -29,6 +29,9 @@ includes:
   - api/chapter/chapter_index
   - api/chapter/chapter_page
 
+  - api/page/page_index
+  - api/page/page_item
+
   - api/item/item
   - api/item/item_type
   - api/comment/comment_backend
