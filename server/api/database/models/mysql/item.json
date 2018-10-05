@@ -44,6 +44,17 @@
       "foreignKey": "item_typeId"
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "permission": "DENY",
+      "principalType": "ROLE",
+      "principalId": "$everyone"
+    },
+    {
+      "permission": "ALLOW",
+      "principalType": "ROLE",
+      "principalId": "admin"
+    }
+  ],
   "methods": {}
 }
