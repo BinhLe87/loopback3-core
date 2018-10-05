@@ -40,6 +40,13 @@ exports.getBaseURL = function getBaseURL(req) {
   };
   return URI.build(url_parts);
 };
+
+exports.buildAbsoluteURLFromReqAndRelativePath = function buildAbsoluteURLFromReqAndRelativePath(
+  req,
+  relative_path
+) {
+  return new URI(relative_path, exports.getBaseURL(req)).toString();
+};
 /**
  * Attempt to convert transformed file name like `workbook-1_s01_api_20180928_b8c752_299_168.jpeg`
  * to file url like `http:/localhost:8080/upload/api/2018/09/28/workbook-1_s01_api_20180928_b8c752_299_168.jpeg`
@@ -59,12 +66,14 @@ exports.convertTransformedFileNameToFileURL = function convertTransformedFileNam
     );
   } catch (transform_error) {}
 
-  var transformed_url = path.join(
-    exports.getBaseURL(ctx.req),
-    _.defaultTo(STATIC_FILE_DIR, ''), //based on GLOBAL static directory configuration in Loopback#static middleware
-    _.isUndefined(relative_file_path)
-      ? transformed_file_name
-      : relative_file_path
+  var transformed_url = exports.buildAbsoluteURLFromReqAndRelativePath(
+    ctx.req,
+    path.join(
+      _.defaultTo(STATIC_FILE_DIR, ''), //based on GLOBAL static directory configuration in Loopback#static middleware
+      _.isUndefined(relative_file_path)
+        ? transformed_file_name
+        : relative_file_path
+    )
   );
 
   return transformed_url;

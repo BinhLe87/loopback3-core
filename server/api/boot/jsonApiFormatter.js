@@ -187,18 +187,12 @@ async function parseArrayOfResources(ctx) {
     var restApiRoot = ctx.req.app.get('restApiRoot');
     var model_plural = _.get(Model, 'settings.plural', resource_name);
 
-    let forcedSelfBaseUrl = path.join(
-      protocolAndHostURL,
-      restApiRoot,
-      model_plural,
-      _.toString(_.get(resource, 'id'))
+    let forcedSelfBaseUrl = loopback_util.buildAbsoluteURLFromReqAndRelativePath(
+      ctx.req,
+      path.join(restApiRoot, model_plural, _.toString(_.get(resource, 'id')))
     );
-    let forcedSelfFullUrl = path.join(
-      protocolAndHostURL,
-      restApiRoot,
-      model_plural,
-      _.toString(_.get(resource, 'id'))
-    );
+
+    let forcedSelfFullUrl = forcedSelfBaseUrl;
 
     var _ctx = _generateSubContext(
       ctx,
@@ -349,7 +343,10 @@ function getSelfBaseUrl(ctx) {
 
   var req = ctx.req;
   var baseUrl = req.baseUrl;
-  var selfBaseUrl = path.join(loopback_util.getBaseURL(req), baseUrl);
+  var selfBaseUrl = loopback_util.buildAbsoluteURLFromReqAndRelativePath(
+    req,
+    baseUrl
+  );
   if (!_.isUndefined(ctx.result.id)) {
     selfBaseUrl = path.join(selfBaseUrl, _.toString(ctx.result.id));
   }
@@ -361,12 +358,14 @@ function getSelfFullUrl(ctx) {
   if (typeof ctx.req.forcedSelfFullUrl != 'undefined') {
     // forcedSelfFullUrl was passed
 
-    return URI.decode(ctx.req.forcedSelfFullUrl);
+    return ctx.req.forcedSelfFullUrl;
   }
 
   var req = ctx.req;
-  var protocolAndHostURL = loopback_util.getBaseURL(req);
-  return URI.decode(path.join(protocolAndHostURL, req.originalUrl));
+  return loopback_util.buildAbsoluteURLFromReqAndRelativePath(
+    req,
+    req.originalUrl
+  );
 }
 
 /**
@@ -393,7 +392,7 @@ function generateRelationLinkSelf(ctx, relation_name) {
  */
 function generateRelationLinkRelated(ctx, relation_name) {
   var selfBaseUrl = getSelfBaseUrl(ctx);
-  return path.join(selfBaseUrl, relation_name);
+  return selfBaseUrl + '/' + relation_name;
 }
 
 function parseRelationships(ctx) {
