@@ -1,5 +1,5 @@
 {
-  "name": "library_workbook",
+  "name": "workbook_owner",
   "base": "PersistedModel",
   "idInjection": true,
   "indexes": {},
@@ -12,7 +12,7 @@
   "properties": {},
   "validations": [],
   "relations": {
-    "workbook_owner": {
+    "workbook_owner_link": {
       "type": "belongsTo",
       "polymorphic": {
         "foreignKey": "workbook_owner_id",
@@ -21,7 +21,8 @@
     },
     "workbook": {
       "type": "belongsTo",
-      "model": "workbook"
+      "model": "workbook",
+      "foreignKey": "workbookId"
     }
   },
   "acls": [],

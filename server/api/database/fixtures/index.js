@@ -46,12 +46,26 @@ async function generate_dummy_data(number_records) {
     NUMBER_RECORDS,
     'library',
     'workbook',
-    'library_workbook',
+    'workbook_owner',
     {
       ForeignKeySourceModel: 'workbook_owner_id',
       ForeignKeyDestinationModel: 'workbookId',
       fields: {
         workbook_owner_type: 'library'
+      }
+    }
+  );
+
+  await require('./many-to-many.fixtures')(
+    NUMBER_RECORDS,
+    'user',
+    'workbook',
+    'workbook_owner',
+    {
+      ForeignKeySourceModel: 'workbook_owner_id',
+      ForeignKeyDestinationModel: 'workbookId',
+      fields: {
+        workbook_owner_type: 'user'
       }
     }
   );
@@ -77,10 +91,6 @@ async function generate_dummy_data(number_records) {
     },
     description: faker.lorem.paragraph,
     price: faker.commerce.price,
-    owner_id: {
-      func: faker.random.number,
-      args: { min: 1, max: NUMBER_RECORDS }
-    },
     image_url: {
       func: faker.random.arrayElement,
       args: require('./_sample.data').workbook_image_url

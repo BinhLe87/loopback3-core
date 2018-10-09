@@ -9,6 +9,9 @@
     "configureModelMerge": {
       "acls": {
         "replace": true
+      },
+      "relations": {
+        "replace": false
       }
     }
   },
@@ -35,6 +38,15 @@
       "type": "hasMany",
       "model": "library",
       "foreignKey": "userId"
+    },
+    "workbooks": {
+      "type": "hasMany",
+      "model": "workbook",
+      "through": "workbook_owner",
+      "polymorphic": {
+        "foreignKey": "workbook_owner_id",
+        "discriminator": "workbook_owner_type"
+      }
     }
   },
   "acls": [

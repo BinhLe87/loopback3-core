@@ -13,9 +13,6 @@
     "title": {
       "type": "string"
     },
-    "owner_id": {
-      "type": "number"
-    },
     "description": {
       "type": "string"
     },
@@ -34,11 +31,27 @@
       "foreignKey": "workbookId",
       "through": "program_workbook"
     },
+    "libraries": {
+      "type": "hasMany",
+      "model": "library",
+      "through": "workbook_owner",
+      "invert": true,
+      "polymorphic": "workbook_owner_link"
+    },
     "chapters": {
       "type": "hasMany",
       "model": "chapter",
       "foreignKey": "workbookId",
       "through": "workbook_chapter"
+    },
+    "user": {
+      "type": "hasMany",
+      "model": "user",
+      "through": "workbook_owner",
+      "invert": true,
+      "polymorphic": {
+        "selector": "workbook_owner"
+      }
     }
   },
   "acls": [

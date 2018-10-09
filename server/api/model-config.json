@@ -59,7 +59,7 @@
     "dataSource": "cc_mysql",
     "public": false
   },
-  "library_workbook": {
+  "workbook_owner": {
     "dataSource": "cc_mysql",
     "public": false
   },

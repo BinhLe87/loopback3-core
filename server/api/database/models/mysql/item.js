@@ -47,8 +47,6 @@ module.exports = function(Item) {
   });
 
   Item.observe('persist', async function(ctx, modelInstance) {
-    //HACK: remove new line \n in string to bypass JSON string validation
-
     await validateItemData(ctx);
   });
 

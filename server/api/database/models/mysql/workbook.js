@@ -24,17 +24,17 @@ module.exports = function(Workbook) {
   Workbook.observe('after delete', async function(ctx) {
     var deleted_workbook_id = ctx.where.id;
 
-    //find relations in library_workbook table
-    const LibraryWorkbookModel = app.models.library_workbook;
+    //find relations in workbook_owner table
+    const LibraryWorkbookModel = app.models.workbook_owner;
     let findLibraryWorkbookPromise = Promise.promisify(
       LibraryWorkbookModel.find
     ).bind(LibraryWorkbookModel);
 
-    var library_workbooks = await findLibraryWorkbookPromise({
+    var workbook_owner = await findLibraryWorkbookPromise({
       where: { workbookId: deleted_workbook_id }
     });
 
-    for (let library_workbook in library_workbooks) {
+    for (let workbook_owner in workbook_owner) {
     }
   });
 
