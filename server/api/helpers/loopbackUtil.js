@@ -12,7 +12,6 @@ var _builtInModelNames = [
   'Email',
   'Application',
   'AccessToken',
-  'User',
   'RoleMapping',
   'Role',
   'ACL',

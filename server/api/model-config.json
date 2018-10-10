@@ -13,10 +13,6 @@
       "./node_modules/loopback-ds-timestamp-mixin"
     ]
   },
-  "User": {
-    "dataSource": "cc_mysql",
-    "public": false
-  },
   "AccessToken": {
     "dataSource": "cc_mysql",
     "public": false,

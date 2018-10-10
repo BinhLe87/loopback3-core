@@ -25,6 +25,7 @@ async function createMyTables(options = {}) {
   });
 
   if (!will_reset_builtin_models) {
+    //not exclude built-in tables
     lbMyModels = lbMyModels.filter(function(value, index) {
       return !builtInModelNames.includes(value);
     });
