@@ -256,6 +256,9 @@
                     <a href="#list-of-user-libraries" class="toc-h2 toc-link" data-title="List of user libraries">List of user libraries</a>
                   </li>
                   <li>
+                    <a href="#list-of-user-workbooks" class="toc-h2 toc-link" data-title="List of user workbooks">List of user workbooks</a>
+                  </li>
+                  <li>
                     <a href="#list-of-user-notes" class="toc-h2 toc-link" data-title="List of user notes">List of user notes</a>
                   </li>
                   <li>
@@ -673,6 +676,40 @@ Return the items has <code>id</code> field greater than 20</p>
 </tbody></table>
 <h3 id='response'>Response</h3>
 <p>If successful, return list of libraries of current user</p>
+<h2 id='list-of-user-workbooks'>List of user workbooks</h2>
+<p>Get list of workbooks owned by the current user</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/users/me/workbooks?access_token=1Q0P2HEc6fULYT3a7DmviI5jJt1Rtv2k9ApEqZ0Imzvj4hjHKu6E6cBN1ojRcZMM'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/users/me/workbooks?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return list of workbooks owned by the current user</p>
 <h2 id='list-of-user-notes'>List of user notes</h2>
 <p>Return a list notes belong to a specific user.</p>
 

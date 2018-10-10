@@ -17,6 +17,7 @@ includes:
 
   - api/user/user_index
   - api/user/user_library
+  - api/user/user_workbook
   - api/user/user_note
   - api/user/user_share_workbook
 
