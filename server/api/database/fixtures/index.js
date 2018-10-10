@@ -34,7 +34,7 @@ async function generate_dummy_data(number_records) {
     },
     userId: {
       func: faker.random.number,
-      args: { min: 200, max: 210 }
+      args: { min: 1, max: 5 }
     }
   });
 
@@ -57,7 +57,7 @@ async function generate_dummy_data(number_records) {
   );
 
   await require('./many-to-many.fixtures')(
-    NUMBER_RECORDS,
+    10,
     'user',
     'workbook',
     'workbook_owner',
@@ -78,7 +78,7 @@ async function generate_dummy_data(number_records) {
   );
 
   await require('./many-to-many.fixtures')(
-    NUMBER_RECORDS,
+    10,
     'user',
     'program',
     'user_program'
@@ -216,7 +216,7 @@ async function generate_dummy_data(number_records) {
   });
 
   await require('./many-to-many.fixtures')(
-    NUMBER_RECORDS,
+    10,
     'user',
     'workbook',
     'workbook_share',
