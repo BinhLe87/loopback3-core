@@ -22,7 +22,19 @@
     "workbook": {
       "type": "belongsTo",
       "model": "workbook",
-      "foreignKey": "workbookId"
+      "foreignKey": "workbookId",
+      "workbook_owner_link": {
+        "type": "belongsTo",
+        "polymorphic": {
+          "foreignKey": "workbook_owner_id",
+          "discriminator": "workbook_owner_type"
+        }
+      }
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "workbook_owner_id"
     }
   },
   "acls": [],

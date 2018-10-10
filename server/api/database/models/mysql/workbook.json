@@ -50,7 +50,8 @@
       "through": "workbook_owner",
       "invert": true,
       "polymorphic": {
-        "selector": "workbook_owner"
+        "foreignKey": "workbook_owner_id",
+        "discriminator": "workbook_owner_type"
       }
     }
   },
