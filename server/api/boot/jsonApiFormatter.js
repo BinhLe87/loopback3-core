@@ -222,6 +222,8 @@ function parsePrimaryResourceName(ctx) {
     );
   }
 
+  resultType = Array.isArray(resultType) ? resultType[0] : resultType;
+
   var primary_resource_name;
   //resultType may is PersistedModel object
   //so it should be checked data type and parse to string type if needed
@@ -272,17 +274,24 @@ function parseIncludedDataAndAttributes(ctx) {
   //included property
   var included = {};
   var includedData = parseIncludedDataAndAttributes_parseIncludedData(ctx);
-  if (!_.isEmpty(includedData)) {
+  if (!_.isNull(includedData)) {
     included.included = includedData;
   }
   var attributes = parseIncludedDataAndAttributes_parseAttributes(ctx);
   return Object.assign({}, attributes, included);
 }
-
+/**
+ *
+ *
+ * @param {*} ctx
+ * @returns {null|empty array|array} null if not exists include filter in query string.
+ * Otherwise returns empty array if not found data of included resources
+ */
 function parseIncludedDataAndAttributes_parseIncludedData(ctx) {
   var relations = parseIncludesFilter(ctx);
 
-  var includedData = [];
+  var includedData = _.isEmpty(relations) ? null : [];
+
   for (let relation_name of relations) {
     let result_data = ctx.result.__data;
 
@@ -320,7 +329,7 @@ function parseIncludedDataAndAttributes_parseIncludedData(ctx) {
     }
   }
 
-  return includedData.length == 0 ? null : includedData;
+  return includedData;
 }
 
 function parseIncludedDataAndAttributes_parseAttributes(ctx) {

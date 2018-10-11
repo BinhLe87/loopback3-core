@@ -31,7 +31,7 @@ module.exports = function() {
       error_response.data = {};
     } else {
       //in development environment, for debug purpose, it will print out details if any
-      error_response.data = err.data || err.stack || {};
+      error_response.data = helper.inspect(err.data || err.stack || {});
     }
 
     //log
