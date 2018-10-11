@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/CoachingCloud/automated-push-content#readme",
   "dependencies": {
+    "replace-in-file": "^3.4.2",
     "shelljs": "^0.8.2"
   },
   "devDependencies": {
