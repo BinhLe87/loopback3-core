@@ -1,4 +1,4 @@
-## List of items
+## List items of a page
 Return list of items of a page.
 
 > Example Request

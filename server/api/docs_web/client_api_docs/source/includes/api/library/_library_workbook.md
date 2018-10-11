@@ -1,4 +1,4 @@
-## List of workbooks
+## List workbooks of a library
 Return list of workbooks of a library.
 
 > Example Request

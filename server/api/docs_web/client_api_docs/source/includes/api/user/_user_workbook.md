@@ -1,4 +1,4 @@
-## List of user workbooks
+## List user workbooks
 Get list of workbooks owned by the current user
 
 > Example Request

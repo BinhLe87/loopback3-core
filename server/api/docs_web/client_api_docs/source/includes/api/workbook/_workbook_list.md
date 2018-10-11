@@ -1,11 +1,11 @@
-## List user libraries
-Get list of libraries of current user
+## List workbooks
+Return a list of workbooks
 
 > Example Request
 
 ```shell
 curl -X GET \
-  'http://localhost:8080/api/users/me/libraries?access_token=1Q0P2HEc6fULYT3a7DmviI5jJt1Rtv2k9ApEqZ0Imzvj4hjHKu6E6cBN1ojRcZMM'
+  'http://localhost:8080/api/workbooks?access_token=HAEnFp0XcppOw1tJmN2cateKqn2blRwlkjoN0xm3qDuOjeAuKHB95k8JiutJ6fDy'
 ```
 
 > Example Response
@@ -14,19 +14,17 @@ curl -X GET \
 ```
 
 ### HTTP Request
-**GET** `http://localhost:8080/api/users/me/libraries?access_token={access_token}`
+**GET** `http://localhost:8080/api/workbooks?access_token={access_token}`
 
-
-### Request params
+### Request body
 
 | Parameter       | Data type | Required? | Default | Description |
 | --------------- | --------- | --------- | ------- | ----------- |
 |access_token | string | Required | | access token. In order to [get access token](http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token), make an API call `/api/login`.|
-
+|[filter][include]=user|string | Optional | | including user owner in each of workbook returns|
 
 
 ### Response
-If successful, return list of libraries of current user
-
+If successful, return an object contains `data` property is an array of workbooks.
 
 

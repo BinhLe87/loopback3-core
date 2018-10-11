@@ -1,4 +1,4 @@
-## List of chapters
+## List chapters of a workbook
 Return list of chapters of a workbook.
 
 > Example Request

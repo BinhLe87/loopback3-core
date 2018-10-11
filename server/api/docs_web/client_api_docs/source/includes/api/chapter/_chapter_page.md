@@ -1,5 +1,5 @@
-## List of pages
-Return list of pages of a chapter.
+## List pages of a chapter
+Return list pages of a chapter.
 
 > Example Request
 

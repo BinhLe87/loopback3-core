@@ -1,4 +1,4 @@
-## List of user notes
+## List user notes
 Return a list notes belong to a specific user.
 
 > Example Request

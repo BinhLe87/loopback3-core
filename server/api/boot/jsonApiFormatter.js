@@ -315,6 +315,7 @@ function parseIncludedDataAndAttributes_parseIncludedData(ctx) {
       if (relation_data_item instanceof ctx.req.app.loopback.PersistedModel) {
         var _attributes = _.clone(relation_data_item.__data);
 
+        //TODO: support contains 'included' property deeper
         var _ctx = _generateSubContext(ctx, relation_model_name, _attributes);
         var _topMember = parseIdAndType(_ctx);
 
