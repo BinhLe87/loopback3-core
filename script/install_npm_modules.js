@@ -3,6 +3,12 @@ const shell = require('shelljs');
 var command = '';
 
 //For API
-command = 'cd server/api && npm ci';
+shell.pushd('server/api');
+command = 'npm ci';
 console.log(command);
-shell.exec(command, {async: true});
+shell.exec(command);
+
+command = 'npm list loopback-datasource-juggler';
+console.log(command);
+shell.exec(command, { async: true });
+

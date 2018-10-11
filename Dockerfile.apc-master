@@ -45,6 +45,6 @@ EXPOSE 8080
 
 #----------------------------------------------------------------------------------------
 #Print info for debugging purpose
-RUN npm list loopback-datasource-juggler; exit 0
+
 
 
