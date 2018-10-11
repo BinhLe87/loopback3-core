@@ -34,17 +34,11 @@ module.exports = function(app) {
         next();
       })
       .catch(function(err) {
-        logger.error(
-          `Error parsing response into jsonApi format for ${getSelfFullUrl(
-            ctx
-          )}`
-        );
-        logger.error(helper.inspect(err));
+        var parse_resource_error = new Error(`Unable to response in jsonAPI format at the moment. 
+            You probably try use raw format by passing the 'Accept' header parameter is 'loopback/json'.`);
+        parse_resource_error.data = err;
 
-        next(
-          new Error(`Unable to response in jsonAPI format at the moment. 
-            You probably try use raw format by passing the 'Accept' header parameter is 'loopback/json'.`)
-        );
+        next(parse_resource_error);
       });
   });
 };
@@ -218,17 +212,35 @@ async function parseArrayOfResources(ctx) {
  * @returns {string} primary resource name
  */
 function parsePrimaryResourceName(ctx) {
-  var resultTypes = ctx.resultType;
+  var resultType = ctx.resultType;
 
-  if (Array.isArray(resultTypes) && resultTypes.length != 1) {
+  if (Array.isArray(resultType) && resultType.length != 1) {
     throw new Error(
       `Only support return 1 resource type, but ${
-        resultTypes.length
+        resultType.length
       } resource types`
     );
   }
 
-  return Array.isArray(resultTypes) ? resultTypes[0] : resultTypes;
+  var primary_resource_name;
+  //resultType may is PersistedModel object
+  //so it should be checked data type and parse to string type if needed
+  if (resultType instanceof ctx.req.app.loopback.PersistedModel) {
+    primary_resource_name = resultType.constructor.name;
+  } else if (typeof resultType == 'string') {
+    primary_resource_name = resultType;
+  }
+
+  if (typeof primary_resource_name != 'string') {
+    var log_message =
+      'parsePrimaryResourceName(): Unable to determine primary resource name';
+    var parse_error = new Error(log_message);
+    parse_error.data = ctx;
+
+    throw parse_error;
+  }
+
+  return primary_resource_name;
 }
 
 function _generateSubContext(
@@ -276,28 +288,35 @@ function parseIncludedDataAndAttributes_parseIncludedData(ctx) {
 
     //determine real model name of relation. Do this way sinece in case of Polymorphic relation,
     //relation name probably is different with real model name of relation
-    let relation_model_name = _.get(
-      result_data,
-      `${relation_name}.constructor.name`
-    );
+    var relation_model_name =
+      typeof relation_name == 'string'
+        ? relation_name
+        : relation_name.constructor.name;
 
     if (_.isEmpty(relation_model_name)) return null;
 
-    let relation_data = result_data[relation_name];
+    let relation_data = result_data[relation_model_name];
 
-    if (relation_data instanceof ctx.req.app.loopback.PersistedModel) {
-      var _attributes = _.clone(relation_data.__data);
+    //standardize relation_data variable always becomes array type
+    var relation_data_array = Array.isArray(relation_data)
+      ? relation_data
+      : [relation_data];
 
-      var _ctx = _generateSubContext(ctx, relation_model_name, _attributes);
-      var _topMember = parseIdAndType(_ctx);
+    for (let relation_data_item of relation_data_array) {
+      if (relation_data_item instanceof ctx.req.app.loopback.PersistedModel) {
+        var _attributes = _.clone(relation_data_item.__data);
 
-      //remove 'id' property from attributes
-      delete _attributes.id;
-      var _included_item = Object.assign({}, _topMember, {
-        attributes: _attributes
-      });
+        var _ctx = _generateSubContext(ctx, relation_model_name, _attributes);
+        var _topMember = parseIdAndType(_ctx);
 
-      includedData.push(_included_item);
+        //remove 'id' property from attributes
+        delete _attributes.id;
+        var _included_item = Object.assign({}, _topMember, {
+          attributes: _attributes
+        });
+
+        includedData.push(_included_item);
+      }
     }
   }
 

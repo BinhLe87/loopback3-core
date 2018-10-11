@@ -1,3 +1,6 @@
+process.env.SERVICE_NAME = 'tes';
+process.env.NODE_ENV = 'development';
+
 var server = require('../../server');
 var _ = require('lodash');
 const { builtInModelNames } = require('../../helpers/loopbackUtil');
