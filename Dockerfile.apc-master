@@ -44,7 +44,8 @@ EXPOSE 8080
 
 
 #----------------------------------------------------------------------------------------
-#Print info for debugging purpose
+#Print info for debugging purpose, only on install env and shared microserivces env
+#For debugging on individual service, write script in script/install_npm_modules.js instead
 
 
 
