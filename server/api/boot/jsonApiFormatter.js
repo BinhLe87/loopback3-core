@@ -151,7 +151,7 @@ async function parseArrayOfResources(ctx) {
   result = Object.assign(result, links);
 
   //meta info
-  var count = await getCountObjects(ctx);
+  var count = await getTotalCountItems(ctx);
   var total_pages;
   var limit = null;
   if (!_.isUndefined(count)) {
@@ -629,84 +629,45 @@ function __replaceURLWithPage(url, desired_page, skip_regx, skip_RestAPI_regx) {
 }
 
 /**
- * get the total of objects
+ * get the total count of items. It will execute original remote method one more time after removing fiters
+ * that affect total count items such as 'limit' filter and 'skip' filer
  *
  * @param {*} ctx
- * @returns {number|undefined} if success, return the real number; otherwise return undefined.
+ * @returns {number|undefined} if success, return the total number; otherwise return undefined.
  */
-async function getCountObjects(ctx) {
-  /**
-   * check whether it is a sort of included query and parse if possible
-   *
-   * @param {*} ctx
-    * @returns {
-    object|null|undefined
-  } if this is sort of an include query, returns an object {
-    primary_resource, included_resource}, otherwise return null. Returns undefined if any error occurs
-   */
-  function __checkAndParseQueryIncluded(ctx) {
-    try {
-      let remote_method_get_included_model_regx = /(.*).prototype.__get__(.*)/;
-      let result_match = remote_method_get_included_model_regx.exec(
-        ctx.methodString
+async function getTotalCountItems(ctx) {
+  return new Promise((resolve, reject) => {
+    var limit = _.get(ctx, 'args.filter.limit');
+
+    if (_.isUndefined(limit)) {
+      var result = ctx.result;
+
+      if (Array.isArray(result)) return resolve(result.length);
+
+      return resolve(undefined);
+    } else {
+      //existing limit on query
+
+      var targetSharedMethod = ctx.method;
+      //remove `limit' filter and `skip` filter that cause incorrect total count
+      var new_args = _.cloneDeep(ctx.args);
+      delete new_args.filter.limit;
+      delete new_args.filter.skip;
+      delete new_args.filter.offset; //paired with `skip` filter
+
+      targetSharedMethod.invoke(
+        ctx.instance || targetSharedMethod.ctor,
+        new_args,
+        {},
+        ctx,
+        (err, result) => {
+          if (Array.isArray(result)) return resolve(result.length);
+
+          return resolve(undefined);
+        }
       );
-
-      if (_.isNull(result_match)) return null;
-
-      let primary_resource = result_match[1];
-      let relation_name = result_match[2];
-
-      //determine target included model from relation name
-      let primary_model = ctx.req.app.loopback.getModel(primary_resource);
-      let relation_object = primary_model.relations[relation_name];
-      let included_resource = relation_object.modelTo.modelName;
-
-      return {
-        primary_resource: primary_resource,
-        included_resource: included_resource
-      };
-    } catch (error) {
-      logger.error(
-        `__checkAndParseQueryIncluded(): Unable to parse primary resource and included resource`,
-        __filename
-      );
-      logger.error(error, __filename);
-      return undefined;
     }
-  }
-
-  var parsedQueryIncluded = __checkAndParseQueryIncluded(ctx);
-
-  if (_.isUndefined(parsedQueryIncluded)) return undefined;
-
-  var targetModelWillCount = _.isNull(parsedQueryIncluded)
-    ? parsePrimaryResourceName(ctx)
-    : parsedQueryIncluded.included_resource;
-
-  var Model = ctx.req.app.loopback.getModel(targetModelWillCount);
-
-  var whereFilters = {};
-  if (ctx.args && ctx.args.filter) {
-    if (
-      typeof ctx.args.filter === 'string' ||
-      ctx.args.filter instanceof String
-    )
-      whereFilters = JSON.parse(ctx.args.filter).where;
-    else {
-      whereFilters = _.get(ctx, 'args.filter.where', {});
-    }
-  }
-
-  var countPromise = Promise.promisify(Model.count).bind(Model);
-  try {
-    return await countPromise(whereFilters);
-  } catch (e) {
-    logger.error(
-      `Can not count the total number of objects for ${getSelfFullUrl(ctx)}`
-    );
-    logger.error(e);
-    return undefined;
-  }
+  });
 }
 
 /**
