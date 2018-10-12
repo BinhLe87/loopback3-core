@@ -4,6 +4,7 @@ const URI = require('urijs');
 const path = require('path');
 const FilePathHandler = require('./uploadFilePathHandler');
 const uploadFilePathHandler = new FilePathHandler();
+const replace_in_file = require('replace-in-file');
 
 module.exports = exports = {};
 
@@ -100,4 +101,58 @@ exports.getStaticFileDir = function getStaticFileDir(callback) {
       callback(null, static_files_dir);
     }
   });
+};
+
+/**
+ * Replace code to make hot fix issue 'Unsupport hasMany invert polymorphic relation' as pull request
+ * https://github.com/strongloop/loopback-datasource-juggler/pull/1574/commits/25afde065fd27a4fb5de9c65883013881babd93e
+ */
+exports.apply_hot_fix = async function apply_hot_fix() {
+  var code_block_would_fix_regx = `if\\s*\\(polymorphic\\)\\s+\\{[\\s\\S]*(.*?throughFilter\\.where\\[polymorphic\\.discriminator\\][\\s\\S]*?)\\}`;
+  var code_hot_fix = `//Notice: Binh hot fix 10-Octorber-2018 \n
+    var throughModel = polymorphic.invert ? relation.modelTo : relation.modelFrom; \n
+    throughFilter.where[polymorphic.discriminator] = throughModel.definition.name; //fixed-flag \n`;
+
+  var file_path_would_fix = path.join(
+    __dirname,
+    '../node_modules/loopback/node_modules/loopback-datasource-juggler/lib/include.js'
+  );
+  //HACK: just for local
+  //var file_path_would_fix ='/Users/steven_lee/Documents/MYDATA/Miscellaneous/Screen shot/test_replace/include.js';
+
+  const options = {
+    files: file_path_would_fix,
+    from: file => RegExp(code_block_would_fix_regx, 'gi'),
+    to: input_match => {
+      var input_match_results = RegExp(code_block_would_fix_regx, 'gi').exec(
+        input_match
+      );
+      if (
+        Array.isArray(input_match_results) &&
+        input_match_results.length > 1
+      ) {
+        //skip if it was replaced previously via check whether exists `//fixed-flag` symbol
+        var matched_string = input_match_results[1];
+
+        if (!matched_string.includes(`//fixed-flag`)) {
+          //was not replaced
+
+          return input_match.replace(matched_string, code_hot_fix);
+        } else {
+          return input_match;
+        }
+      }
+    }
+  };
+
+  try {
+    var changes = await replace_in_file(options);
+    return changes;
+  } catch (error) {
+    logger.error(
+      `apply_hot_fix(): Unable to apply hot fix code for issue 'Unsupport hasMany invert polymorphic relation'`,
+      __filename
+    );
+    throw error;
+  }
 };

@@ -334,21 +334,22 @@ function parseIncludedDataAndAttributes_parseIncludedData(ctx) {
 }
 
 function parseIncludedDataAndAttributes_parseAttributes(ctx) {
-  var result = _.clone(ctx.result);
+  var ctx_result_data = _.clone(ctx.result.__data);
+
   var resource_data = {};
 
   //delete included resources in 'attributes' property since it will be moved to 'included' property
   var includesFilter = parseIncludesFilter(ctx);
   for (let include_filter of includesFilter) {
-    delete result[include_filter];
-    delete result.__data[include_filter];
+    //delete result[include_filter];
+    delete ctx_result_data[include_filter];
   }
 
   //delete 'id' property from attributes since it was moved to top member properties
-  delete result.id;
-  delete result.__data.id;
+  //delete result.id;
+  delete ctx_result_data.id;
 
-  resource_data.attributes = result;
+  resource_data.attributes = ctx_result_data;
 
   return resource_data;
 }
