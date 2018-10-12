@@ -640,49 +640,71 @@ async function getCountObjects(ctx) {
    *
    * @param {*} ctx
     * @returns {
-    object|null
+    object|null|undefined
   } if this is sort of an include query, returns an object {
-    primary_resource, included_resource}, otherwise return null
+    primary_resource, included_resource}, otherwise return null. Returns undefined if any error occurs
    */
   function __checkAndParseQueryIncluded(ctx) {
-    let remote_method_get_included_model_regx = /(.*).prototype.__get__(.*)/;
-    let result_match = remote_method_get_included_model_regx.exec(
-      ctx.methodString
-    );
+    try {
+      let remote_method_get_included_model_regx = /(.*).prototype.__get__(.*)/;
+      let result_match = remote_method_get_included_model_regx.exec(
+        ctx.methodString
+      );
 
-    if (_.isNull(result_match)) return null;
+      if (_.isNull(result_match)) return null;
 
-    let primary_resource = result_match[1];
-    let included_resource = result_match[2];
+      let primary_resource = result_match[1];
+      let relation_name = result_match[2];
 
-    return {
-      primary_resource: primary_resource,
-      included_resource: included_resource
-    };
+      //determine target included model from relation name
+      let primary_model = ctx.req.app.loopback.getModel(primary_resource);
+      let relation_object = primary_model.relations[relation_name];
+      let included_resource = relation_object.modelTo.modelName;
+
+      return {
+        primary_resource: primary_resource,
+        included_resource: included_resource
+      };
+    } catch (error) {
+      logger.error(
+        `__checkAndParseQueryIncluded(): Unable to parse primary resource and included resource`,
+        __filename
+      );
+      logger.error(error, __filename);
+      return undefined;
+    }
   }
 
   var parsedQueryIncluded = __checkAndParseQueryIncluded(ctx);
 
-  if (_.isNull(parsedQueryIncluded)) {
-    //it's not included query
+  if (_.isUndefined(parsedQueryIncluded)) return undefined;
 
-    var primaryResource = parsePrimaryResourceName(ctx);
-    var Model = ctx.req.app.loopback.getModel(primaryResource);
+  var targetModelWillCount = _.isNull(parsedQueryIncluded)
+    ? parsePrimaryResourceName(ctx)
+    : parsedQueryIncluded.included_resource;
 
-    var whereFilters = _.get(ctx, 'args.filter.where', {});
-    var countPromise = Promise.promisify(Model.count).bind(Model);
-    try {
-      return await countPromise(whereFilters);
-    } catch (e) {
-      logger.error(
-        `Can not count the total number of objects for ${getSelfFullUrl(ctx)}`
-      );
-      logger.error(e);
-      return undefined;
+  var Model = ctx.req.app.loopback.getModel(targetModelWillCount);
+
+  var whereFilters = {};
+  if (ctx.args && ctx.args.filter) {
+    if (
+      typeof ctx.args.filter === 'string' ||
+      ctx.args.filter instanceof String
+    )
+      whereFilters = JSON.parse(ctx.args.filter).where;
+    else {
+      whereFilters = _.get(ctx, 'args.filter.where', {});
     }
-  } else {
-    //included query
+  }
 
+  var countPromise = Promise.promisify(Model.count).bind(Model);
+  try {
+    return await countPromise(whereFilters);
+  } catch (e) {
+    logger.error(
+      `Can not count the total number of objects for ${getSelfFullUrl(ctx)}`
+    );
+    logger.error(e);
     return undefined;
   }
 }
