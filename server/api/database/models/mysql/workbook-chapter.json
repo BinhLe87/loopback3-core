@@ -17,7 +17,8 @@
     "validateUpsert": true
   },
   "mixins": {
-    "TimeStamp": true
+    "TimeStamp": true,
+    "BelongsToIntegrityCheck": false
   },
   "properties": {
     "chapter_display_index": {

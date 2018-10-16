@@ -6,6 +6,10 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "TimeStamp": true,
+    "BelongsToIntegrityCheck": false
+  },
   "properties": {
     "code": {
       "type": "string",

@@ -128,12 +128,14 @@ function parseSingleResource(ctx) {
   var toplevelMembers = parseIdAndType(ctx);
   var relationships = parseRelationships(ctx);
   var attributes_included = parseIncludedDataAndAttributes(ctx);
+  var meta_fields = parseMetaFieldsForSingleResouce(ctx);
 
   //combine all object properties into one object
   var response = Object.assign(
     {},
     toplevelMembers,
     attributes_included,
+    meta_fields,
     relationships
   );
 
@@ -348,6 +350,8 @@ function parseIncludedDataAndAttributes_parseAttributes(ctx) {
   //delete 'id' property from attributes since it was moved to top member properties
   //delete result.id;
   delete ctx_result_data.id;
+  delete ctx_result_data.createdAt;
+  delete ctx_result_data.updatedAt;
 
   resource_data.attributes = ctx_result_data;
 
@@ -362,6 +366,28 @@ function parseIdAndType(ctx) {
   resource_data.type = resource_type;
 
   return resource_data;
+}
+
+/**
+ * parse meta fields for single resource, such as createdAt, updatedAt
+ *
+ * @param {*} ctx
+ * @returns {object} returns empty object {} if no meta fields
+ */
+function parseMetaFieldsForSingleResouce(ctx) {
+  var result = ctx.result;
+  var meta = {};
+
+  var createdAt = _.get(result, 'createdAt');
+  var updatedAt = _.get(result, 'updatedAt');
+
+  meta = Object.assign(
+    {},
+    _.isUndefined(createdAt) ? {} : { createdAt: createdAt },
+    _.isUndefined(updatedAt) ? {} : { updatedAt: updatedAt }
+  );
+
+  return _.isEmpty(meta) ? {} : { meta: meta };
 }
 
 function getSelfBaseUrl(ctx) {
@@ -655,6 +681,8 @@ async function getTotalCountItems(ctx) {
       delete new_args.filter.skip;
       delete new_args.filter.offset; //paired with `skip` filter
 
+      //ctx.instance if this query type is 'included' query
+      //targetSharedMethod.ctor if this query is only have primary resource
       targetSharedMethod.invoke(
         ctx.instance || targetSharedMethod.ctor,
         new_args,
