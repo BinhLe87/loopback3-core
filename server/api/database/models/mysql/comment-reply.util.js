@@ -43,9 +43,24 @@ async function adjustReplyCountInParentComment(
 
   Comment.beginTransaction(
     {
-      isolationLevel: 'SERIALIZABLE'
+      isolationLevel: 'SERIALIZABLE',
+      timeout: 10000
     },
     function(err, tx) {
+      tx.observe('timeout', function(context, timeout_next) {
+        logger.error(
+          'adjustReplyCountInParentComment(): Timeout committing transaction',
+          __filename
+        );
+        return next(
+          Boom.badGateway(
+            `Unable to update reply count at the moment.`,
+            __filename +
+              ':adjustReplyCountInParentComment(): Timeout committing transaction'
+          )
+        );
+      });
+
       Comment.findById(
         parent_comment_id,
         { transaction: tx },

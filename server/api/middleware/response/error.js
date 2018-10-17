@@ -18,6 +18,7 @@
  *
  */
 module.exports = function() {
+  //Notice that: if error_code >= 500, boom always hide real messsage by replaced with common message is 'An internal server error occurred'
   return function responseErrorHandler(err, req, res, next) {
     Boom.boomify(err, {
       statusCode: err.statusCode || 500,

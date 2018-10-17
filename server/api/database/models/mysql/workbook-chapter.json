@@ -32,6 +32,7 @@
   "properties": {
     "chapter_display_index": {
       "type": "number",
+      "required": true,
       "default": 0
     }
   },
