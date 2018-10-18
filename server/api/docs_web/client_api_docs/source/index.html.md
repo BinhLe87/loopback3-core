@@ -27,6 +27,7 @@ includes:
   - api/workbook/workbook_index
   - api/workbook/workbook_list
   - api/workbook/workbook_chapter
+  - api/workbook/workbook_move_chapter
 
   - api/chapter/chapter_index
   - api/chapter/chapter_page

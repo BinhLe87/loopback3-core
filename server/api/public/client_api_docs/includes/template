@@ -13,7 +13,7 @@
 <p><strong>GET</strong> <code>http://localhost:8080/api/item_types</code></p>
 <h3 id='header-parameters'>Header parameters</h3>
 <p>specify <code>Content-Type: application/x-www-form-urlencoded</code></p>
-<h3 id='request-body'>Request body</h3>
+<h3 id='request-params'>Request params</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>

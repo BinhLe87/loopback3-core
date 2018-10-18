@@ -18,7 +18,7 @@ curl -X GET --header 'Accept: application/json' 'http://localhost:8080/api/item_
 ### Header parameters
 specify `Content-Type: application/x-www-form-urlencoded`
 
-### Request body
+### Request params
 
 | Parameter       | Data type | Required? | Default | Description |
 | --------------- | --------- | --------- | ------- | ----------- |
