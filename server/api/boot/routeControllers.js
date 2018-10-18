@@ -2,7 +2,8 @@
 const loginController = require('../controllers/authen/login');
 const resiseImageOnFlyController = require('../controllers/item/resizeImageOnFly');
 const {
-  moveChapterPositionController
+  moveChapterPositionController,
+  swapTwoChapterPositionsController
 } = require('../database/models/mysql/workbook-chapter.util');
 
 module.exports = function(server) {
@@ -24,6 +25,11 @@ module.exports = function(server) {
   router.patch(
     `${restApiRoot}/workbooks/:workbookId/chapters/:chapterId/move/:destChapterId?`,
     moveChapterPositionController
+  );
+  //swap two chapter positions within a workbook
+  router.patch(
+    `${restApiRoot}/workbooks/:workbookId/chapters/:chapterId/swap/:destChapterId?`,
+    swapTwoChapterPositionsController
   );
 
   server.use(router);
