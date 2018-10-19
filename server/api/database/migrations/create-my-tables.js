@@ -7,10 +7,14 @@ const Promise = require('bluebird');
  *
  *
  * @param {object} [options]
- * @param {boolean} [options.reset_all] if true, all built-in models also will be reset
+ * @param {boolean} [options.include_builtin_models] if true, all built-in models also will be reset
  */
 async function createMyTables(options = {}) {
-  var will_reset_builtin_models = _.get(options, 'reset_all', false);
+  var will_reset_builtin_models = _.get(
+    options,
+    'include_builtin_models',
+    false
+  );
 
   var ds = server.dataSources.cc_mysql;
   ds.setMaxListeners(0);

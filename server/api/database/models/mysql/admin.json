@@ -37,9 +37,14 @@
                     "description": "the number of records needs to generate dummy data"
                 },
                 {
-                    "arg": "reset_all",
+                    "arg": "include_builtin_models",
                     "type": "boolean",
                     "description": "if true, all built-in models also will be reset"
+                },
+                {
+                    "arg": "only_erase_database",
+                    "type": "boolean",
+                    "description": "if true, only erase database, not generating dummy data"
                 },
                 {
                     "arg": "options",

@@ -5,6 +5,6 @@
         "**/server_api_docs"
     ],
     "execMap": {
-        "js": "node --require pretty-error/start ."
+        "js": "node ."
     }
 }
