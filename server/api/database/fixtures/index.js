@@ -118,7 +118,7 @@ async function generate_dummy_data(number_records) {
     'workbook_chapter',
     {
       fields: {
-        chapter_display_index: {
+        display_index: {
           func: faker.random.number,
           args: { min: 1, max: 5 }
         }
@@ -140,7 +140,7 @@ async function generate_dummy_data(number_records) {
     'chapter_page',
     {
       fields: {
-        page_display_index: {
+        display_index: {
           func: faker.random.number,
           args: { min: 1, max: 5 }
         }

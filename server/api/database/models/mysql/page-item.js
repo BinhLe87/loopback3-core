@@ -12,13 +12,13 @@ module.exports = function(Pageitem) {
       if (valid) {
         let page_id = instance.pageId;
         let item_id = instance.itemId;
-        let new_display_order_id = _.get(instance, 'display_order_id', 0);
+        let new_display_index = _.get(instance, 'display_index', 0);
 
         try {
           await ensureUniqueDisplayOrderIdInPage(
             page_id,
             item_id,
-            new_display_order_id
+            new_display_index
           );
           next();
         } catch (unique_error) {
@@ -34,7 +34,7 @@ module.exports = function(Pageitem) {
 async function ensureUniqueDisplayOrderIdInPage(
   page_id,
   item_id,
-  new_display_order_id
+  new_display_index
 ) {
   var PageItemModel = app.models.page_item;
 
@@ -43,7 +43,7 @@ async function ensureUniqueDisplayOrderIdInPage(
   );
   var found_record = await findDisplayOrderIdPromise({
     where: {
-      display_order_id: new_display_order_id,
+      display_index: new_display_index,
       pageId: page_id,
       itemId: item_id
     }
@@ -51,7 +51,7 @@ async function ensureUniqueDisplayOrderIdInPage(
 
   if (!_.isEmpty(found_record))
     throw new Error(
-      `This display order id '${new_display_order_id}' already exists. Please specify other value`
+      `This display order id '${new_display_index}' already exists. Please specify other value`
     );
 
   return true;

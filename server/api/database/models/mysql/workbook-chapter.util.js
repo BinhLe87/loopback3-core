@@ -80,8 +80,7 @@ async function moveChapterPositionController(req, res, next) {
   if (_.isUndefined(req_destChapterId)) {
     //insert at last position
 
-    var cur_last_position = _.last(sorted_chapter_positions)
-      .chapter_display_index;
+    var cur_last_position = _.last(sorted_chapter_positions).display_index;
     var new_last_position = cur_last_position + 1;
 
     //update new position for this chapter
@@ -128,7 +127,7 @@ async function moveChapterPositionController(req, res, next) {
         try {
           var updated_source_instance = await updatePositionForWorkbookChapterInstance(
             source_instance,
-            sorted_chapter_positions[dest_instance_idx].chapter_display_index,
+            sorted_chapter_positions[dest_instance_idx].display_index,
             transaction_options
           );
 
@@ -140,7 +139,7 @@ async function moveChapterPositionController(req, res, next) {
             if (cur_idx >= dest_instance_idx) {
               var updated_dest_chapter = await updatePositionForWorkbookChapterInstance(
                 cur_instance,
-                cur_instance.chapter_display_index + 1,
+                cur_instance.display_index + 1,
                 transaction_options
               );
             }
@@ -214,13 +213,13 @@ async function swapPositionTwoChapters(source_chapter, dest_chapter) {
       try {
         var updated_source_chapter = await updatePositionForWorkbookChapterInstance(
           source_chapter,
-          cloned_dest_chapter.chapter_display_index,
+          cloned_dest_chapter.display_index,
           transaction_options
         );
 
         var updated_dest_chapter = await updatePositionForWorkbookChapterInstance(
           dest_chapter,
-          cloned_source_chapter.chapter_display_index,
+          cloned_source_chapter.display_index,
           transaction_options
         );
 
@@ -320,7 +319,7 @@ async function updatePositionForWorkbookChapterInstance(
 
   var updated_instance = await updateChapterPositionPromise(
     {
-      chapter_display_index: new_position
+      display_index: new_position
     },
     db_transaction_options
   );
@@ -329,7 +328,7 @@ async function updatePositionForWorkbookChapterInstance(
 }
 
 /**
- * Return list chapters of the workbook, sorted by chapter_display_index ASC
+ * Return list chapters of the workbook, sorted by display_index ASC
  *
  * @param {*} workbook_id
  * @returns {array} list chapters of the workbook
@@ -343,7 +342,7 @@ async function getListChapterPositionsByWorkbookId(workbook_id) {
 
   var chapter_positions = await findChapterPositionsPromise({
     where: { workbookId: workbook_id },
-    order: 'chapter_display_index ASC'
+    order: 'display_index ASC'
   });
 
   return chapter_positions;

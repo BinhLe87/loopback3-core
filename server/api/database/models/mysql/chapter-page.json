@@ -11,6 +11,15 @@
       "options": {
         "unique": true
       }
+    },
+    "unique_display_in_chapter": {
+      "keys": {
+        "chapterId": 1,
+        "display_index": 1
+      },
+      "options": {
+        "unique": true
+      }
     }
   },
   "options": {
@@ -21,7 +30,7 @@
     "BelongsToIntegrityCheck": false
   },
   "properties": {
-    "page_display_index": {
+    "display_index": {
       "type": "number",
       "default": 0
     }

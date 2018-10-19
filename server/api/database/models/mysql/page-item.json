@@ -11,6 +11,15 @@
       "options": {
         "unique": true
       }
+    },
+    "unique_display_in_page": {
+      "keys": {
+        "pageId": 1,
+        "display_index": 1
+      },
+      "options": {
+        "unique": true
+      }
     }
   },
   "options": {
@@ -21,14 +30,14 @@
     "BelongsToIntegrityCheck": false
   },
   "properties": {
-    "display_order_id": {
+    "display_index": {
       "type": "number",
       "required": true,
       "default" : 0
     }
   },
   "scope": {
-    "order": "display_order_id ASC"
+    "order": "display_index ASC"
   },
   "validations": [],
   "relations": {
