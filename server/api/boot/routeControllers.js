@@ -1,10 +1,7 @@
 'use strict';
 const loginController = require('../controllers/authen/login');
 const resiseImageOnFlyController = require('../controllers/item/resizeImageOnFly');
-const {
-  moveChapterPositionController,
-  swapTwoChapterPositionsController
-} = require('../database/models/mysql/workbook-chapter.util');
+const moveChapterPositionController = require('../controllers/moveItemPositionController');
 
 module.exports = function(server) {
   // Install a `/` route that returns server status
@@ -21,15 +18,10 @@ module.exports = function(server) {
   );
 
   //-----------workbook
-  //move chapter position within a workbook
+  //move position of a chapter/page/item within a corresponding workbook/chapter/page
   router.patch(
-    `${restApiRoot}/workbooks/:workbookId/chapters/:chapterId/move/:destChapterId?`,
+    `${restApiRoot}/:scope_model/:scope_model_id/:from_model/:from_model_id/:action/:to_model_id?`,
     moveChapterPositionController
-  );
-  //swap two chapter positions within a workbook
-  router.patch(
-    `${restApiRoot}/workbooks/:workbookId/chapters/:chapterId/swap/:destChapterId?`,
-    swapTwoChapterPositionsController
   );
 
   server.use(router);
