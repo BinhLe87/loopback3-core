@@ -45,4 +45,8 @@ If successful, return an object contains access token info
 |expires_in | integer | The number of seconds after which the token expires. Request another token when this one expires. Notice that: For convenience while developing, access token timeout might set `-1` which means infinite lifetime.
 
 
-
+<aside class="notice">
+For development, please pass following credentials to login with admin role: <br>
+- email=admin@coachingcloud.com <br>
+- password=admin@123 <br>
+</aside>

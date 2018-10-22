@@ -16,7 +16,7 @@ curl -X GET \
 ### HTTP Request
 **GET** `http://localhost:8080/api/workbooks?access_token={access_token}`
 
-### Request body
+### Request params
 
 | Parameter       | Data type | Required? | Default | Description |
 | --------------- | --------- | --------- | ------- | ----------- |

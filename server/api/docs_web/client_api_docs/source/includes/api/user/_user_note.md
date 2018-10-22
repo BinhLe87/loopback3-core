@@ -96,7 +96,7 @@ curl -X GET \
 
 ### Header parameters
 
-### Request query string
+### Request params
 
 | Parameter       | Data type | Required? | Default | Description |
 | --------------- | --------- | --------- | ------- | ----------- |

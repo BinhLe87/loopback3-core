@@ -1,5 +1,5 @@
 ---
-title: API Reference
+title: APC - API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - json
@@ -31,9 +31,11 @@ includes:
 
   - api/chapter/chapter_index
   - api/chapter/chapter_page
+  - api/chapter/chapter_move_page
 
   - api/page/page_index
   - api/page/page_item
+  - api/page/page_move_item
 
   - api/item/item
   - api/item/item_type

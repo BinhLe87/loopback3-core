@@ -41,7 +41,11 @@ exports.workbook_title = [
   'Become a Master of Business Management',
   'Leadership: Teaching Managers to be Leaders',
   'Team Management - Getting More Done with the Least Friction',
-  'Operations Management in small businesses: key techniques'
+  'Operations Management in small businesses: key techniques',
+  'First 90 days in Your New Role',
+  'Leadership Skills Part One',
+  'Leadership Skills Part Two',
+  '12 month Personal Development Plan'
 ];
 
 exports.chapter_title = [
