@@ -1,58 +1,37 @@
 'use strict';
 var Promise = require('bluebird');
 var app = require('../../../server');
+var {
+  moveItemPosition
+} = require('../../../controllers/moveItemPositionController');
 
 module.exports = function(Pageitem) {
   Pageitem.validatesPresenceOf('pageId', 'itemId');
 
-  Pageitem.observe('before save', function(ctx, next) {
+  Pageitem.observe('before save', async function(ctx, next) {
     var instance = ctx.instance || ctx.currentInstance;
 
-    instance.isValid(async function(valid) {
-      if (valid) {
-        let page_id = instance.pageId;
-        let item_id = instance.itemId;
-        let new_display_index = _.get(instance, 'display_index', 0);
+    //if param 'insert_after_item_id' is passed, insert new item right below `insert_after_item_id` in page
+    //otherwise, by default, it will insert in last position in page if insert_after_item_id = undefined
+    var insert_after_item_id = _.get(ctx, 'options.insert_after_item_id');
+    //create url_params argument to call function in api 'moving position of item within a page'
+    var url_params = {
+      scope_model: 'pages',
+      scope_model_id: instance.pageId,
+      from_model: 'items',
+      from_model_id: instance.itemId,
+      to_model_id: insert_after_item_id,
+      action: 'move'
+    };
 
-        try {
-          await ensureUniqueDisplayOrderIdInPage(
-            page_id,
-            item_id,
-            new_display_index
-          );
-          next();
-        } catch (unique_error) {
-          next(unique_error);
-        }
-      } else {
-        next();
+    var { new_position_index: new_position } = await moveItemPosition(
+      url_params,
+      {
+        skip_update_from_model_position: true
       }
-    });
-  });
-};
-
-async function ensureUniqueDisplayOrderIdInPage(
-  page_id,
-  item_id,
-  new_display_index
-) {
-  var PageItemModel = app.models.page_item;
-
-  var findDisplayOrderIdPromise = Promise.promisify(PageItemModel.find).bind(
-    PageItemModel
-  );
-  var found_record = await findDisplayOrderIdPromise({
-    where: {
-      display_index: new_display_index,
-      pageId: page_id,
-      itemId: item_id
-    }
-  });
-
-  if (!_.isEmpty(found_record))
-    throw new Error(
-      `This display order id '${new_display_index}' already exists. Please specify other value`
     );
 
-  return true;
-}
+    //update back display_index
+    instance.display_index = new_position;
+  });
+};

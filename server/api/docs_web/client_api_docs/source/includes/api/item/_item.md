@@ -14,25 +14,21 @@ Note that: two APIs have the same URL endpoint, but they have different `Content
 
 ```shell
 curl -X POST \
-  http://localhost:8080/api/items \
-  -H 'cache-control: no-cache' \
-  -H 'content-type: application/json' \
+  curl -X POST \
+  'http://localhost:8080/api/items?access_token=sqlrd4F3Q9Xi5vXmS0dtRvFobcVaRTNGug2AGHauhlSo3hTbvHTbCtHFPDs7ZMqV' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: 1b731813-359f-4775-bc2a-1927dd764a79' \
   -d '{
   "name": "item_video",
   "item_attributes": [
   	{
   	  "id": 1,
-        "values": [
-        {
-            "value": "title"         
-        }]
+       "value": "title_new"
     },
     {
-     "id": 9,
-        "values": [
-        {
-            "value": "https://coachingcloud.com/img/platform-intro.png"
-        }]
+     "id": 3,
+      "value": "video_link_new"
     }
   ],
   "is_public": 0,
@@ -44,64 +40,60 @@ curl -X POST \
 
 ```json
 {
-    "id": 344,
+    "id": 203,
     "type": "item",
     "attributes": {
         "name": "item_video",
         "item_attributes": [
             {
                 "id": 1,
-                "values": [
-                    {
-                        "value": "title"
-                    }
-                ]
+                "value": "title_new"
             },
             {
-                "id": 9,
-                "values": [
-                    {
-                        "value": "https://coachingcloud.com/img/platform-intro.png"
-                    }
-                ]
+                "id": 3,
+                "value": "video_link_new"
             }
         ],
         "is_public": false,
         "item_typeId": 1
     },
+    "meta": {
+        "createdAt": "2018-10-23T03:08:17.642Z",
+        "updatedAt": "2018-10-23T03:08:17.642Z"
+    },
     "relationships": {
         "pages": {
             "links": {
-                "self": "http:/localhost:8080/api/items/344?filter[include][pages]",
-                "related": "http:/localhost:8080/api/items/344/pages"
+                "self": "http:/localhost:8080/api/items/203?filter[include][pages]",
+                "related": "http:/localhost:8080/api/items/203/pages"
             }
         },
         "attributes": {
             "links": {
-                "self": "http:/localhost:8080/api/items/344?filter[include][attributes]",
-                "related": "http:/localhost:8080/api/items/344/attributes"
+                "self": "http:/localhost:8080/api/items/203?filter[include][attributes]",
+                "related": "http:/localhost:8080/api/items/203/attributes"
             }
         },
         "itemtype": {
             "links": {
-                "self": "http:/localhost:8080/api/items/344?filter[include][itemtype]",
-                "related": "http:/localhost:8080/api/items/344/itemtype"
+                "self": "http:/localhost:8080/api/items/203?filter[include][itemtype]",
+                "related": "http:/localhost:8080/api/items/203/itemtype"
             }
         }
     },
     "schema": {
-        "name": {
+        "title": {
             "type": "string"
         },
         "item_attributes": {
-            "type": "object",
-            "description": [
-                "contains all attributes' values description"
-            ]
+            "type": [
+                "object"
+            ],
+            "description": "an array of attribute objects"
         },
         "is_public": {
             "type": "boolean",
-            "default": 0
+            "default": 1
         },
         "id": {
             "id": 1,
@@ -121,7 +113,7 @@ curl -X POST \
 ```
 
 ### HTTP Request
-**POST** `http://localhost:8080/api/items`
+**POST** `http://localhost:8080/api/items?access_token={access_token}`
 
 ### Header parameters
 
@@ -133,8 +125,9 @@ specify `Content-Type: application/json`
 | --------------- | --------- | --------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | name            | string    | optional  |         | item name                                                                                                                                                                                                                                   |
 | item_typeId     | number    | required  |         | item type ID                                                                                                                                                                                                                                |
-| is_public       | boolean   | optional  | false   | if true, it would be publicly published after creating                                                                                                                                                                                      |
-| item_attributes | array     | required  |         | array of attribute objects. Each `item_attributes` object has `id` property as attribute id and `values` property is array of values of this attribute. Note that: the `value` will be validated depend on the data type of item_attribute. |
+| is_public       | boolean   | optional  | true   | if true, it would be publicly published after creating                                                                                                                                                                                      |
+| item_attributes | array     | required  |         | array of attribute objects. Each `item_attributes` object has `id` property as attribute id and `value` property is either an array type or primitive type  contain value(s) of this attribute. Note that: the `value` property will be validated depend on the data type of item_attribute. |
+|insert_after_item_id | number | optional | | if value is 0, it will insert at the top position of the page; if value is specified item id, it will insert below that specified item; otherwise, if value is unspecified, it will insert at the last position of the page. 
 
 ### Response
 If successful, return a object contains generated item ID along with attributes, relationship, e.g

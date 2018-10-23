@@ -4,7 +4,9 @@ const Promise = require('bluebird');
 const debug = require('debug')('workbook-chapter.util.js');
 const Joi = require('joi');
 
-exports = module.exports = moveItemPositionController;
+exports = module.exports = {};
+exports.moveItemPositionController = moveItemPositionController;
+exports.moveItemPosition = moveItemPosition;
 
 /**
  * validate url params of moving position api
@@ -110,20 +112,23 @@ async function moveItemPositionController(req, res, next) {
         break;
 
       case 'move':
-        await moveItemPosition(url_params);
+        var { new_position_string } = await _moveItemPosition(url_params);
 
         var success_message_template = _.template(
-          `Updated from_model_id '<%= from_model_id %>' with new position is right before to_model_id '<%= to_model_id %>'!`
+          `Updated from_model_id '<%= from_model_id %>' with new position is <%= new_position_string %>!`
         );
 
         res.send(
           success_message_template({
             from_model_id: url_params.from_model_id,
-            to_model_id: url_params.to_model_id
+            new_position_string: new_position_string
           })
         );
 
         break;
+
+      default:
+        next();
     }
   } catch (move_error) {
     next(move_error);
@@ -156,12 +161,27 @@ async function swapTwoItemPositions(url_params) {
 }
 
 /**
+ * public method, so it will validate url params before call actual _moveItemPosition()
+ *
+ * @param {*} url_params
+ * @param {object} [options]
+ * @param {boolean} [options.skip_update_from_model_position] if true means only move down affected items but from_model
+ * @returns {string} if success, return new position string and new position index of from_model, otherwise throw an error instance of Boom if any errors occurred
+ */
+async function moveItemPosition(url_params, options) {
+  url_params = _validateURLParams(url_params);
+  return await _moveItemPosition(url_params, options);
+}
+
+/**
  * move item position
  *
  * @param {*} url_params
- * @returns {string} if success, return new position string of from_model, otherwise throw an error instance of Boom if any errors occurred
+ * @param {object} [options]
+ * @param {boolean} [options.skip_update_from_model_position] if true means only move down affected items but from_model
+ * @returns {string} if success, return new position string and new position index of from_model, otherwise throw an error instance of Boom if any errors occurred
  */
-async function moveItemPosition(url_params) {
+async function _moveItemPosition(url_params, options = {}) {
   var sorted_positions = await getListPositionsInModelScope(
     url_params.relation_model_name,
     url_params.scope_model_foreign_key,
@@ -172,7 +192,8 @@ async function moveItemPosition(url_params) {
     sorted_positions,
     url_params.from_model_foreign_key,
     url_params.from_model_id,
-    url_params.to_model_id
+    url_params.to_model_id,
+    options
   );
 
   var { from_model_instance, to_model_instance } = existing_result;
@@ -184,85 +205,124 @@ async function moveItemPosition(url_params) {
     var new_last_position = cur_last_position + 1;
 
     //update new position for this chapter
-    await updatePositionForWorkbookChapterInstance(
-      from_model_instance,
-      new_last_position
-    );
+    if (options.skip_update_from_model_position != true) {
+      await updatePositionForWorkbookChapterInstance(
+        from_model_instance,
+        new_last_position
+      );
+    }
 
-    return 'last position in model scope';
+    return {
+      new_position_string: 'last position in model scope',
+      new_position_index: new_last_position
+    };
   } else {
-    //move some chapters down in the list from the chapter was at position destination position
-    var to_model_intance_idx = _.findIndex(sorted_positions, to_model_instance);
+    function ___willMoveToTopPosition(url_params) {
+      return url_params.to_model_id == 0 ? true : false;
+    }
 
-    //update new position for source chapter and move down position for chapters starts from destination chapter
+    var from_model_new_position;
+    var new_position_string;
+    var will_move_down_from_array_idx;
+
+    if (___willMoveToTopPosition(url_params)) {
+      from_model_new_position = 0;
+      new_position_string = `top position in model scope`;
+      will_move_down_from_array_idx = 0; //including 'from_model' item, it will update new position later
+    } else {
+      //move some items down in the list from the item was at destination position
+      var to_model_intance_idx = _.findIndex(
+        sorted_positions,
+        to_model_instance
+      );
+      var cloned_to_model_instance = _.cloneDeep(
+        sorted_positions[to_model_intance_idx]
+      );
+
+      from_model_new_position = cloned_to_model_instance.display_index + 1;
+      new_position_string = `right below to_model_id '${
+        url_params.to_model_id
+      }'`;
+      will_move_down_from_array_idx = to_model_intance_idx + 1;
+    }
+
     const relation_model = app.models[url_params.relation_model_name];
-    var cloned_to_model_instance = _.cloneDeep(
-      sorted_positions[to_model_intance_idx]
-    );
 
-    relation_model.beginTransaction(
-      {
-        isolationLevel: 'READ COMMITTED',
-        timeout: 10000 //10 seconds
-      },
-      async function(err, tx) {
-        const transaction_options = { transaction: tx };
+    return new Promise((resolve, reject) => {
+      relation_model.beginTransaction(
+        {
+          isolationLevel: 'READ COMMITTED',
+          timeout: 10000 //10 seconds
+        },
+        async function(err, tx) {
+          const transaction_options = { transaction: tx };
 
-        //FIXME: not sure why timeout event is fired even if transaction was committed
-        // tx.observe('timeout', function (context, timeout_next) {
+          //FIXME: not sure why timeout event is fired even if transaction was committed
+          // tx.observe('timeout', function (context, timeout_next) {
 
-        //     logger.error('moveChapterPositionController(): Timeout committing transaction', __filename);
-        //     return next(
-        //         Boom.badGateway(
-        //             `Unable to move position of chapterId is '${req_chapterId}' in workbookId '${req_workbookId}' at the moment.`,
-        //             __filename + ':moveChapterPositionController(): Timeout committing transaction'
-        //         )
-        //     );
-        // });
+          //     logger.error('moveChapterPositionController(): Timeout committing transaction', __filename);
+          //     return next(
+          //         Boom.badGateway(
+          //             `Unable to move position of chapterId is '${req_chapterId}' in workbookId '${req_workbookId}' at the moment.`,
+          //             __filename + ':moveChapterPositionController(): Timeout committing transaction'
+          //         )
+          //     );
+          // });
 
-        try {
-          //update new position for instance has current higher position first in order to avoid 'duplicate unique key' error
-          //and only move down instances start from from_instance in sorted_positions array
-          var cur_idx;
-          for (
-            cur_idx = sorted_positions.length - 1;
-            cur_idx >= to_model_intance_idx;
-            cur_idx--
-          ) {
-            let cur_instance = sorted_positions[cur_idx];
+          try {
+            //update new position for instance has current higher position first in order to avoid 'duplicate unique key' error
+            //and only move down instances start from will_move_down_from_array_idx in sorted_positions array
+            //NOTE: moving order matters: move down other items first, then move `from_model` later
+            var cur_idx;
+            for (
+              cur_idx = sorted_positions.length - 1;
+              cur_idx >= will_move_down_from_array_idx;
+              cur_idx--
+            ) {
+              let cur_instance = sorted_positions[cur_idx];
 
-            var updated_to_model = await updatePositionForWorkbookChapterInstance(
-              cur_instance,
-              cur_instance.display_index + 1,
-              transaction_options
+              var updated_to_model = await updatePositionForWorkbookChapterInstance(
+                cur_instance,
+                cur_instance.display_index + 1,
+                transaction_options
+              );
+            }
+
+            if (options.skip_update_from_model_position != true) {
+              var updated_from_model = await updatePositionForWorkbookChapterInstance(
+                from_model_instance,
+                from_model_new_position,
+                transaction_options
+              );
+            }
+
+            tx.commit()
+              .then(function() {
+                resolve({
+                  new_position_string: new_position_string,
+                  new_position_index: from_model_new_position
+                });
+              })
+              .catch(function(commit_err) {
+                throw commit_err;
+              });
+          } catch (update_position_error) {
+            tx.rollback(function(rollback_err) {});
+
+            reject(
+              Boom.badImplementation(
+                `Unable to move position of from_model_id is '${
+                  url_params.from_model_id
+                }' in scope_model_id '${
+                  url_params.scope_model_id
+                }' at the moment.`,
+                update_position_error
+              )
             );
           }
-
-          var updated_from_model = await updatePositionForWorkbookChapterInstance(
-            from_model_instance,
-            cloned_to_model_instance.display_index,
-            transaction_options
-          );
-
-          tx.commit()
-            .then(function() {
-              return true;
-            })
-            .catch(function(commit_err) {
-              throw commit_err;
-            });
-        } catch (update_position_error) {
-          tx.rollback(function(rollback_err) {});
-
-          throw Boom.badImplementation(
-            `Unable to move position of from_model_id is '${
-              url_params.from_model_id
-            }' in scope_model_id '${url_params.scope_model_id}' at the moment.`,
-            update_position_error
-          );
         }
-      }
-    );
+      );
+    });
   }
 }
 
@@ -351,32 +411,39 @@ async function swapPositionFromModelAndToModel(
  * @param {string} from_model_foreign_key
  * @param {number} from_model_id
  * @param {undefined|number} to_model_id if undefined, it will ignore checking
+ * @param {object} [options] validation options
+ * @param {boolean} [options.skip_update_from_model_position] if true means only move down affected items but from_model
  * @returns {Error|object} if valid, return an object contains instances {from_model_instance, to_model_instance}, otherwise throw an error instance of Boom
  */
 function _checkAllModelIDsExists(
   list_positions,
   from_model_foreign_key,
   from_model_id,
-  to_model_id
+  to_model_id,
+  options = {}
 ) {
   if (_.isEmpty(list_positions)) {
     throw Boom.notFound(`Not found any items in the model scope'`);
   }
 
   //check whether from_model_id exists in model scope
-  var found_from_model_instance = _.find(list_positions, item => {
-    return item[from_model_foreign_key] == from_model_id;
-  });
+  var found_from_model_instance;
+  if (options.skip_update_from_model_position != true) {
+    found_from_model_instance = _.find(list_positions, item => {
+      return item[from_model_foreign_key] == from_model_id;
+    });
 
-  if (_.isUndefined(found_from_model_instance)) {
-    throw Boom.notFound(
-      `Not found from_model id is '${from_model_id}' in the model scope`
-    );
+    if (_.isUndefined(found_from_model_instance)) {
+      throw Boom.notFound(
+        `Not found from_model id is '${from_model_id}' in the model scope`
+      );
+    }
   }
 
-  //in case to_model_id argument is passed, check whether the to_model_id exists in model scope
+  //in case to_model_id argument is passed and not equal 0 (not case of moving top/last position),
+  //check whether the to_model_id exists in model scope
   var found_to_model_instance;
-  if (!_.isUndefined(to_model_id)) {
+  if (!_.isUndefined(to_model_id) && to_model_id != 0) {
     found_to_model_instance = _.find(list_positions, item => {
       return item[from_model_foreign_key] == to_model_id;
     });

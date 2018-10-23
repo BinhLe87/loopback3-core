@@ -94,12 +94,10 @@ async function validateAttributesByItemtypeId(
   );
 
   if (!_.isEmpty(validateErrorMessages)) {
-    var validError = new Error();
-    validError.message =
-      'One of attribute value is invalid. Please check again';
-    validError.data = validateErrorMessages;
-
-    throw validError;
+    throw boom.badRequest(
+      'One of attribute values is invalid. Please check again',
+      validateErrorMessages
+    );
   }
 
   return attributesWillCheck;
@@ -208,7 +206,7 @@ function ___validateValuesByJoi(
       },
       function(err, result) {
         if (err) {
-          let err_message_ele = `attribute_id:${attrWillCheck.id}`;
+          let err_message_ele = `item_attributes[id=${attrWillCheck.id}]`;
           validateErrorMessages[err_message_ele] = {};
           validateErrorMessages[err_message_ele].attribute_code =
             attributeInDB.code;

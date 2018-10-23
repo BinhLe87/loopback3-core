@@ -8,6 +8,7 @@ const Promise = require('bluebird');
 const loopback_util = require('../../../helpers/loopbackUtil');
 const URI = require('urijs');
 const { ImageConverter } = require('../../../helpers/imageConverter');
+const app = require('../../../server');
 
 //determine the path of static files
 const fs = require('fs');
@@ -168,6 +169,24 @@ async function validateItemData(ctx) {
     data.item_attributes,
     data.item_typeId
   );
+
+  //check whether the insert_after_item_id exists if this param was passed and not equal 0 (will insert in top list)
+  if (
+    !_.isUndefined(data.insert_after_item_id) &&
+    data.insert_after_item_id !== 0
+  ) {
+    var ItemModel = app.models.item;
+    var findByIdPromise = Promise.promisify(ItemModel.findById).bind(ItemModel);
+
+    var dest_item_id = await findByIdPromise(data.insert_after_item_id);
+
+    if (_.isNull(dest_item_id)) {
+      throw boom.notFound(
+        `Not found insert_after_item_id with id '${data.insert_after_item_id}'`
+      );
+    }
+  }
+  _.set(ctx, 'options.insert_after_item_id', data.insert_after_item_id);
 }
 
 function determineItemTypeIdAndAttributeIdAsync(ctx, savedRelativeFilePath) {

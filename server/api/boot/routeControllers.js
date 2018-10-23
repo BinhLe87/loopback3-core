@@ -1,7 +1,9 @@
 'use strict';
 const loginController = require('../controllers/authen/login');
 const resiseImageOnFlyController = require('../controllers/item/resizeImageOnFly');
-const moveChapterPositionController = require('../controllers/moveItemPositionController');
+const {
+  moveItemPositionController
+} = require('../controllers/moveItemPositionController');
 
 module.exports = function(server) {
   // Install a `/` route that returns server status
@@ -21,7 +23,7 @@ module.exports = function(server) {
   //move position of a chapter/page/item within a corresponding workbook/chapter/page
   router.patch(
     `${restApiRoot}/:scope_model/:scope_model_id/:from_model/:from_model_id/:action/:to_model_id?`,
-    moveChapterPositionController
+    moveItemPositionController
   );
 
   server.use(router);
