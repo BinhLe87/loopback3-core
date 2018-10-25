@@ -20,7 +20,7 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -H 'Postman-Token: 1b731813-359f-4775-bc2a-1927dd764a79' \
   -d '{
-  "name": "item_video",
+  "title": "item_video",
   "item_attributes": [
   	{
   	  "id": 1,
@@ -43,7 +43,7 @@ curl -X POST \
     "id": 203,
     "type": "item",
     "attributes": {
-        "name": "item_video",
+        "title": "item_video",
         "item_attributes": [
             {
                 "id": 1,
@@ -123,11 +123,11 @@ specify `Content-Type: application/json`
 
 | Parameter       | Data type | Required? | Default | Description                                                                                                                                                                                                                                 |
 | --------------- | --------- | --------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| name            | string    | optional  |         | item name                                                                                                                                                                                                                                   |
+| title            | string    | optional  |         | item title                                                                                                                                                                                                                                   |
 | item_typeId     | number    | required  |         | item type ID                                                                                                                                                                                                                                |
 | is_public       | boolean   | optional  | true   | if true, it would be publicly published after creating                                                                                                                                                                                      |
 | item_attributes | array     | required  |         | array of attribute objects. Each `item_attributes` object has `id` property as attribute id and `value` property is either an array type or primitive type  contain value(s) of this attribute. Note that: the `value` property will be validated depend on the data type of item_attribute. |
-|insert_after_item_id | number | optional | | if value is 0, it will insert at the top position of the page; if value is specified item id, it will insert below that specified item; otherwise, if value is unspecified, it will insert at the last position of the page. 
+
 
 ### Response
 If successful, return a object contains generated item ID along with attributes, relationship, e.g

@@ -36,11 +36,13 @@ includes:
   - api/page/page_index
   - api/page/page_item
   - api/page/page_move_item
+  - api/page/page_create_item
 
-  - api/item/item
   - api/item/item_type
+  
   - api/comment/comment_backend
   - api/comment/comment
+  
   - errors
 search: true
 ---
