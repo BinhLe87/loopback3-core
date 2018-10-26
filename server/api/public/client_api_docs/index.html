@@ -311,6 +311,9 @@
                   <li>
                     <a href="#create-item-at-specific-position-in-page" class="toc-h2 toc-link" data-title="Create item at specific position in page">Create item at specific position in page</a>
                   </li>
+                  <li>
+                    <a href="#duplicate-an-item-in-a-page" class="toc-h2 toc-link" data-title="Duplicate an item in a page">Duplicate an item in a page</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -1423,7 +1426,83 @@ In order to swap positions between two items, you can use API instead:<br>
 </tr>
 </tbody></table>
 <h3 id='response'>Response</h3>
-<p>If successful, return a object contains generated item ID along with attributes, relationship, e.g</p>
+<p>If successful, return an object contains created item ID along with attributes, relationship, e.g</p>
+<h2 id='duplicate-an-item-in-a-page'>Duplicate an item in a page</h2>
+<p>Duplicate an item in a page and place it at specific position relying on <code>insert_after_item_id</code> parameter in request body.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X PATCH <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/pages/1/items/15/move/29?access_token=sqlrd4F3Q9Xi5vXmS0dtRvFobcVaRTNGug2AGHauhlSo3hTbvHTbCtHFPDs7ZMqV'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="err">HTTP</span><span class="w"> </span><span class="err">Response</span><span class="w"> </span><span class="err">Status</span><span class="w"> </span><span class="err">code</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/pages/{page_id}/items?access_token={access_token}</code></p>
+<h3 id='header-parameters'>Header parameters</h3>
+<p>specify <code>Content-Type: application/json</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>page_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The page identifier will contain created item.</td>
+</tr>
+</tbody></table>
+<h3 id='request-body'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>duplicate_from_item_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>source item identifier will be copied from</td>
+</tr>
+<tr>
+<td>insert_after_item_id</td>
+<td>number</td>
+<td>optional</td>
+<td></td>
+<td>if value is 0, it will insert at the top position of the page; if value is specified item id, it will insert below that specified item; otherwise, if value is unspecified, it will insert at the last position of the page</td>
+</tr>
+<tr>
+<td>is_public</td>
+<td>boolean</td>
+<td>optional</td>
+<td>true</td>
+<td>if true, it would be publicly published after creating</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains created item ID along with attributes, relationship, e.g</p>
 <h1 id='item-type'>Item type</h1><h2 id='list-item-types'>List item types</h2>
 <p>Return a list of item types.</p>
 

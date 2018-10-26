@@ -25,7 +25,7 @@ HTTP Response Status code: 200
 |access_token | string | Required | | access token. In order to [get access token](http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token), make an API call `/api/login`.|
 |workbook_id | number | Required | | workbook identifier contains chapter will move position|
 |from_chapter_id | number | Required | | chapter identifier that moves from (called as `from_chapter`)|
-|to_chapter_id | number | Optional | | chapter identifier that moves to (called as `to_chapter`). If unspecified, the `from_chapter` will move to the last position in workbook, otherwise it will move the `from_chapter` to exact position of `to_chapter` and also move series of chapters down the list starting from the `to_chapter` that was at to_position.|
+|to_chapter_id | number | Optional | | chapter identifier that moves to (called as `to_chapter`). If value is `0`, the `from_chapter` will move to the top position in workbook. If value is `null` or unspecified, the `from_chapter` will move to the last position in workbook. Otherwise, if value is specified `to_chapter` identifier, the `from_chapter` will move to right below `to_chapter` and also move series of chapters down the list starting from the chapters was currently below `to_chapter`.|
 
 
 ### Response

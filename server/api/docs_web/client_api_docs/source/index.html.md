@@ -37,6 +37,7 @@ includes:
   - api/page/page_item
   - api/page/page_move_item
   - api/page/page_create_item
+  - api/page/page_duplicate_item
 
   - api/item/item_type
   

@@ -1,5 +1,5 @@
-## Move position of a item within a page
-Move position of a item within a page
+## Move position of an item in a page
+Move position of an item in a page
 
 > Example Request
 
@@ -25,7 +25,7 @@ HTTP Response Status code: 200
 |access_token | string | Required | | access token. In order to [get access token](http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token), make an API call `/api/login`.|
 |page_id | number | Required | | page identifier contains item will move position|
 |from_item_id | number | Required | | item identifier that moves from (called as `from_item`)|
-|to_item_id | number | Optional | | item identifier that moves to (called as `to_item`). If unspecified, the `from_item` will move to the last position in page, otherwise it will move the `from_item` to exact position of `to_item` and also move series of items down the list starting from the `to_item` that was at to_position.|
+|to_item_id | number | Optional | | item identifier that moves to (called as `to_item`). If value is `0`, the `from_item` will move to the top position in page. If value is `null` or unspecified, the `from_item` will move to the last position in page. Otherwise, if value is specified `to_item` identifier, the `from_item` will move to right below `to_item` and also move series of items down the list starting from the items was currently below `to_item`.|
 
 
 ### Response

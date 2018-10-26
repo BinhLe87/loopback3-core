@@ -130,7 +130,7 @@ specify `Content-Type: application/json`
 
 
 ### Response
-If successful, return a object contains generated item ID along with attributes, relationship, e.g
+If successful, return an object contains created item ID along with attributes, relationship, e.g
 
 ##Upload item
 
