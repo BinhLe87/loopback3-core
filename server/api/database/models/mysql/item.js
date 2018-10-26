@@ -47,6 +47,50 @@ module.exports = function(Item) {
     }
   });
 
+  /**
+   * In case of duplicating an item, fetch source item's data and fill in candidate item will be created
+   *
+   * @param {object} modelInstance model instance
+   */
+  Item.observe('before save', async function(ctx) {
+    var data = ctx.instance || ctx.data;
+    var ItemModel = app.models.item;
+
+    var is_duplicate_item_req =
+      typeof data.duplicate_from_item_id == 'undefined' ? false : true;
+
+    if (is_duplicate_item_req) {
+      var duplicate_from_item_id = data.duplicate_from_item_id;
+
+      var findByIdPromise = Promise.promisify(ItemModel.findById).bind(
+        ItemModel
+      );
+      var source_item = await findByIdPromise(duplicate_from_item_id);
+
+      if (_.isNull(source_item)) {
+        throw boom.notFound(
+          `Not found duplicate_from_item_id with id '${duplicate_from_item_id}'`
+        );
+      } else {
+        //skip some fields will not be copied from
+        ctx.instance = _.mergeWith(
+          ctx.instance,
+          source_item,
+          (objValue, srcValue, key, object, source) => {
+            if (['createdAt'].includes(key)) {
+              return objValue;
+            }
+          }
+        );
+
+        ctx.instance.id = undefined;
+        ctx.instance.updatedAt = undefined;
+
+        debug(ctx.instance);
+      }
+    }
+  });
+
   Item.observe('persist', async function(ctx, modelInstance) {
     await validateItemData(ctx);
   });
