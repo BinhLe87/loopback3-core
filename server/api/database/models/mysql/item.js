@@ -77,7 +77,7 @@ module.exports = function(Item) {
           ctx.instance,
           source_item,
           (objValue, srcValue, key, object, source) => {
-            if (['createdAt'].includes(key)) {
+            if (!_.isUndefined(objValue)) {
               return objValue;
             }
           }

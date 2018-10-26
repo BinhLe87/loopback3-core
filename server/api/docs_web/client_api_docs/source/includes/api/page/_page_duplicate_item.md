@@ -34,10 +34,14 @@ specify `Content-Type: application/json`
 
 | Parameter       | Data type | Required? | Default | Description |
 | --------------- | --------- | --------- | ------- | ----------- |
-| duplicate_from_item_id | number | Required | | source item identifier will be copied from|
+|duplicate_from_item_id | number | Required | | source item identifier will be copied from|
 |insert_after_item_id | number | optional | | if value is 0, it will insert at the top position of the page; if value is specified item id, it will insert below that specified item; otherwise, if value is unspecified, it will insert at the last position of the page |
 | is_public       | boolean   | optional  | true   | if true, it would be publicly published after creating |
 
 
 ### Response
 If successful, return an object contains created item ID along with attributes, relationship, e.g
+
+<aside class="notice">
+In order to override any properties in source item, you can pass that property along with value-will-override in request body.
+</aside>
