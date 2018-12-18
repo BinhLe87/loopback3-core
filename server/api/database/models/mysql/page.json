@@ -34,6 +34,11 @@
       "foreignKey": "pageId",
       "through": "page_item"
     },
+    "page_items": {
+      "type": "hasMany",
+      "model": "page_item",
+      "foreignKey": "pageId"
+    },
     "user_notes": {
       "type": "hasMany",
       "model": "user_note",
