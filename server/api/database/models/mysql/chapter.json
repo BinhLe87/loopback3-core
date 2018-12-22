@@ -29,6 +29,11 @@
       "model": "page",
       "foreignKey": "chapterId",
       "through": "chapter_page"
+    },
+    "chapter_pages": {
+      "type": "hasMany",
+      "model": "chapter_page",
+      "foreignKey": "chapterId"
     }
   },
   "acls": [
