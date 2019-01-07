@@ -8,11 +8,13 @@ const uploadFilePathHandler = new FilePathHandler();
 /**
  * Process to store uploaded file in calculated path
  *
- * @param {*} app
+ * @param {*} req http request
+ * @param {*} res http response
+ * @param {object} options options
  * @returns {object} if upload OK, return object {relativeFilePathWillSave, absoluteFilePathWillSave}, otherwise throw err
  */
-module.exports = async function uploadItem(app) {
-  multer.bind(app);
+module.exports = async function uploadItem(req, res, options) {
+  //multer.bind(app);
 
   var relativeFilePathWillSave;
   var absoluteFilePathWillSave;
@@ -63,7 +65,7 @@ module.exports = async function uploadItem(app) {
   //handle when upload finished
   var my_uploadPromise = Promise.promisify(my_upload).bind(my_upload);
 
-  await my_uploadPromise(app.req, app.res);
+  await my_uploadPromise(req, res);
 
   return {
     relativeFilePathWillSave: relativeFilePathWillSave,

@@ -26,6 +26,9 @@ module.exports = function(app) {
       return next();
     }
 
+    if (ctx.resultType === 'upload' && !_.isUndefined(ctx.resultType_alias)) {
+      ctx.resultType = ctx.resultType_alias;
+    }
     ctx.req.originalUrl = URI.decode(ctx.req.originalUrl); //to avoid issues when using regx in url
     //format response follow jsonapi.org standard
     parseResouceFactory(ctx)

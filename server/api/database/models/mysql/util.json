@@ -1,0 +1,51 @@
+{
+  "name": "util",
+  "plural": "util",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {},
+  "indexes": {},
+  "validations": [],
+  "relations": {},
+  "acls": [{
+      "permission": "DENY",
+      "principalType": "ROLE",
+      "principalId": "$everyone"
+    },
+    {
+      "permission": "ALLOW",
+      "principalType": "ROLE",
+      "principalId": "$authenticated"
+    }
+  ],
+  "methods": {
+    "upload": {
+      "accepts": [
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        },
+        {
+          "arg": "options",
+          "type": "object",
+          "http": "optionsFromRequest"
+        }
+      ],
+      "returns": {
+        "arg": "body",
+        "type": "upload",
+        "root": true
+      },
+      "http": {
+        "verb": "post",
+        "path": "/upload"
+      }
+    }
+  }
+}

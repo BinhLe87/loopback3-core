@@ -2,6 +2,17 @@
   "name": "item_attribute_template",
   "base": "PersistedModel",
   "idInjection": true,
+  "indexes": {
+    "item_type_attribute_idx": {
+      "keys": {
+        "item_typeId": 1,
+        "attributeId": 1
+      },
+      "options": {
+        "unique": false
+      }
+    }
+  },
   "options": {
     "validateUpsert": true
   },

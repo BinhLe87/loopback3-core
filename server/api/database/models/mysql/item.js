@@ -140,7 +140,8 @@ module.exports = function(Item) {
  */
 async function uploadFileAndAddFilePathIntoCtx(ctx) {
   var { relativeFilePathWillSave, absoluteFilePathWillSave } = await uploadItem(
-    ctx
+    ctx.req,
+    ctx.res
   );
 
   await Promise.all([

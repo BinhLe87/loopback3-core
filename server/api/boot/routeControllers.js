@@ -4,6 +4,9 @@ const resiseImageOnFlyController = require('../controllers/item/resizeImageOnFly
 const {
   moveItemPositionController
 } = require('../controllers/moveItemPositionController');
+const {
+  uploadFileController
+} = require('../controllers/upload/uploadFileController');
 
 module.exports = function(server) {
   // Install a `/` route that returns server status
@@ -18,6 +21,9 @@ module.exports = function(server) {
     `${process.env.API_RESIZE_IMAGE_ROOT_URL}/?*`,
     resiseImageOnFlyController
   );
+
+  //-----------upload files
+  //router.post(`${restApiRoot}/upload`, uploadFileController);
 
   //-----------workbook
   //move position of a chapter/page/item within a corresponding workbook/chapter/page
