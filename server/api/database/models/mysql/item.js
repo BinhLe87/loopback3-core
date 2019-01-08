@@ -3,7 +3,7 @@ const path = require('path');
 const debug = require('debug')(path.basename(__filename));
 const util = require('util');
 const AttributeUtil = require('./attribute.util');
-const uploadItem = require('../../../controllers/item/uploadItem');
+const { saveFile } = require('../../../controllers/upload/uploadFile');
 const Promise = require('bluebird');
 const loopback_util = require('../../../helpers/loopbackUtil');
 const URI = require('urijs');
@@ -139,7 +139,7 @@ module.exports = function(Item) {
  * @param {*} ctx
  */
 async function uploadFileAndAddFilePathIntoCtx(ctx) {
-  var { relativeFilePathWillSave, absoluteFilePathWillSave } = await uploadItem(
+  var { relativeFilePathWillSave, absoluteFilePathWillSave } = await saveFile(
     ctx.req,
     ctx.res
   );

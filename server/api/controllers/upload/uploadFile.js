@@ -1,12 +1,16 @@
-const uploadItem = require('../item/uploadItem');
 const Joi = require('joi');
 const app = require('../../server');
 const Promise = require('bluebird');
 const path = require('path');
 const assert = require('assert');
+const multer = require('multer'),
+  FilePathHandler = require('../../helpers/uploadFilePathHandler');
+
+const uploadFilePathHandler = new FilePathHandler();
 
 exports = module.exports = {};
 exports.uploadFileController = uploadFileController;
+exports.saveFile = saveFile;
 
 const baseJoiOptions = {
   abortEarly: false,
@@ -55,6 +59,74 @@ async function uploadFileController(ctx) {
   }
 
 }
+
+/**
+ * Process to store uploaded file in calculated path
+ *
+ * @param {*} req http request
+ * @param {*} res http response
+ * @param {object} options options
+ * @returns {object} if upload OK, return object {relativeFilePathWillSave, absoluteFilePathWillSave}, otherwise throw err
+ */
+async function saveFile(req, res, options) {
+  //multer.bind(app);
+
+  var relativeFilePathWillSave;
+  var absoluteFilePathWillSave;
+
+  var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      var origin_filename = file.originalname;
+      var fileNameWillSave = uploadFilePathHandler.transformFileNameToSave(
+        origin_filename
+      );
+
+      var pathWillSave = uploadFilePathHandler.identifyAbsoluteDirPathWillSave(
+        fileNameWillSave
+      );
+      cb(null, pathWillSave);
+    },
+    filename: function(req, file, cb) {
+      var origin_filename = file.originalname;
+      var fileNameWillSave = uploadFilePathHandler.transformFileNameToSave(
+        origin_filename
+      );
+      cb(null, fileNameWillSave);
+
+      absoluteFilePathWillSave = path.join(
+        uploadFilePathHandler.identifyAbsoluteDirPathWillSave(fileNameWillSave),
+        fileNameWillSave
+      );
+      relativeFilePathWillSave = path.join(
+        uploadFilePathHandler.identifyRelativeDirPathWillSave(fileNameWillSave),
+        fileNameWillSave
+      );
+    }
+  });
+
+  var fileFilter = function(req, file, cb) {
+    //cb(new Error('Not allowed to upload at the moment!!!!'));
+    cb(null, true);
+  };
+
+  var upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {}
+  });
+
+  var my_upload = upload.single('image');
+
+  //handle when upload finished
+  var my_uploadPromise = Promise.promisify(my_upload).bind(my_upload);
+
+  await my_uploadPromise(req, res);
+
+  return {
+    relativeFilePathWillSave: relativeFilePathWillSave,
+    absoluteFilePathWillSave: absoluteFilePathWillSave
+  };
+};
 
 
 async function _routeUploadControllerByFileType(ctx, query_params) {
@@ -107,7 +179,7 @@ async function _workbook_image_uploader({req, res}, query_params) {
 var {
   relativeFilePathWillSave,
   absoluteFilePathWillSave
-} = await uploadItem(
+} = await saveFile(
   req, res
 );
 
@@ -117,3 +189,5 @@ var updateAttribute_result = await updateAttributeWorkbookPromise('image_url', s
 
 return updateAttribute_result;
 }
+
+
