@@ -286,6 +286,9 @@
                   <li>
                     <a href="#move-position-of-a-chapter-within-a-workbook" class="toc-h2 toc-link" data-title="Move position of a chapter within a workbook">Move position of a chapter within a workbook</a>
                   </li>
+                  <li>
+                    <a href="#upload-image-for-an-workbook" class="toc-h2 toc-link" data-title="Upload image for an workbook">Upload image for an workbook</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -1041,6 +1044,66 @@ In order to swap positions between two chapters, you can use API instead:<br>
 <code>curl -X PATCH
   'http://localhost:8080/api/workbooks/{workbook_id}/chapters/{from_chapter_id}/swap/{to_chapter_id}?access_token={access_token}'</code>
 </aside>
+<h2 id='upload-image-for-an-workbook'>Upload image for an workbook</h2>
+<p>Upload image for an workbook</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X POST <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/util/upload?access_token=sqlrd4F3Q9Xi5vXmS0dtRvFobcVaRTNGug2AGHauhlSo3hTbvHTbCtHFPDs7ZMqV&amp;file_type=workbook_image&amp;workbook_id=3'</span> <span class="se">\</span>
+  -H <span class="s1">'Content-Type: application/x-www-form-urlencoded'</span> <span class="se">\</span>
+  -H <span class="s1">'Postman-Token: b07b3a20-c7a4-4126-b431-cfa8b4b7bb9d'</span> <span class="se">\</span>
+  -H <span class="s1">'cache-control: no-cache'</span> <span class="se">\</span>
+  -H <span class="s1">'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'</span> <span class="se">\</span>
+  -F <span class="nv">image</span><span class="o">=</span>@/Users/Documents/CoachingCloud/server/api/upload/rawpixel-574844-unsplash.jpg
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="err">HTTP</span><span class="w"> </span><span class="err">Response</span><span class="w"> </span><span class="err">Status</span><span class="w"> </span><span class="err">code</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/util/upload?access_token={access_token}&amp;file_type={file_type}&amp;workbook_id={workbook_id}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>file_type</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>fixed value is <code>workbook_image</code> for uploading image file of an workbook</td>
+</tr>
+<tr>
+<td>workbook_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>workbook identifier will store uploaded image file</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return http response status code 200.</p>
+
+<aside class="notice">
+You must provide both query parameters and a file as multipart form data. For reference, you can see Postman screenshot below.
+</aside>
+
+<p><img src="http://dev01.cc.cloud:49173/public/assets/images/upload_api_postman.jpg" alt="upload api capture postman" /></p>
 <h1 id='chapter'>Chapter</h1><h2 id='list-pages-of-a-chapter'>List pages of a chapter</h2>
 <p>Return list pages of a chapter.</p>
 

@@ -28,6 +28,7 @@ includes:
   - api/workbook/workbook_list
   - api/workbook/workbook_chapter
   - api/workbook/workbook_move_chapter
+  - api/workbook/workbook_upload
 
   - api/chapter/chapter_index
   - api/chapter/chapter_page
@@ -43,6 +44,8 @@ includes:
   
   - api/comment/comment_backend
   - api/comment/comment
+
+  
   
   - errors
 search: true
