@@ -26,6 +26,10 @@ demo/dir_structure
 #logs files
 logs
 
+#client folder
+**/client
+
+
 #config files only for local environments
 /server/datasources.local.json
 .env.development
