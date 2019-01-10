@@ -115,6 +115,12 @@ async function parseResouceFactory(ctx) {
     );
   }
 
+  var data_inspect = result.attributes || result.data; //fetch data in case of both single and collection resource
+  data_inspect = Array.isArray(data_inspect)
+    ? _.get(data_inspect[0], 'attributes')
+    : data_inspect;
+  json_schema = inspectSchemaObject(data_inspect, json_schema);
+
   _.set(result, 'schema', json_schema);
 
   return result;
@@ -741,5 +747,72 @@ function transformFileNameInDBToFileURL(ctx) {
         }
       }
     }
+  }
+}
+
+/**
+ * Inspect the data type structure for schema field is kind of 'object' type or 'array of object' type. It supports recursive inspector
+ *
+ * @param {object} object object need to inspect its schema
+ * @param {object} object_schema schema object describe data type name of each of schema fields. It is used to filter schema fields that need to be inspected
+ * @returns {object} new schema object after inspecting its schema field meets condition
+ */
+function inspectSchemaObject(object, object_schema) {
+  if (_.isUndefined(object) || typeof object_schema !== 'object')
+    return object_schema;
+
+  const dataTypesNeedInspect = ['object'];
+
+  var object_schema_new = _.cloneDeep(object_schema);
+
+  _.forOwn(
+    object_schema_new,
+    (schema_item_value, schema_item_key, schema_item_object) => {
+      var data_type = _.get(schema_item_value, 'type');
+
+      if (!_.isUndefined(data_type)) {
+        let is_schema_array_of_objects = _.isEqual(data_type, ['object']);
+        if (
+          dataTypesNeedInspect.includes(data_type) ||
+          is_schema_array_of_objects
+        ) {
+          //only inspect if 'object' argument contains this schema_item_key
+          let object_property_data = object[schema_item_key];
+
+          if (!_.isEmpty(object_property_data)) {
+            let object_needs_inspect = Array.isArray(object_property_data)
+              ? object_property_data[0]
+              : object_property_data;
+            let inspect_result = __inspectPropertyDataTypesInAnObject(
+              object_needs_inspect
+            );
+
+            object_schema_new[schema_item_key] = Object.assign(
+              {},
+              schema_item_value,
+              {
+                type_inspector: is_schema_array_of_objects
+                  ? [inspect_result]
+                  : inspect_result
+              }
+            );
+          }
+        }
+      }
+    }
+  );
+
+  return object_schema_new;
+
+  function __inspectPropertyDataTypesInAnObject(object_inspect) {
+    var result = {};
+    _.forOwn(object_inspect, (value, key) => {
+      result[key] =
+        typeof value === 'object'
+          ? __inspectPropertyDataTypesInAnObject(value)
+          : typeof value;
+    });
+
+    return result;
   }
 }
