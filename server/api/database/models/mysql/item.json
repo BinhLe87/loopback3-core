@@ -23,6 +23,7 @@
       "default": 1
     }
   },
+  "updateOnLoad": true,
   "hidden": ["createdAt", "updatedAt"],
   "validations": [],
   "relations": {

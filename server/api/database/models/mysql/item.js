@@ -47,6 +47,54 @@ module.exports = function(Item) {
     }
   });
 
+  Item.observe('access', async function(ctx) {
+    console.log(ctx);
+  });
+
+  Item.observe('loaded', async function(ctx) {
+    console.log(ctx.data);
+    console.log(ctx.instance);
+
+    if (ctx.data) {
+      var item_attributes = _.get(ctx.data, 'item_attributes');
+      if (typeof item_attributes === 'string') {
+        item_attributes = JSON.parse(item_attributes);
+      }
+
+      if (Array.isArray(item_attributes)) {
+        var item_attributes_new = [];
+        for (const [
+          index,
+          item_attribute_origin
+        ] of item_attributes.entries()) {
+          var attribute_id = item_attribute_origin.id;
+          var AttributeModel = app.models.attribute;
+          var findByIdPromise = Promise.promisify(AttributeModel.findById).bind(
+            AttributeModel
+          );
+
+          var attribute_found = await findByIdPromise(attribute_id);
+
+          var item_attribute_new = Object.assign(
+            {},
+            {
+              id: attribute_found.id,
+              code: attribute_found.code,
+              label: attribute_found.label,
+              data_type: attribute_found.data_type
+            },
+            item_attribute_origin
+          );
+
+          item_attributes_new.push(item_attribute_new);
+        }
+
+        console.log(item_attributes_new);
+        ctx.data.item_attributes = JSON.stringify(item_attributes_new);
+      }
+    }
+  });
+
   /**
    * In case of duplicating an item, fetch source item's data and fill in candidate item will be created
    *
