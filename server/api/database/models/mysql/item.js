@@ -51,11 +51,15 @@ module.exports = function(Item) {
     console.log(ctx);
   });
 
+  /**
+   * - Iterates through all `item_attributes` elements, adding additional `attribute` model's fields (code, label, data_type) for each element
+   *
+   */
   Item.observe('loaded', async function(ctx) {
-    console.log(ctx.data);
-    console.log(ctx.instance);
-
-    if (ctx.data) {
+    if (
+      ctx.data &&
+      !_.get(ctx, 'options.is_ignore_query_item_attributes', false)
+    ) {
       var item_attributes = _.get(ctx.data, 'item_attributes');
       if (typeof item_attributes === 'string') {
         item_attributes = JSON.parse(item_attributes);
@@ -89,7 +93,6 @@ module.exports = function(Item) {
           item_attributes_new.push(item_attribute_new);
         }
 
-        console.log(item_attributes_new);
         ctx.data.item_attributes = JSON.stringify(item_attributes_new);
       }
     }

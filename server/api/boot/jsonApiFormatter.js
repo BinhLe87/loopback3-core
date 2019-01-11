@@ -7,6 +7,7 @@ const Promise = require('bluebird');
 const URI = require('urijs');
 const jsonAPIFormatterUtil = require('./jsonApiFormatter.util');
 const loopback_util = require('../helpers/loopbackUtil');
+const app = require('../server');
 
 const RESOURCE_TYPE = {
   single: 'single',
@@ -115,7 +116,7 @@ async function parseResouceFactory(ctx) {
     );
   }
 
-  var data_inspect = result.attributes || result.data; //fetch data in case of both single and collection resource
+  var data_inspect = result.attributes || result.data; //get data in case of both single and collection resource
   data_inspect = Array.isArray(data_inspect)
     ? _.get(data_inspect[0], 'attributes')
     : data_inspect;
@@ -683,28 +684,54 @@ async function getTotalCountItems(ctx) {
     } else {
       //existing limit on query
 
-      var targetSharedMethod = ctx.method;
+      var shared_method_count = __convertQueryToCountSharedMethod(ctx);
       //remove `limit' filter and `skip` filter that cause incorrect total count
       var new_args = _.cloneDeep(ctx.args);
       delete new_args.filter.limit;
       delete new_args.filter.skip;
       delete new_args.filter.offset; //paired with `skip` filter
 
+      new_args.options.is_ignore_query_item_attributes = true; //skip process in subscribing 'loaded' event in item.js
+
       //ctx.instance if this query type is 'included' query
       //targetSharedMethod.ctor if this query is only have primary resource
-      targetSharedMethod.invoke(
-        ctx.instance || targetSharedMethod.ctor,
+      shared_method_count.invoke(
+        ctx.instance || shared_method_count.ctor,
         new_args,
         {},
         ctx,
         (err, result) => {
-          if (Array.isArray(result)) return resolve(result.length);
-
-          return resolve(undefined);
+          resolve(result.count);
         }
       );
     }
   });
+
+  function __convertQueryToCountSharedMethod(ctx) {
+    var method_string_origin = ctx.methodString;
+
+    var pri_resource_method_string_matcher = RegExp('(.*?)\\..*').exec(
+      method_string_origin
+    );
+    if (_.isNull(pri_resource_method_string_matcher)) {
+      return ctx.method;
+    }
+
+    var pri_resource_name = pri_resource_method_string_matcher[1];
+
+    //replace methodString is type of either `get` or `find` to `count` if any
+    var method_string_count = method_string_origin.replace(
+      /(get|find|findOne|findById|findOrCreate)/gi,
+      'count'
+    );
+    var pri_resource_model = app.models[pri_resource_name];
+
+    var shared_method_count = _.find(pri_resource_model.sharedClass.methods(), {
+      stringName: method_string_count
+    });
+
+    return shared_method_count;
+  }
 }
 
 /**
