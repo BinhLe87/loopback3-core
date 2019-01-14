@@ -96,7 +96,7 @@ async function __generateEntireFakeData(
           numberRecordsWillGenerate: numberRecordsWillGenerate
         });
 
-        Object.assign(record, otherFields);
+        record = Object.assign({}, record, otherFields);
 
         var created_record = await fixtures_util.insertRecordInDB(
           joinModel,

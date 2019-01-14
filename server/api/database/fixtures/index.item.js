@@ -17,7 +17,7 @@ module.exports.generate_item_data = async function(
       fields: {
         display_index: {
           func: faker.random.number,
-          args: { min: 1, max: 5 }
+          args: { min: 0, max: 5 }
         }
       }
     }

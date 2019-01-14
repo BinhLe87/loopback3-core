@@ -165,7 +165,6 @@ async function swapTwoItemPositions(url_params) {
  *
  * @param {*} url_params
  * @param {object} [options]
- * @param {boolean} [options.skip_update_from_model_position] if true means only move down affected items but from_model
  * @returns {string} if success, return new position string and new position index of from_model, otherwise throw an error instance of Boom if any errors occurred
  */
 async function moveItemPosition(url_params, options) {
@@ -178,7 +177,6 @@ async function moveItemPosition(url_params, options) {
  *
  * @param {*} url_params
  * @param {object} [options]
- * @param {boolean} [options.skip_update_from_model_position] if true means only move down affected items but from_model
  * @returns {string} if success, return new position string and new position index of from_model, otherwise throw an error instance of Boom if any errors occurred
  */
 async function _moveItemPosition(url_params, options = {}) {
@@ -201,12 +199,13 @@ async function _moveItemPosition(url_params, options = {}) {
   if (_.isUndefined(url_params.to_model_id)) {
     //insert at last position
 
-    var cur_last_position = _.last(sorted_positions).display_index;
+    var cur_last_position = _.isEmpty(sorted_positions)
+      ? 0
+      : _.last(sorted_positions).display_index;
     var new_last_position = cur_last_position + 1;
 
-    //update new position for this chapter
-    if (options.skip_update_from_model_position != true) {
-      await updatePositionForWorkbookChapterInstance(
+    if (options.is_processing_create_page_item != true) {
+      await updatePositionForObjectInstance(
         from_model_instance,
         new_last_position
       );
@@ -255,7 +254,9 @@ async function _moveItemPosition(url_params, options = {}) {
           timeout: 10000 //10 seconds
         },
         async function(err, tx) {
-          const transaction_options = { transaction: tx };
+          const transaction_options = {
+            transaction: tx
+          };
 
           //FIXME: not sure why timeout event is fired even if transaction was committed
           // tx.observe('timeout', function (context, timeout_next) {
@@ -281,15 +282,15 @@ async function _moveItemPosition(url_params, options = {}) {
             ) {
               let cur_instance = sorted_positions[cur_idx];
 
-              var updated_to_model = await updatePositionForWorkbookChapterInstance(
+              var updated_to_model = await updatePositionForObjectInstance(
                 cur_instance,
                 cur_instance.display_index + 1,
                 transaction_options
               );
             }
 
-            if (options.skip_update_from_model_position != true) {
-              var updated_from_model = await updatePositionForWorkbookChapterInstance(
+            if (options.is_processing_create_page_item != true) {
+              var updated_from_model = await updatePositionForObjectInstance(
                 from_model_instance,
                 from_model_new_position,
                 transaction_options
@@ -347,7 +348,9 @@ async function swapPositionFromModelAndToModel(
       timeout: 10000 //10 seconds
     },
     async function(err, tx) {
-      const transaction_options = { transaction: tx };
+      const transaction_options = {
+        transaction: tx
+      };
       var cloned_from_model_instance = _.cloneDeep(from_model_instance);
       var cloned_to_model_instance = _.cloneDeep(to_model_instance);
 
@@ -365,19 +368,19 @@ async function swapPositionFromModelAndToModel(
 
       try {
         //Use -1 as intermediate value in order to avoid 'duplicate unique key' error
-        var updated_from_model_instance = await updatePositionForWorkbookChapterInstance(
+        var updated_from_model_instance = await updatePositionForObjectInstance(
           to_model_instance,
           -1,
           transaction_options
         );
 
-        var updated_from_model_instance = await updatePositionForWorkbookChapterInstance(
+        var updated_from_model_instance = await updatePositionForObjectInstance(
           from_model_instance,
           cloned_to_model_instance.display_index,
           transaction_options
         );
 
-        var updated_to_model_instance = await updatePositionForWorkbookChapterInstance(
+        var updated_to_model_instance = await updatePositionForObjectInstance(
           to_model_instance,
           cloned_from_model_instance.display_index,
           transaction_options
@@ -412,7 +415,6 @@ async function swapPositionFromModelAndToModel(
  * @param {number} from_model_id
  * @param {undefined|number} to_model_id if undefined, it will ignore checking
  * @param {object} [options] validation options
- * @param {boolean} [options.skip_update_from_model_position] if true means only move down affected items but from_model
  * @returns {Error|object} if valid, return an object contains instances {from_model_instance, to_model_instance}, otherwise throw an error instance of Boom
  */
 function _checkAllModelIDsExists(
@@ -422,8 +424,14 @@ function _checkAllModelIDsExists(
   to_model_id,
   options = {}
 ) {
-  if (_.isEmpty(list_positions)) {
-    throw Boom.notFound(`Not found any items in the model scope'`);
+  if (options.is_processing_create_page_item == true) {
+    //ignore checking the exists of `from_model_id` and `to_model_id`
+    // because this is creating 'page_item relationship' process, not move/swap position process
+
+    return {
+      from_model_instance: undefined,
+      to_model_instance: undefined
+    };
   }
 
   //check whether from_model_id exists in model scope
@@ -464,21 +472,21 @@ function _checkAllModelIDsExists(
 /**
  *
  *
- * @param {*} workbook_chapter_instance
+ * @param {*} object_instance
  * @param {*} new_position
  * @param {*} db_transaction_options
  * @returns
  */
-async function updatePositionForWorkbookChapterInstance(
-  workbook_chapter_instance,
+async function updatePositionForObjectInstance(
+  object_instance,
   new_position,
   db_transaction_options
 ) {
-  var updateChapterPositionPromise = Promise.promisify(
-    workbook_chapter_instance.updateAttributes
-  ).bind(workbook_chapter_instance);
+  var updateObjectPositionPromise = Promise.promisify(
+    object_instance.updateAttributes
+  ).bind(object_instance);
 
-  var updated_instance = await updateChapterPositionPromise(
+  var updated_instance = await updateObjectPositionPromise(
     {
       display_index: new_position
     },
@@ -511,5 +519,5 @@ async function getListPositionsInModelScope(
 
   var position_array = await findPromise(find_options);
 
-  return position_array;
+  return _.isEmpty(position_array) ? [] : position_array;
 }

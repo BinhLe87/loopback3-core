@@ -7,31 +7,40 @@ var {
 
 module.exports = function(Pageitem) {
   Pageitem.validatesPresenceOf('pageId', 'itemId');
+  Pageitem.validatesNumericalityOf('display_index', {
+    int: true
+  });
 
   Pageitem.observe('before save', async function(ctx, next) {
-    var instance = ctx.instance || ctx.currentInstance;
+    var is_create_mode = _.isUndefined(ctx.instance) ? false : true;
 
-    //if param 'insert_after_item_id' is passed, insert new item right below `insert_after_item_id` in page
-    //otherwise, by default, it will insert in last position in page if insert_after_item_id = undefined
-    var insert_after_item_id = _.get(ctx, 'options.insert_after_item_id');
-    //create url_params argument to call function in api 'moving position of item within a page'
-    var url_params = {
-      scope_model: 'pages',
-      scope_model_id: instance.pageId,
-      from_model: 'items',
-      from_model_id: instance.itemId,
-      to_model_id: insert_after_item_id,
-      action: 'move'
-    };
+    if (is_create_mode) {
+      //just loopup and update new position in case of creating new an instance
 
-    var { new_position_index: new_position } = await moveItemPosition(
-      url_params,
-      {
-        skip_update_from_model_position: true
-      }
-    );
+      var instance = ctx.instance || ctx.currentInstance;
 
-    //update back display_index
-    instance.display_index = new_position;
+      //if param 'insert_after_item_id' is passed, insert new item right below `insert_after_item_id` in page
+      //otherwise, by default, it will insert in last position in page if insert_after_item_id = undefined
+      var insert_after_item_id = _.get(ctx, 'options.insert_after_item_id');
+      //create url_params argument to call function in api 'moving position of item within a page'
+      var url_params = {
+        scope_model: 'pages',
+        scope_model_id: instance.pageId,
+        from_model: 'items',
+        from_model_id: instance.itemId,
+        to_model_id: insert_after_item_id,
+        action: 'move'
+      };
+
+      var { new_position_index: new_position } = await moveItemPosition(
+        url_params,
+        {
+          is_processing_create_page_item: true
+        }
+      );
+
+      //update back display_index
+      instance.display_index = new_position;
+    }
   });
 };

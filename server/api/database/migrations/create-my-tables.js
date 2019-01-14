@@ -23,9 +23,9 @@ async function createMyTables(options = {}) {
 
   var lbMyModels = lbAllModels;
 
-  //since 'admin' model as virtual model, so skip migrating this model
+  //ignore virtual models (ex: admin, util), so skip migrating this model
   lbMyModels = lbMyModels.filter(function(value, index) {
-    return value !== 'admin';
+    return !['admin', 'util'].includes(value);
   });
 
   if (!will_reset_builtin_models) {
