@@ -26,7 +26,10 @@ var uploadQueryParamsJoi = Joi.alternatives().try(
         .valid('workbook_image')
         .required(),
       workbook_id: Joi.string().required()
-    }).unknown()
+    }).unknown(),
+    Joi.object().keys({
+      file_type: Joi.string().forbidden().default('raw_file')
+    })
 
   )
 );
@@ -53,10 +56,10 @@ async function uploadFileController(ctx) {
     //because it maybe changed after Joi validation
     var result = await _routeUploadControllerByFileType(ctx, query_params);
 
-    ctx.resultType_alias = result.resultType; //save it for reset resultType later 
+    ctx.resultType_alias = !_.isUndefined(result.resultType) ? result.resultType : ctx.resultType; //save it for reset resultType later 
     //because it would be changed to returns 'type' field value configured in shareMethod function in util.json
 
-    return result.result; //will be return by shareMethod built-in function as default
+    return  _.get(result, 'result', result); //will be return by shareMethod built-in function as default
   } catch (upload_error) {
 
     logger.error(upload_error, __filename);
@@ -129,6 +132,10 @@ async function _routeUploadControllerByFileType(ctx, query_params) {
       result = await _workbook_image_uploader(ctx, query_params);
       resultType = 'workbook';
       break;
+    case 'raw_file':
+      result = await _raw_file_uploader(ctx, query_params);
+      resultType = 'object'; //in order to ignore processing by jsonApiFormatter.js
+      break;
     default:
   }
 
@@ -179,29 +186,55 @@ async function _workbook_image_uploader({
       throw Boom.notFound('Not found any files need to be uploaded');
     }
 
-    var relativeFilePathWillSave;
-    var absoluteFilePathWillSave;  
     var updateAttribute_result;
+    for (const [index, file] of uploaded_files.entries()) {
+
+      var standardized_file_name = file.filename;
+      var updateAttributeWorkbookPromise = Promise.promisify(workbook_found.updateAttribute).bind(workbook_found);
+      updateAttribute_result = await updateAttributeWorkbookPromise('image_url', standardized_file_name);
+    }
+
+    return updateAttribute_result;
+ 
+}
+
+/**
+ * Save raw file and return file path
+ *
+ * @param {object} ctx context
+ * @param {object} query_params query parameters
+ * @returns {object} file path
+ */
+async function _raw_file_uploader({
+  req,
+  res
+}, query_params) {
+
+    await saveFile(
+      req, res
+    );
+
+    var uploaded_files = req.file || req.files;
+    uploaded_files = _.castArray(uploaded_files);
+
+    if (_.isEmpty(uploaded_files)) {
+
+      throw Boom.notFound('Not found any files need to be uploaded');
+    }
+
+    var upload_results = [];
+
     for (const [index, file] of uploaded_files.entries()) {
 
       var fileNameWillSave = file.filename;
 
-      absoluteFilePathWillSave = path.join(
-        uploadFilePathHandler.identifyAbsoluteDirPathWillSave(fileNameWillSave),
-        fileNameWillSave
-      );
-      relativeFilePathWillSave = path.join(
-        uploadFilePathHandler.identifyRelativeDirPathWillSave(fileNameWillSave),
-        fileNameWillSave
-      );
-
-      var standardized_file_name = path.basename(relativeFilePathWillSave);
-      var updateAttributeWorkbookPromise = Promise.promisify(workbook_found.updateAttribute).bind(workbook_found);
-      updateAttribute_result = await updateAttributeWorkbookPromise('image_url', standardized_file_name);
+      upload_results.push({
+        file_url: fileNameWillSave
+      });
     }
-  
     
-  
-    return updateAttribute_result;
+    return {
+      data: upload_results
+    };
  
 }
