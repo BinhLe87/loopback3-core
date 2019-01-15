@@ -336,6 +336,14 @@
               </ul>
           </li>
           <li>
+            <a href="#util" class="toc-h1 toc-link" data-title="Util">Util</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#upload-file-s" class="toc-h2 toc-link" data-title="Upload file(s)">Upload file(s)</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
           </li>
       </ul>
@@ -1053,7 +1061,6 @@ In order to swap positions between two chapters, you can use API instead:<br>
 <pre class="highlight shell tab-shell"><code>curl -X POST <span class="se">\</span>
   <span class="s1">'http://localhost:8080/api/util/upload?access_token=sqlrd4F3Q9Xi5vXmS0dtRvFobcVaRTNGug2AGHauhlSo3hTbvHTbCtHFPDs7ZMqV&amp;file_type=workbook_image&amp;workbook_id=3'</span> <span class="se">\</span>
   -H <span class="s1">'Content-Type: application/x-www-form-urlencoded'</span> <span class="se">\</span>
-  -H <span class="s1">'Postman-Token: b07b3a20-c7a4-4126-b431-cfa8b4b7bb9d'</span> <span class="se">\</span>
   -H <span class="s1">'cache-control: no-cache'</span> <span class="se">\</span>
   -H <span class="s1">'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'</span> <span class="se">\</span>
   -F <span class="nv">image</span><span class="o">=</span>@/Users/Documents/CoachingCloud/server/api/upload/rawpixel-574844-unsplash.jpg
@@ -1696,6 +1703,73 @@ In order to override any properties in source item, you can pass that property a
 <aside class="notice">
 References: https://developers.facebook.com/docs/graph-api/reference/v3.1/comment
 </aside>
+<h1 id='util'>Util</h1><h2 id='upload-file-s'>Upload file(s)</h2>
+<p>Upload file(s). </p>
+
+<p><strong>Notice that</strong>: In order to upload an image that associates with any object like an item/a workbook/etc., please read API guidelines in corresponding object section.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X POST <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/util/upload?access_token=sqlrd4F3Q9Xi5vXmS0dtRvFobcVaRTNGug2AGHauhlSo3hTbvHTbCtHFPDs7ZMqV'</span> <span class="se">\</span>
+  -H <span class="s1">'Content-Type: application/x-www-form-urlencoded'</span> <span class="se">\</span>
+  -H <span class="s1">'cache-control: no-cache'</span> <span class="se">\</span>
+  -H <span class="s1">'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'</span> <span class="se">\</span>
+  -F <span class="nv">image</span><span class="o">=</span>@/Users/Documents/CoachingCloud/server/api/upload/rawpixel-574844-unsplash.jpg
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"file_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"inspirational-home-office-workspace-tips-to-get-organized-768x384_s01_api_20190115_eaac22.jpg"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/util/upload?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return http response status code 200.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>data</td>
+<td>array</td>
+<td>An array of objects, each object contains <code>file_url</code> property is the url of an uploaded file.</td>
+</tr>
+</tbody></table>
+
+<aside class="notice">
+You must provide both query parameters and a file as multipart form data. For reference, you can see Postman screenshot below.
+</aside>
+
+<p><img src="http://dev01.cc.cloud:49173/public/assets/images/upload_api_postman.jpg" alt="upload api capture postman" /></p>
 <h1 id='errors'>Errors</h1>
 <p>The APC API uses the following error codes:</p>
 
