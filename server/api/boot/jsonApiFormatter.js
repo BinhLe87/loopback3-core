@@ -393,11 +393,23 @@ function parseMetaFieldsForSingleResouce(ctx) {
 
   meta = Object.assign(
     {},
-    _.isUndefined(createdAt) ? {} : { createdAt: createdAt },
-    _.isUndefined(updatedAt) ? {} : { updatedAt: updatedAt }
+    _.isUndefined(createdAt)
+      ? {}
+      : {
+          createdAt: createdAt
+        },
+    _.isUndefined(updatedAt)
+      ? {}
+      : {
+          updatedAt: updatedAt
+        }
   );
 
-  return _.isEmpty(meta) ? {} : { meta: meta };
+  return _.isEmpty(meta)
+    ? {}
+    : {
+        meta: meta
+      };
 }
 
 function getSelfBaseUrl(ctx) {
@@ -549,7 +561,10 @@ function generateLastAndNextPageReqOriginalURL(ctx) {
   if (typeof cur_limit == 'undefined') {
     //fetch all items => no need pagination
 
-    return { last: undefined, next: undefined };
+    return {
+      last: undefined,
+      next: undefined
+    };
   }
 
   //process for 'skip' parameter
@@ -742,38 +757,60 @@ async function getTotalCountItems(ctx) {
  * @return {} The result of tranforming process will be reflected back to ctx argument
  */
 function transformFileNameInDBToFileURL(ctx) {
-  var ctx_result = ctx.result;
+  var ctx_result = _.cloneDeep(ctx.result);
 
-  const FILENAME_ATTRIBUTE_NAME_ARRAY = [
+  const _FILENAME_ATTRIBUTE_NAME_ARRAY = [
+    'file_url',
     'image_url',
     'high_url',
     'medium_url',
     'low_url'
   ];
+  var FILENAME_ATTRIBUTE_NAME_REGEXP = new RegExp(
+    _FILENAME_ATTRIBUTE_NAME_ARRAY.join('|'),
+    'i'
+  );
 
   if (_.isEmpty(ctx_result)) return;
 
-  var item_array = Array.isArray(ctx_result) ? ctx_result : [ctx_result];
+  ctx.result = __transformFileNameInObject(ctx_result);
 
-  for (let item_ele of item_array) {
-    //iterate each of FILENAME_ATTRIBUTE_NAME to fetch its value if exists
-    for (let FILENAME_ATTRIBUTE_NAME of FILENAME_ATTRIBUTE_NAME_ARRAY) {
-      var image_url = _.get(item_ele, FILENAME_ATTRIBUTE_NAME);
+  function __transformFileNameInObject(object) {
+    return _.transform(
+      object,
+      (accumulator, value, key, object) => {
+        var transformed_value = value; //initialize with original value
 
-      if (!_.isUndefined(image_url)) {
-        if (!RegExp('http.*', 'gi').test(image_url)) {
-          //ensure only transform once
-          var transformed_file_name = image_url;
-          var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
-            ctx,
-            transformed_file_name
-          );
+        if (_.isObjectLike(value)) {
+          //keep recursively object
 
-          //update new image url back to ctx.result
-          item_ele.image_url = transformed_file_url;
+          transformed_value = __transformFileNameInObject(value);
         }
-      }
-    }
+
+        if (_.isString(value) && FILENAME_ATTRIBUTE_NAME_REGEXP.test(key)) {
+          var image_url = value;
+
+          if (!_.isUndefined(image_url)) {
+            if (!RegExp('http.*', 'gi').test(image_url)) {
+              //ensure only transform once
+              var transformed_file_name = image_url;
+              var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
+                ctx,
+                transformed_file_name
+              );
+
+              //update new image url back to ctx.result
+              transformed_value = transformed_file_url;
+            }
+          }
+        }
+
+        _.isArray(accumulator)
+          ? accumulator.push(transformed_value)
+          : (accumulator[key] = transformed_value);
+      },
+      _.isArray(object) ? [] : object
+    );
   }
 }
 
