@@ -757,8 +757,6 @@ async function getTotalCountItems(ctx) {
  * @return {} The result of tranforming process will be reflected back to ctx argument
  */
 function transformFileNameInDBToFileURL(ctx) {
-  var ctx_result = _.cloneDeep(ctx.result);
-
   const _FILENAME_ATTRIBUTE_NAME_ARRAY = [
     'file_url',
     'image_url',
@@ -771,9 +769,9 @@ function transformFileNameInDBToFileURL(ctx) {
     'i'
   );
 
-  if (_.isEmpty(ctx_result)) return;
+  if (_.isEmpty(ctx.result)) return;
 
-  ctx.result = __transformFileNameInObject(ctx_result);
+  ctx.result = __transformFileNameInObject(ctx.result);
 
   function __transformFileNameInObject(object) {
     return _.transform(
