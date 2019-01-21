@@ -23,11 +23,7 @@ const deviceJoi = joi
   .valid('mobile', 'desktop')
   .label('target device type');
 
-const baseJoiOptions = {
-  abortEarly: false,
-  convert: true,
-  allowUnknown: true
-};
+const { baseJoiOptions } = require('../helpers/validators/joiValidator');
 
 var customJoi = joi.extend({
   name: 'imagePath',

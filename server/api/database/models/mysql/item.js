@@ -10,6 +10,7 @@ const URI = require('urijs');
 const { ImageConverter } = require('../../../helpers/imageConverter');
 const app = require('../../../server');
 const Joi = require('joi');
+const { baseJoiOptions } = require('../../../helpers/validators/joiValidator');
 
 //determine the path of static files
 const fs = require('fs');
@@ -46,10 +47,6 @@ module.exports = function(Item) {
 
       ctx = await uploadFileAndAddFilePathIntoCtx(ctx);
     }
-  });
-
-  Item.observe('access', async function(ctx) {
-    console.log(ctx);
   });
 
   /**
@@ -191,7 +188,38 @@ module.exports = function(Item) {
  * @param {*} ctx
  */
 async function uploadFileAndAddFilePathIntoCtx(ctx) {
-  await saveFile(ctx.req, ctx.res);
+  const preQueryValidtionJoi = Joi.object().keys({
+    item_typeId: Joi.number()
+      .empty()
+      .required(),
+    item_attributes: Joi.array(),
+    insert_after_item_id: Joi.number()
+  });
+  var origin_query_params = ctx.req.query;
+
+  var query_params_validation = Joi.validate(
+    origin_query_params,
+    preQueryValidtionJoi,
+    baseJoiOptions
+  );
+
+  if (query_params_validation.error) {
+    logger.error(query_params_validation, __filename);
+    throw Boom.badRequest('Invalid parameters!', query_params_validation.error);
+  }
+
+  var item_typeId = _.get(query_params_validation, 'value.item_typeId');
+  var [item_type, attribute] = await determineItemTypeIdAndAttributeIdAsync(
+    ctx,
+    item_typeId
+  );
+  if (_.isNull(item_type)) {
+    throw Boom.badRequest(`Not found item_type has id '${item_typeId}'`);
+  }
+
+  await saveFile(ctx.req, ctx.res, {
+    silentEmptyFiles: true
+  });
 
   var upload_files = _.castArray(ctx.req.file || ctx.req.files);
 
@@ -201,24 +229,19 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
     });
   });
 
-  await Promise.all([
-    determineItemTypeIdAndAttributeIdAsync(ctx).catch(error => {
-      logger.error(
-        'Error determine item_type and attribute for uploaded file',
-        __filename
-      );
-      throw error;
-    }),
-    ...convertImageFilePromises
-  ])
+  await Promise.all([...convertImageFilePromises])
     .spread((itemTypeAttributeArray, ...sharpFilesArray) => {
-      var [item_type, attribute] = itemTypeAttributeArray;
-
-      //Add 3 urls: original url, desktop image url and mobile image url into http response
+      //Save query parameters into ctx.args.data, except `item_attributes` will be handled later
+      _.forOwn(query_params_validation.value, (value, key) => {
+        if (key != 'item_attributes' && key != 'access_token') {
+          ctx.args.data[key] = value;
+        }
+      });
       ctx.args.data['item_typeId'] = item_type.id;
 
+      //Add 3 urls: original url, desktop image url and mobile image url into http response
       //iterate list of upload files, then set item_attributes for each of file
-      ctx.args.data['item_attributes'] = [];
+      var item_attributes = [];
       for (const [index, sharpFile] of sharpFilesArray.entries()) {
         var origin_file_name = path.basename(
           _.get(sharpFile, '[0].origin_file_path')
@@ -230,9 +253,9 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
           _.find(sharpFile, { target_device: 'mobile' }).resized_file_path
         );
 
-        ctx.args.data['item_attributes'].push({
+        item_attributes.push({
           id: attribute.id,
-          values: {
+          value: {
             high_url: origin_file_name,
             medium_url: desktop_file_name,
             low_url: mobile_file_name
@@ -240,16 +263,9 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
         });
       }
 
-      //TODO: temporarily adding all metadata fields into same attribute with image
-      //Add additional metadata fields from req.body
-      if (typeof ctx.req.body == 'object') {
-        var image_attribute = ctx.args.data['item_attributes'][0];
-        image_attribute.values = Object.assign(
-          {},
-          image_attribute.values,
-          ctx.req.body
-        );
-      }
+      ctx.args.data['item_attributes'] = item_attributes.concat(
+        _.get(query_params_validation, 'value.item_attributes')
+      );
 
       return ctx;
     })
@@ -308,26 +324,20 @@ async function validateItemData(ctx) {
   _.set(ctx, 'options.insert_after_item_id', data.insert_after_item_id);
 }
 
-function determineItemTypeIdAndAttributeIdAsync(ctx) {
+function determineItemTypeIdAndAttributeIdAsync(ctx, item_typeId) {
   //get or create item_type=image in DB
   var app = ctx.req.app;
   var itemTypeModel = app.models.item_type;
   var attributeModel = app.models.attribute;
-  var imageItemTypeUpsertPromise = Promise.promisify(
-    itemTypeModel.upsertWithWhere
-  ).bind(itemTypeModel);
+  var itemTypeFindByIdPromise = Promise.promisify(itemTypeModel.findById).bind(
+    itemTypeModel
+  );
   var attributeUpsertPromise = Promise.promisify(
     attributeModel.upsertWithWhere
   ).bind(attributeModel);
 
   return Promise.all([
-    imageItemTypeUpsertPromise(
-      { code: 'image' },
-      { code: 'image', label: 'image', is_active: 1 }
-    ).catch(error => {
-      logger.error(`Unable to create item_type is 'image' in DB`, __filename);
-      throw error;
-    }),
+    itemTypeFindByIdPromise(item_typeId),
     attributeUpsertPromise(
       { code: 'image' },
       {

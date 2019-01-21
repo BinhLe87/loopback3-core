@@ -12,11 +12,7 @@ exports = module.exports = {};
 exports.uploadFileController = uploadFileController;
 exports.saveFile = saveFile;
 
-const baseJoiOptions = {
-  abortEarly: false,
-  convert: true,
-  allowUnknown: true
-};
+const { baseJoiOptions } = require('../../helpers/validators/joiValidator');
 
 var uploadQueryParamsJoi =
   Joi.object()
@@ -70,8 +66,9 @@ async function uploadFileController(ctx) {
  *
  * @param {*} req http request
  * @param {*} res http response
- * @param {object} options options
- * @returns Throw error if unable to specify any files to upload
+ * @param {object} [options] options
+ * @param {boolean} [options.silentEmptyFiles] ignore throwing error if upload files is empty
+ * @returns Throw error if no any files to upload and `options.silentEmptyFiles` is false
  */
 async function saveFile(req, res, options) {
   //multer.bind(app);
@@ -119,7 +116,7 @@ async function saveFile(req, res, options) {
   var uploaded_files = req.file || req.files;
   uploaded_files = _.isUndefined(uploaded_files) ? [] : _.castArray(uploaded_files);
 
-  if (_.isEmpty(uploaded_files)) {
+  if (_.isEmpty(uploaded_files) && !options.silentEmptyFiles) {
 
     throw Boom.notFound('Not found any files in multipart-form need to be uploaded');
   }
