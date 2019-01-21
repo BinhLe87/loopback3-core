@@ -258,7 +258,7 @@ async function _moveItemPosition(url_params, options = {}) {
             transaction: tx
           };
 
-          //FIXME: not sure why timeout event is fired even if transaction was committed
+          //Need to fix: not sure why timeout event is fired even if transaction was committed
           // tx.observe('timeout', function (context, timeout_next) {
 
           //     logger.error('moveChapterPositionController(): Timeout committing transaction', __filename);
@@ -354,7 +354,7 @@ async function swapPositionFromModelAndToModel(
       var cloned_from_model_instance = _.cloneDeep(from_model_instance);
       var cloned_to_model_instance = _.cloneDeep(to_model_instance);
 
-      //FIXME: not sure why timeout event is fired even if transaction was committed
+      //Need to fix: not sure why timeout event is fired even if transaction was committed
       // tx.observe('timeout', function (context, timeout_next) {
 
       //     logger.error('moveChapterPositionController(): Timeout committing transaction', __filename);

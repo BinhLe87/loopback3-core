@@ -29,5 +29,7 @@ module.exports = function(Model, options) {
     if (!updated_model_item) {
       throw Boom.badRequest(`Failed to delete record has id '${id}'`);
     }
+
+    return updated_model_item;
   };
 };

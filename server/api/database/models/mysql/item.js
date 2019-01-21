@@ -9,6 +9,7 @@ const loopback_util = require('../../../helpers/loopbackUtil');
 const URI = require('urijs');
 const { ImageConverter } = require('../../../helpers/imageConverter');
 const app = require('../../../server');
+const Joi = require('joi');
 
 //determine the path of static files
 const fs = require('fs');
@@ -190,31 +191,33 @@ module.exports = function(Item) {
  * @param {*} ctx
  */
 async function uploadFileAndAddFilePathIntoCtx(ctx) {
-  var { relativeFilePathWillSave, absoluteFilePathWillSave } = await saveFile(
-    ctx.req,
-    ctx.res
-  );
+  await saveFile(ctx.req, ctx.res);
+
+  var upload_files = ctx.req.files;
+
+  var convertImageFilePromises = _.map(upload_files, file => {
+    return convertImageFileAsync(file.path).catch(error => {
+      logger.error(`Error converting the image at ${file.path}`, __filename);
+    });
+  });
+
+  var file_name = ctx.req.files[0].filename;
 
   await Promise.all([
-    determineItemTypeIdAndAttributeIdAsync(ctx, relativeFilePathWillSave).catch(
-      error => {
-        logger.error(
-          'Error determine item_type and attribute for uploaded file',
-          __filename
-        );
-        throw error;
-      }
-    ),
-    convertImageFileAsync(absoluteFilePathWillSave).catch(error => {
-      logger.error('Error convert the image', __filename);
+    determineItemTypeIdAndAttributeIdAsync(ctx).catch(error => {
+      logger.error(
+        'Error determine item_type and attribute for uploaded file',
+        __filename
+      );
       throw error;
-    })
+    }),
+    ...convertImageFilePromises
   ])
     .spread((itemTypeAttributeArray, sharpFilesArray) => {
       var [item_type, attribute] = itemTypeAttributeArray;
       var [mobileFileName, desktopFileName] = sharpFilesArray;
 
-      var origin_file_name = path.basename(relativeFilePathWillSave);
+      var origin_file_name = file_name;
       var desktop_file_name = desktopFileName;
       var mobile_file_name = mobileFileName;
 
@@ -231,7 +234,7 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
         }
       ];
 
-      //FIXME: temporarily adding all metadata fields into same attribute with image
+      //TODO: temporarily adding all metadata fields into same attribute with image
       //Add additional metadata fields from req.body
       if (typeof ctx.req.body == 'object') {
         var image_attribute = ctx.args.data['item_attributes'][0];
@@ -252,19 +255,33 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
 
 async function validateItemData(ctx) {
   var data = ctx.instance || ctx.data;
-  if (
-    typeof data.item_typeId == 'undefined' ||
-    typeof data.item_attributes == 'undefined'
-  ) {
-    throw new Error(
-      `Must input 2 required fields are 'item_typeId' and 'item_attributes'`
-    );
+
+  const UPDATE_ITEM_VALIDATION = Joi.object()
+    .keys({
+      item_typeId: Joi.number(),
+      item_attributes: Joi.any(),
+      is_active: Joi.boolean()
+    })
+    .and('item_typeId', 'item_attributes');
+
+  const validation_result = Joi.validate(data, UPDATE_ITEM_VALIDATION, {
+    abortEarly: false,
+    convert: true,
+    allowUnknown: true
+  });
+
+  if (validation_result.error) {
+    throw Boom.badRequest('Invalid item data', validation_result.error);
   }
 
-  await AttributeUtil.validateAttributesByItemtypeId(
-    data.item_attributes,
-    data.item_typeId
-  );
+  var { item_attributes, item_typeId } = validation_result.value;
+
+  if (item_attributes && item_typeId) {
+    await AttributeUtil.validateAttributesByItemtypeId(
+      data.item_attributes,
+      data.item_typeId
+    );
+  }
 
   //check whether the insert_after_item_id exists if this param was passed and not equal 0 (will insert in top list)
   if (
@@ -285,7 +302,7 @@ async function validateItemData(ctx) {
   _.set(ctx, 'options.insert_after_item_id', data.insert_after_item_id);
 }
 
-function determineItemTypeIdAndAttributeIdAsync(ctx, savedRelativeFilePath) {
+function determineItemTypeIdAndAttributeIdAsync(ctx) {
   //get or create item_type=image in DB
   var app = ctx.req.app;
   var itemTypeModel = app.models.item_type;

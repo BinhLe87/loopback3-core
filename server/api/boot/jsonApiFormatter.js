@@ -799,15 +799,13 @@ function transformFileNameInDBToFileURL(ctx) {
 
               //update new image url back to ctx.result
               transformed_value = transformed_file_url;
+
+              accumulator[key] = transformed_value;
             }
           }
         }
-
-        _.isArray(accumulator)
-          ? accumulator.push(transformed_value)
-          : (accumulator[key] = transformed_value);
       },
-      _.isArray(object) ? [] : object
+      object
     );
   }
 }
