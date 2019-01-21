@@ -18,21 +18,17 @@ const baseJoiOptions = {
   allowUnknown: true
 };
 
-var uploadQueryParamsJoi = Joi.alternatives().try(
-  Joi.alternatives().try(
-    Joi.object()
-    .keys({
-      file_type: Joi.string()
-        .valid('workbook_image')
-        .required(),
-      workbook_id: Joi.string().required()
-    }).unknown(),
-    Joi.object().keys({
-      file_type: Joi.string().forbidden().default('raw_file')
+var uploadQueryParamsJoi =
+  Joi.object()
+  .keys({
+    file_type: Joi.string()
+      .allow('workbook_image')
+      .default('raw_file'),
+    workbook_id: Joi.string().when('file_type', {
+      is: Joi.invalid('raw_file'),
+      then: Joi.required()
     })
-
-  )
-);
+  });
 
 async function uploadFileController(ctx) {
 
@@ -56,11 +52,11 @@ async function uploadFileController(ctx) {
     //because it maybe changed after Joi validation
     var result = await _routeUploadControllerByFileType(ctx, query_params);
 
-    var target_resultType = !_.isUndefined(result.resultType) ? result.resultType : ctx.resultType;     
+    var target_resultType = !_.isUndefined(result.resultType) ? result.resultType : ctx.resultType;
     _.set(ctx, 'cc_hook_options.resultType', target_resultType); //save it for reset resultType later 
     //because it would be changed to returns 'type' field value configured in shareMethod function in util.json
 
-    return  _.get(result, 'result', result); //will be return by shareMethod built-in function as default
+    return _.get(result, 'result', result); //will be return by shareMethod built-in function as default
   } catch (upload_error) {
 
     logger.error(upload_error, __filename);
@@ -70,12 +66,12 @@ async function uploadFileController(ctx) {
 }
 
 /**
- * Process to store uploaded file in calculated path
+ * Process to store uploaded file in calculated path.
  *
  * @param {*} req http request
  * @param {*} res http response
  * @param {object} options options
- * @returns {object} if upload OK, return object {relativeFilePathWillSave, absoluteFilePathWillSave}, otherwise throw err
+ * @returns Throw error if unable to specify any files to upload
  */
 async function saveFile(req, res, options) {
   //multer.bind(app);
@@ -118,6 +114,15 @@ async function saveFile(req, res, options) {
   var my_uploadPromise = Promise.promisify(my_upload).bind(my_upload);
 
   await my_uploadPromise(req, res);
+
+  //throw error if unable to specify any files to upload
+  var uploaded_files = req.file || req.files;
+  uploaded_files = _.isUndefined(uploaded_files) ? [] : _.castArray(uploaded_files);
+
+  if (_.isEmpty(uploaded_files)) {
+
+    throw Boom.notFound('Not found any files in multipart-form need to be uploaded');
+  }
 };
 
 
@@ -175,28 +180,20 @@ async function _workbook_image_uploader({
     throw Boom.notFound(`Not found workbook_id is ${workbook_id}`);
   }
 
-    await saveFile(
-      req, res
-    );
+  await saveFile(
+    req, res
+  );
 
-    var uploaded_files = req.file || req.files;
-    uploaded_files = _.castArray(uploaded_files);
+  var updateAttribute_result;
+  for (const [index, file] of uploaded_files.entries()) {
 
-    if (_.isEmpty(uploaded_files)) {
+    var standardized_file_name = file.filename;
+    var updateAttributeWorkbookPromise = Promise.promisify(workbook_found.updateAttribute).bind(workbook_found);
+    updateAttribute_result = await updateAttributeWorkbookPromise('image_url', standardized_file_name);
+  }
 
-      throw Boom.notFound('Not found any files need to be uploaded');
-    }
+  return updateAttribute_result;
 
-    var updateAttribute_result;
-    for (const [index, file] of uploaded_files.entries()) {
-
-      var standardized_file_name = file.filename;
-      var updateAttributeWorkbookPromise = Promise.promisify(workbook_found.updateAttribute).bind(workbook_found);
-      updateAttribute_result = await updateAttributeWorkbookPromise('image_url', standardized_file_name);
-    }
-
-    return updateAttribute_result;
- 
 }
 
 /**
@@ -211,31 +208,23 @@ async function _raw_file_uploader({
   res
 }, query_params) {
 
-    await saveFile(
-      req, res
-    );
+  await saveFile(
+    req, res
+  );
 
-    var uploaded_files = req.file || req.files;
-    uploaded_files = _.isUndefined(uploaded_files) ? [] : _.castArray(uploaded_files);
+  var upload_results = [];
 
-    if (_.isEmpty(uploaded_files)) {
+  for (const [index, file] of uploaded_files.entries()) {
 
-      throw Boom.notFound('Not found any files need to be uploaded');
-    }
+    var fileNameWillSave = file.filename;
 
-    var upload_results = [];
+    upload_results.push({
+      file_url: fileNameWillSave
+    });
+  }
 
-    for (const [index, file] of uploaded_files.entries()) {
+  return {
+    data: upload_results
+  };
 
-      var fileNameWillSave = file.filename;
-
-      upload_results.push({
-        file_url: fileNameWillSave
-      });
-    }
-    
-    return {
-      data: upload_results
-    };
- 
 }

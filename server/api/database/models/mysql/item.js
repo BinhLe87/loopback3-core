@@ -193,15 +193,13 @@ module.exports = function(Item) {
 async function uploadFileAndAddFilePathIntoCtx(ctx) {
   await saveFile(ctx.req, ctx.res);
 
-  var upload_files = ctx.req.files;
+  var upload_files = _.castArray(ctx.req.file || ctx.req.files);
 
   var convertImageFilePromises = _.map(upload_files, file => {
     return convertImageFileAsync(file.path).catch(error => {
       logger.error(`Error converting the image at ${file.path}`, __filename);
     });
   });
-
-  var file_name = ctx.req.files[0].filename;
 
   await Promise.all([
     determineItemTypeIdAndAttributeIdAsync(ctx).catch(error => {
@@ -213,26 +211,34 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
     }),
     ...convertImageFilePromises
   ])
-    .spread((itemTypeAttributeArray, sharpFilesArray) => {
+    .spread((itemTypeAttributeArray, ...sharpFilesArray) => {
       var [item_type, attribute] = itemTypeAttributeArray;
-      var [mobileFileName, desktopFileName] = sharpFilesArray;
-
-      var origin_file_name = file_name;
-      var desktop_file_name = desktopFileName;
-      var mobile_file_name = mobileFileName;
 
       //Add 3 urls: original url, desktop image url and mobile image url into http response
       ctx.args.data['item_typeId'] = item_type.id;
-      ctx.args.data['item_attributes'] = [
-        {
+
+      //iterate list of upload files, then set item_attributes for each of file
+      ctx.args.data['item_attributes'] = [];
+      for (const [index, sharpFile] of sharpFilesArray.entries()) {
+        var origin_file_name = path.basename(
+          _.get(sharpFile, '[0].origin_file_path')
+        );
+        var desktop_file_name = path.basename(
+          _.find(sharpFile, { target_device: 'desktop' }).resized_file_path
+        );
+        var mobile_file_name = path.basename(
+          _.find(sharpFile, { target_device: 'mobile' }).resized_file_path
+        );
+
+        ctx.args.data['item_attributes'].push({
           id: attribute.id,
           values: {
             high_url: origin_file_name,
             medium_url: desktop_file_name,
             low_url: mobile_file_name
           }
-        }
-      ];
+        });
+      }
 
       //TODO: temporarily adding all metadata fields into same attribute with image
       //Add additional metadata fields from req.body

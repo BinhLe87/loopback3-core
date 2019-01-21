@@ -240,7 +240,11 @@ class ImageConverter {
         .toFile(outputImageFilePath, (error, info) => {
           if (error) reject(error);
 
-          resolve(path.basename(outputImageFilePath));
+          resolve({
+            origin_file_path: inputImagePath,
+            resized_file_path: outputImageFilePath,
+            target_device: targetDevice
+          });
         });
     });
   }
