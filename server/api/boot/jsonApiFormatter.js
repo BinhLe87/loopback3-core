@@ -27,9 +27,8 @@ module.exports = function(app) {
       return next();
     }
 
-    if (ctx.resultType === 'upload' && !_.isUndefined(ctx.resultType_alias)) {
-      ctx.resultType = ctx.resultType_alias;
-    }
+    __overwriteCtxWithOptions(ctx);
+
     ctx.req.originalUrl = URI.decode(ctx.req.originalUrl); //to avoid issues when using regx in url
     //format response follow jsonapi.org standard
     parseResouceFactory(ctx)
@@ -44,6 +43,32 @@ module.exports = function(app) {
 
         next(parse_resource_error);
       });
+
+    /**
+     * Apply options' properties directly into ctx object.
+     * The options can be received via 1 in 3 ways:
+     * - `ctx.cc_hook_options`
+     * - `ctx.result.cc_hook_options`
+     * - `ctx.req.query.cc_hook_options`
+     * In 2 cases later, it will delete `cc_hook_options` to avoid unexpected result
+     *
+     * @param {*} ctx
+     */
+    function __overwriteCtxWithOptions(ctx) {
+      var options = Object.assign(
+        {},
+        ctx.cc_hook_options,
+        _.get(ctx, 'result.cc_hook_options'),
+        _.get(ctx, 'req.query.cc_hook_options')
+      );
+
+      _.forOwn(options, (value, key) => {
+        ctx[key] = value;
+      });
+
+      _.unset(ctx, 'req.query.cc_hook_options');
+      _.unset(ctx, 'result.cc_hook_options');
+    }
   });
 };
 /**

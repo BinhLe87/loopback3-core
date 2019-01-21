@@ -56,7 +56,8 @@ async function uploadFileController(ctx) {
     //because it maybe changed after Joi validation
     var result = await _routeUploadControllerByFileType(ctx, query_params);
 
-    ctx.resultType_alias = !_.isUndefined(result.resultType) ? result.resultType : ctx.resultType; //save it for reset resultType later 
+    var target_resultType = !_.isUndefined(result.resultType) ? result.resultType : ctx.resultType;     
+    _.set(ctx, 'cc_hook_options.resultType', target_resultType); //save it for reset resultType later 
     //because it would be changed to returns 'type' field value configured in shareMethod function in util.json
 
     return  _.get(result, 'result', result); //will be return by shareMethod built-in function as default
@@ -215,7 +216,7 @@ async function _raw_file_uploader({
     );
 
     var uploaded_files = req.file || req.files;
-    uploaded_files = _.castArray(uploaded_files);
+    uploaded_files = _.isUndefined(uploaded_files) ? [] : _.castArray(uploaded_files);
 
     if (_.isEmpty(uploaded_files)) {
 

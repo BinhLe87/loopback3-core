@@ -30,6 +30,11 @@ module.exports = function(Model, options) {
       throw Boom.badRequest(`Failed to delete record has id '${id}'`);
     }
 
+    updated_model_item.cc_hook_options = {
+      resultType: Model.modelName
+    };
+    //add resultType in order to parse later in jsonApiFormatter.js
+
     return updated_model_item;
   };
 };
