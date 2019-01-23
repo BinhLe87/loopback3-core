@@ -1,7 +1,7 @@
 ## Upload file(s)
 Upload file(s). 
 
-**Notice that**: In order to upload an image that associates with any object like an item/a workbook/etc., please read API guidelines in corresponding object section.
+**Notice that**: In order to upload an image that associates with specific object like an item/a workbook/etc., please read API guidelines in corresponding object section.
 
 > Example Request
 
@@ -20,7 +20,7 @@ curl -X POST \
 {
     "data": [
         {
-            "file_url": "inspirational-home-office-workspace-tips-to-get-organized-768x384_s01_api_20190115_eaac22.jpg"
+            "file_url": "http://dev01.cc.cloud:49173/upload/api/2019/01/16/home-office-workspace-768x384_s01_api_20190116_2c23a7.jpg"
         }
     ]
 }

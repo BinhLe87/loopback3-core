@@ -37,4 +37,11 @@ module.exports = function(Model, options) {
 
     return updated_model_item;
   };
+
+  Model.observe('access', async function(ctx) {
+    //set is_active = true as default filter query
+    var is_active_will_query = _.get(ctx, 'query.where.is_active', true);
+
+    _.set(ctx, 'query.where.is_active', is_active_will_query);
+  });
 };
