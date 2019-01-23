@@ -122,7 +122,9 @@ function __validateInputAttributesWithInDB(
   //- 'Attributes' passed must fulfill constraints defined in DB if any (ex: data type, additional constrains about op_required, etc.)
 
   for (let attributeInDB of attributesInDB) {
-    var sameAttrIds = _.filter(attributesWillCheck, { id: attributeInDB.id });
+    var sameAttrIds = _.filter(attributesWillCheck, function(req_attribute) {
+      return req_attribute.id == attributeInDB.id;
+    });
 
     //NOTE: No need to check because it will be validated later based on `op_required` property
     // if (_.isEmpty(sameAttrIds)) {

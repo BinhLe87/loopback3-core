@@ -112,7 +112,6 @@ async function saveFile(req, res, options) {
 
   await my_uploadPromise(req, res);
 
-  //throw error if unable to specify any files to upload
   var uploaded_files = req.file || req.files;
   uploaded_files = _.isUndefined(uploaded_files) ? [] : _.castArray(uploaded_files);
 
@@ -208,6 +207,9 @@ async function _raw_file_uploader({
   await saveFile(
     req, res
   );
+
+  var uploaded_files = req.file || req.files;
+  uploaded_files = _.isUndefined(uploaded_files) ? [] : _.castArray(uploaded_files);
 
   var upload_results = [];
 
