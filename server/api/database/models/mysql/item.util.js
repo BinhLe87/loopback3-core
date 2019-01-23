@@ -17,27 +17,11 @@ exports.validateItemData = validateItemData;
  * @param {*} ctx
  */
 async function uploadFileAndAddFilePathIntoCtx(ctx) {
-  const preQueryValidtionJoi = Joi.object().keys({
-    item_typeId: Joi.number()
-      .empty()
-      .required(),
-    item_attributes: Joi.array(),
-    insert_after_item_id: Joi.number()
-  });
-  var origin_query_params = ctx.req.query;
+  var query_params = ctx.req.query;
 
-  var query_params_validation = Joi.validate(
-    origin_query_params,
-    preQueryValidtionJoi,
-    baseJoiOptions
-  );
+  query_params = await validateItemData(query_params);
 
-  if (query_params_validation.error) {
-    logger.error(query_params_validation, __filename);
-    throw Boom.badRequest('Invalid parameters!', query_params_validation.error);
-  }
-
-  var item_typeId = _.get(query_params_validation, 'value.item_typeId');
+  var item_typeId = _.get(query_params, 'item_typeId');
   var [item_type, attribute] = await determineItemTypeIdAndAttributeIdAsync(
     ctx,
     item_typeId
@@ -62,7 +46,7 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
   await Promise.all([...convertImageFilePromises])
     .spread((...sharpFilesArray) => {
       //Save query parameters into ctx.args.data, except `item_attributes` will be handled later
-      _.forOwn(query_params_validation.value, (value, key) => {
+      _.forOwn(query_params, (value, key) => {
         if (key != 'item_attributes' && key != 'access_token') {
           ctx.args.data[key] = value;
         }
@@ -77,10 +61,14 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
           _.get(sharpFile, '[0].origin_file_path')
         );
         var desktop_file_name = path.basename(
-          _.find(sharpFile, { target_device: 'desktop' }).resized_file_path
+          _.find(sharpFile, {
+            target_device: 'desktop'
+          }).resized_file_path
         );
         var mobile_file_name = path.basename(
-          _.find(sharpFile, { target_device: 'mobile' }).resized_file_path
+          _.find(sharpFile, {
+            target_device: 'mobile'
+          }).resized_file_path
         );
 
         item_attributes.push({
@@ -93,9 +81,11 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
         });
       }
 
-      ctx.args.data['item_attributes'] = item_attributes.concat(
-        _.get(query_params_validation, 'value.item_attributes')
+      Array.prototype.push.apply(
+        item_attributes,
+        _.get(query_params, 'item_attributes')
       );
+      ctx.args.data['item_attributes'] = item_attributes;
     })
     .catch(error => {
       logger.error(error, __filename);
@@ -103,16 +93,21 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
     });
 }
 
-async function validateItemData(ctx) {
-  var data = ctx.instance || ctx.data;
+/**
+ * Validate and return 'new' item_object is maybe changed after converting values if any
+ *
+ * @param {*} item_object
+ * @returns {object} a (new) item_object
+ */
+async function validateItemData(item_object) {
+  var data = item_object;
 
-  const UPDATE_ITEM_VALIDATION = Joi.object()
-    .keys({
-      item_typeId: Joi.number(),
-      item_attributes: Joi.any(),
-      is_active: Joi.boolean()
-    })
-    .and('item_typeId', 'item_attributes');
+  const UPDATE_ITEM_VALIDATION = Joi.object().keys({
+    item_typeId: Joi.number().required(),
+    item_attributes: Joi.array(),
+    insert_after_item_id: Joi.number(),
+    is_active: Joi.boolean()
+  });
 
   const validation_result = Joi.validate(data, UPDATE_ITEM_VALIDATION, {
     abortEarly: false,
@@ -128,28 +123,12 @@ async function validateItemData(ctx) {
 
   if (item_attributes && item_typeId) {
     await AttributeUtil.validateAttributesByItemtypeId(
-      data.item_attributes,
-      data.item_typeId
+      item_attributes,
+      item_typeId
     );
   }
 
-  //check whether the insert_after_item_id exists if this param was passed and not equal 0 (will insert in top list)
-  if (
-    !_.isUndefined(data.insert_after_item_id) &&
-    data.insert_after_item_id !== 0
-  ) {
-    var ItemModel = app.models.item;
-    var findByIdPromise = Promise.promisify(ItemModel.findById).bind(ItemModel);
-
-    var dest_item_id = await findByIdPromise(data.insert_after_item_id);
-
-    if (_.isNull(dest_item_id)) {
-      throw boom.notFound(
-        `Not found insert_after_item_id with id '${data.insert_after_item_id}'`
-      );
-    }
-  }
-  _.set(ctx, 'options.insert_after_item_id', data.insert_after_item_id);
+  return validation_result.value;
 }
 
 function determineItemTypeIdAndAttributeIdAsync(ctx, item_typeId) {
@@ -167,7 +146,9 @@ function determineItemTypeIdAndAttributeIdAsync(ctx, item_typeId) {
   return Promise.all([
     itemTypeFindByIdPromise(item_typeId),
     attributeUpsertPromise(
-      { code: 'image' },
+      {
+        code: 'image'
+      },
       {
         code: 'image',
         label: 'Image',

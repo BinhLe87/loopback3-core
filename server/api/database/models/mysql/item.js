@@ -28,7 +28,9 @@ fs.readFile(path.join(__dirname, '../../../middleware.json'), (err, data) => {
       filesInArray = [static_data];
     }
 
-    var staticUploadURL = _.filter(filesInArray, { name: 'upload' });
+    var staticUploadURL = _.filter(filesInArray, {
+      name: 'upload'
+    });
     static_files_dir = _.get(staticUploadURL[0], 'paths[0]', '');
   }
 });
@@ -133,8 +135,31 @@ module.exports = function(Item) {
     }
   });
 
+  //validate position was passed or specify default display position of item in a page (bottom in a page)
   Item.observe('persist', async function(ctx, modelInstance) {
-    await validateItemData(ctx);
+    var data = ctx.instance || ctx.data;
+
+    //check whether the insert_after_item_id exists if this param was passed and not equal 0 (will insert in top list)
+    if (
+      !_.isUndefined(data.insert_after_item_id) &&
+      data.insert_after_item_id !== 0
+    ) {
+      var ItemModel = app.models.item;
+      var findByIdPromise = Promise.promisify(ItemModel.findById).bind(
+        ItemModel
+      );
+
+      var dest_item_id = await findByIdPromise(data.insert_after_item_id);
+
+      if (_.isNull(dest_item_id)) {
+        throw boom.notFound(
+          `Not found insert_after_item_id with id '${
+            data.insert_after_item_id
+          }'`
+        );
+      }
+    }
+    _.set(ctx, 'options.insert_after_item_id', data.insert_after_item_id); //by default, set 'undefined' means it will be inserted at bottom of a page
   });
 
   /**
