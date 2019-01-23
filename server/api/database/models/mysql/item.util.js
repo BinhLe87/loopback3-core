@@ -170,10 +170,9 @@ function determineItemTypeIdAndAttributeIdAsync(ctx, item_typeId) {
       { code: 'image' },
       {
         code: 'image',
-        label: 'image',
+        label: 'Image',
         data_type: 'url',
-        is_active: 1,
-        op_required: 1
+        is_active: 1
       }
     ).catch(error => {
       logger.error(`Unable to create attribute is 'image' in DB`, __filename);

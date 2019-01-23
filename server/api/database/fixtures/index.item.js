@@ -40,19 +40,36 @@ async function _generate_item_type(NUMBER_RECORDS) {
 async function _generate_attribute() {
   await require('./model.fixtures')(1, 'attribute', {
     //attribute_id = 1
-    code: 'content',
-    label: '${code}',
-    description: 'entire content of item type is text/paragraph',
+    code: 'title',
+    label: 'Title',
+    description: 'title',
     data_type: 'string'
   });
 
   await require('./model.fixtures')(1, 'attribute', {
     //attribute_id = 2
-    code: 'url',
-    label: 'url',
-    data_type: 'string',
+    code: 'description',
+    label: 'Description',
+    description: 'body content or description',
+    data_type: 'string'
+  });
+
+  await require('./model.fixtures')(1, 'attribute', {
+    //attribute_id = 3
+    code: 'image',
+    label: 'Image',
+    data_type: 'url',
     op_regex:
-      '((([A-Za-z]{3,9}:(?://)?)(?:[-;:&=+$,w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=+$,w]+@)[A-Za-z0-9.-]+)((?:/[+~%/.w-_]*)???(?:[-+=&;%@.w_]*)#?(?:[.!/\\w]*))?)'
+      '^(?:([\\w+\\-.]+):)?\\/\\/(?:(\\w+:\\w+)@)?([\\w.-]*)(?::(\\d+))?(.*)$'
+  });
+
+  await require('./model.fixtures')(1, 'attribute', {
+    //attribute_id = 4
+    code: 'video',
+    label: 'Video',
+    data_type: 'url',
+    op_regex:
+      '^(?:([\\w+\\-.]+):)?\\/\\/(?:(\\w+:\\w+)@)?([\\w.-]*)(?::(\\d+))?(.*)$'
   });
 }
 

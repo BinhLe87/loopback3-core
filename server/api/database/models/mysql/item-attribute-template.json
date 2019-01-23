@@ -1,5 +1,6 @@
 {
   "name": "item_attribute_template",
+  "plural": "item_attribute_templates",
   "base": "PersistedModel",
   "idInjection": true,
   "indexes": {
@@ -9,7 +10,7 @@
         "attributeId": 1
       },
       "options": {
-        "unique": false
+        "unique": true
       }
     }
   },
