@@ -99,12 +99,12 @@ async function moveItemPositionController(req, res, next) {
       case 'swap':
         await swapTwoItemPositions(url_params);
 
-        var success_message_template = _.template(
+        var swap_success_message_template = _.template(
           `Done swap positions between from_model_id '<%= from_model_id %>' and to_model_id <%= to_model_id %>!`
         );
 
         res.send(
-          success_message_template({
+          swap_success_message_template({
             from_model_id: url_params.from_model_id,
             to_model_id: url_params.to_model_id
           })
@@ -114,12 +114,12 @@ async function moveItemPositionController(req, res, next) {
       case 'move':
         var { new_position_string } = await _moveItemPosition(url_params);
 
-        var success_message_template = _.template(
+        var move_success_message_template = _.template(
           `Updated from_model_id '<%= from_model_id %>' with new position is <%= new_position_string %>!`
         );
 
         res.send(
-          success_message_template({
+          move_success_message_template({
             from_model_id: url_params.from_model_id,
             new_position_string: new_position_string
           })
@@ -180,6 +180,10 @@ async function moveItemPosition(url_params, options) {
  * @returns {string} if success, return new position string and new position index of from_model, otherwise throw an error instance of Boom if any errors occurred
  */
 async function _moveItemPosition(url_params, options = {}) {
+  function ___willMoveToTopPosition(url_params) {
+    return url_params.to_model_id == 0 ? true : false;
+  }
+
   var sorted_positions = await getListPositionsInModelScope(
     url_params.relation_model_name,
     url_params.scope_model_foreign_key,
@@ -216,10 +220,6 @@ async function _moveItemPosition(url_params, options = {}) {
       new_position_index: new_last_position
     };
   } else {
-    function ___willMoveToTopPosition(url_params) {
-      return url_params.to_model_id == 0 ? true : false;
-    }
-
     var from_model_new_position;
     var new_position_string;
     var will_move_down_from_array_idx;
@@ -368,19 +368,19 @@ async function swapPositionFromModelAndToModel(
 
       try {
         //Use -1 as intermediate value in order to avoid 'duplicate unique key' error
-        var updated_from_model_instance = await updatePositionForObjectInstance(
+        await updatePositionForObjectInstance(
           to_model_instance,
           -1,
           transaction_options
         );
 
-        var updated_from_model_instance = await updatePositionForObjectInstance(
+        await updatePositionForObjectInstance(
           from_model_instance,
           cloned_to_model_instance.display_index,
           transaction_options
         );
 
-        var updated_to_model_instance = await updatePositionForObjectInstance(
+        await updatePositionForObjectInstance(
           to_model_instance,
           cloned_from_model_instance.display_index,
           transaction_options

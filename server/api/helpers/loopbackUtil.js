@@ -5,7 +5,6 @@ const path = require('path');
 const FilePathHandler = require('./uploadFilePathHandler');
 const uploadFilePathHandler = new FilePathHandler();
 const replace_in_file = require('replace-in-file');
-
 module.exports = exports = {};
 
 var _builtInModelNames = [

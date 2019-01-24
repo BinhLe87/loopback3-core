@@ -14,51 +14,49 @@ exports.saveFile = saveFile;
 
 const { baseJoiOptions } = require('../../helpers/validators/joiValidator');
 
-var uploadQueryParamsJoi =
-  Joi.object()
-  .keys({
-    file_type: Joi.string()
-      .allow('workbook_image')
-      .default('raw_file'),
-    workbook_id: Joi.string().when('file_type', {
-      is: Joi.invalid('raw_file'),
-      then: Joi.required()
-    })
-  });
+var uploadQueryParamsJoi = Joi.object().keys({
+  file_type: Joi.string()
+    .allow('workbook_image')
+    .default('raw_file'),
+  workbook_id: Joi.string().when('file_type', {
+    is: Joi.invalid('raw_file'),
+    then: Joi.required()
+  })
+});
 
 async function uploadFileController(ctx) {
-
   try {
-
-    var {
-      req,
-      res
-    } = ctx;
+    var { req, res } = ctx;
     var query_params_origin = req.query;
 
-    var url_params_joi_result = uploadQueryParamsJoi.validate(query_params_origin, baseJoiOptions);
+    var url_params_joi_result = uploadQueryParamsJoi.validate(
+      query_params_origin,
+      baseJoiOptions
+    );
     if (url_params_joi_result.error) {
-
-      throw Boom.badRequest('Invalid parameters for upload api', url_params_joi_result.error);
+      throw Boom.badRequest(
+        'Invalid parameters for upload api',
+        url_params_joi_result.error
+      );
     }
 
     var query_params = url_params_joi_result.value;
 
-    //although it's able to query query params via ctx.req.query but still pass query_params 
+    //although it's able to query query params via ctx.req.query but still pass query_params
     //because it maybe changed after Joi validation
     var result = await _routeUploadControllerByFileType(ctx, query_params);
 
-    var target_resultType = !_.isUndefined(result.resultType) ? result.resultType : ctx.resultType;
-    _.set(ctx, 'cc_hook_options.resultType', target_resultType); //save it for reset resultType later 
+    var target_resultType = !_.isUndefined(result.resultType)
+      ? result.resultType
+      : ctx.resultType;
+    _.set(ctx, 'cc_hook_options.resultType', target_resultType); //save it for reset resultType later
     //because it would be changed to returns 'type' field value configured in shareMethod function in util.json
 
     return _.get(result, 'result', result); //will be return by shareMethod built-in function as default
   } catch (upload_error) {
-
     logger.error(upload_error, __filename);
     throw upload_error;
   }
-
 }
 
 /**
@@ -74,7 +72,7 @@ async function saveFile(req, res, options) {
   //multer.bind(app);
 
   var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+    destination: function(req, file, cb) {
       var origin_filename = file.originalname;
       var fileNameWillSave = uploadFilePathHandler.transformFileNameToSave(
         origin_filename
@@ -85,7 +83,7 @@ async function saveFile(req, res, options) {
       );
       cb(null, pathWillSave);
     },
-    filename: function (req, file, cb) {
+    filename: function(req, file, cb) {
       var origin_filename = file.originalname;
       var fileNameWillSave = uploadFilePathHandler.transformFileNameToSave(
         origin_filename
@@ -94,7 +92,7 @@ async function saveFile(req, res, options) {
     }
   });
 
-  var fileFilter = function (req, file, cb) {
+  var fileFilter = function(req, file, cb) {
     //cb(new Error('Not allowed to upload at the moment!!!!'));
     cb(null, true);
   };
@@ -113,23 +111,23 @@ async function saveFile(req, res, options) {
   await my_uploadPromise(req, res);
 
   var uploaded_files = req.file || req.files;
-  uploaded_files = _.isUndefined(uploaded_files) ? [] : _.castArray(uploaded_files);
+  uploaded_files = _.isUndefined(uploaded_files)
+    ? []
+    : _.castArray(uploaded_files);
 
   if (_.isEmpty(uploaded_files) && !options.silentEmptyFiles) {
-
-    throw Boom.notFound('Not found any files in multipart-form need to be uploaded');
+    throw Boom.notFound(
+      'Not found any files in multipart-form need to be uploaded'
+    );
   }
-};
-
+}
 
 async function _routeUploadControllerByFileType(ctx, query_params) {
-
   var file_type = query_params.file_type;
   var result = {};
   var resultType;
 
   switch (file_type) {
-
     case 'workbook_image':
       result = await _workbook_image_uploader(ctx, query_params);
       resultType = 'workbook';
@@ -142,7 +140,6 @@ async function _routeUploadControllerByFileType(ctx, query_params) {
   }
 
   if (_.isEmpty(result) || _.isEmpty(resultType)) {
-
     throw new Error('result and resultType must be not empty');
   }
 
@@ -158,11 +155,7 @@ async function _routeUploadControllerByFileType(ctx, query_params) {
  * @param {object} query_params query parameters
  * @returns {object} workbook object after updating
  */
-async function _workbook_image_uploader({
-  req,
-  res
-}, query_params) {
-
+async function _workbook_image_uploader({ req, res }, query_params) {
   var WorkbookModel = app.models.workbook;
   var findByIdPromise = Promise.promisify(WorkbookModel.findById).bind(
     WorkbookModel
@@ -172,24 +165,29 @@ async function _workbook_image_uploader({
   var workbook_found = await findByIdPromise(workbook_id);
 
   if (!workbook_found) {
-
     throw Boom.notFound(`Not found workbook_id is ${workbook_id}`);
   }
 
-  await saveFile(
-    req, res
-  );
+  await saveFile(req, res);
+
+  var uploaded_files = req.file || req.files;
+  uploaded_files = _.isUndefined(uploaded_files)
+    ? []
+    : _.castArray(uploaded_files);
 
   var updateAttribute_result;
   for (const [index, file] of uploaded_files.entries()) {
-
     var standardized_file_name = file.filename;
-    var updateAttributeWorkbookPromise = Promise.promisify(workbook_found.updateAttribute).bind(workbook_found);
-    updateAttribute_result = await updateAttributeWorkbookPromise('image_url', standardized_file_name);
+    var updateAttributeWorkbookPromise = Promise.promisify(
+      workbook_found.updateAttribute
+    ).bind(workbook_found);
+    updateAttribute_result = await updateAttributeWorkbookPromise(
+      'image_url',
+      standardized_file_name
+    );
   }
 
   return updateAttribute_result;
-
 }
 
 /**
@@ -199,22 +197,17 @@ async function _workbook_image_uploader({
  * @param {object} query_params query parameters
  * @returns {object} file path
  */
-async function _raw_file_uploader({
-  req,
-  res
-}, query_params) {
-
-  await saveFile(
-    req, res
-  );
+async function _raw_file_uploader({ req, res }, query_params) {
+  await saveFile(req, res);
 
   var uploaded_files = req.file || req.files;
-  uploaded_files = _.isUndefined(uploaded_files) ? [] : _.castArray(uploaded_files);
+  uploaded_files = _.isUndefined(uploaded_files)
+    ? []
+    : _.castArray(uploaded_files);
 
   var upload_results = [];
 
   for (const [index, file] of uploaded_files.entries()) {
-
     var fileNameWillSave = file.filename;
 
     upload_results.push({
@@ -225,5 +218,4 @@ async function _raw_file_uploader({
   return {
     data: upload_results
   };
-
 }

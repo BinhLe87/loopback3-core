@@ -20,13 +20,19 @@
   "globals": {
     "logger": true,
     "helper": true,
-    "_": true
+    "_": true,
+    "Boom": true,
+    "boom": true,
+    "STATIC_FILE_DIR": true,
+    "__i18n": true
   },
   "rules": {
-    "max-lines": ["error", 400],
-    "no-unused-vars": 1,
-    "no-console": 0,
-    "prettier/prettier": 0,
-    "complexity": 0
+    "no-undef": "error",
+    "no-unused-vars": "warn",
+    "no-unused-labels": "off",
+    "no-console": "error",
+    "prettier/prettier": "off",
+    "complexity": "off",
+    "no-empty": ["error", {"allowEmptyCatch": true}]
   }
 }

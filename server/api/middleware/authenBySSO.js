@@ -82,7 +82,6 @@ module.exports = function() {
         error.data = 'Not found credential info and/or access_token in request';
 
         return next(error);
-        break;
     }
   };
 };

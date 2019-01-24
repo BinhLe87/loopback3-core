@@ -65,49 +65,49 @@ exports.parseRecordFields = function parseRecordFields(fields, options) {
   return record;
 
   function __determineMatchingRandomPattern(field_pattern, field_name) {
-    var field_pattern = _.cloneDeepWith(field_pattern, value => {
+    var field_pattern_clone = _.cloneDeepWith(field_pattern, value => {
       if (typeof value == 'function') {
         return value;
       }
     });
 
     //Case 1: fakerjs pure function
-    if (typeof field_pattern == 'function') {
-      return field_pattern();
+    if (typeof field_pattern_clone == 'function') {
+      return field_pattern_clone();
     } else if (
       //(Case 2: fakerjs function with arguments: declared by object has { func, args }
-      typeof field_pattern == 'object' &&
-      !Array.isArray(field_pattern)
+      typeof field_pattern_clone == 'object' &&
+      !Array.isArray(field_pattern_clone)
     ) {
       if (
-        typeof field_pattern != 'object' ||
-        !field_pattern.func ||
-        !field_pattern.args
+        typeof field_pattern_clone != 'object' ||
+        !field_pattern_clone.func ||
+        !field_pattern_clone.args
       ) {
         throw new Error(`Wrong format of field '${field_name}'.
                     Must be an object type and has 2 properties are 'func' and 'args'`);
       }
-      return field_pattern.func(field_pattern.args);
-    } else if (RegExp(REFER_TO_OTHER_FIELD_PATTERN).test(field_pattern)) {
+      return field_pattern_clone.func(field_pattern_clone.args);
+    } else if (RegExp(REFER_TO_OTHER_FIELD_PATTERN).test(field_pattern_clone)) {
       //Case 3: refer to other field's value: ${<field_referred_to>}
 
       fields_refer_to_other_array.push({
         field_name: field_name,
-        field_faker_type: field_pattern
+        field_faker_type: field_pattern_clone
       });
-    } else if (RegExp(LODASH_STRING_PATTERN).test(field_pattern, 'gi')) {
+    } else if (RegExp(LODASH_STRING_PATTERN).test(field_pattern_clone, 'gi')) {
       //Case 4: lodash string pattern: example is 'Library <%= %d %>'
 
-      return parseAndReplaceLodashStringPattern(field_pattern, {
+      return parseAndReplaceLodashStringPattern(field_pattern_clone, {
         '%d': faker.random.number({
           min: 1,
           max: number_records_will_generate
         }),
         '%long_text': faker.lorem.paragraphs()
       });
-    } else if (Array.isArray(field_pattern)) {
+    } else if (Array.isArray(field_pattern_clone)) {
       // Case 5: array of object data[{< object_1 >, { object_2 }}]  //use for `item_attribute` field in `item` model
-      for (let field_item of field_pattern) {
+      for (let field_item of field_pattern_clone) {
         if (typeof field_item == 'object') {
           _.forOwn(field_item, (field_item_value, field_item_name) => {
             var result_random = __determineMatchingRandomPattern(
@@ -119,10 +119,10 @@ exports.parseRecordFields = function parseRecordFields(fields, options) {
         }
       }
 
-      return field_pattern; //new value after generating random data
+      return field_pattern_clone; //new value after generating random data
     } else {
       //primitive type (string, number, etc.) => return original value
-      return field_pattern;
+      return field_pattern_clone;
     }
   }
 };

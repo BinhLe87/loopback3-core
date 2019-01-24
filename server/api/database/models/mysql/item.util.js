@@ -187,9 +187,6 @@ function convertImageFileAsync(savedAbsoluteImagePath) {
 }
 
 function _isReqTypeIsUploadFile(req) {
-  //HACK:
-  return true;
-
   var req_header_content_type = req.headers['content-type'];
 
   if (req_header_content_type.includes('multipart/form-data')) {

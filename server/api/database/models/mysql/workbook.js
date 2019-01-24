@@ -33,9 +33,6 @@ module.exports = function(Workbook) {
     var workbook_owner = await findLibraryWorkbookPromise({
       where: { workbookId: deleted_workbook_id }
     });
-
-    for (let workbook_owner in workbook_owner) {
-    }
   });
 
   Workbook.observe('persist', function(ctx, next) {

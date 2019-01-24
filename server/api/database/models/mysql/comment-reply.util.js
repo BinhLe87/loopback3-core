@@ -47,7 +47,7 @@ async function adjustReplyCountInParentComment(
       timeout: 10000
     },
     function(err, tx) {
-      tx.observe('timeout', function(context, timeout_next) {
+      tx.observe('timeout', function(context, next) {
         logger.error(
           'adjustReplyCountInParentComment(): Timeout committing transaction',
           __filename
