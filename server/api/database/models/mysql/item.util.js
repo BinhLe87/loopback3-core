@@ -22,10 +22,7 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
   query_params = await validateItemData(query_params);
 
   var item_typeId = _.get(query_params, 'item_typeId');
-  var [item_type, attribute] = await determineItemTypeIdAndAttributeIdAsync(
-    ctx,
-    item_typeId
-  );
+  var item_type = await checkItemType(ctx, item_typeId);
   if (_.isNull(item_type)) {
     throw Boom.badRequest(`Not found item_type has id '${item_typeId}'`);
   }
@@ -38,59 +35,75 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
   upload_files = _.isUndefined(upload_files) ? [] : _.castArray(upload_files);
 
   var convertImageFilePromises = _.map(upload_files, file => {
-    return convertImageFileAsync(file.path).catch(error => {
+    return convertImageFileAsync(file.path, {
+      fieldname_upload: file.fieldname
+    }).catch(error => {
       logger.error(`Error converting the image at ${file.path}`, __filename);
     });
   });
 
-  await Promise.all([...convertImageFilePromises])
-    .spread((...sharpFilesArray) => {
-      //Save query parameters into ctx.args.data, except `item_attributes` will be handled later
-      _.forOwn(query_params, (value, key) => {
-        if (key != 'item_attributes' && key != 'access_token') {
-          ctx.args.data[key] = value;
-        }
-      });
-      ctx.args.data['item_typeId'] = item_type.id;
-
-      //Add 3 urls: original url, desktop image url and mobile image url into http response
-      //iterate list of upload files, then set item_attributes for each of file
-      var item_attributes = [];
-      for (const [index, sharpFile] of sharpFilesArray.entries()) {
-        var origin_file_name = path.basename(
-          _.get(sharpFile, '[0].origin_file_path')
-        );
-        var desktop_file_name = path.basename(
-          _.find(sharpFile, {
-            target_device: 'desktop'
-          }).resized_file_path
-        );
-        var mobile_file_name = path.basename(
-          _.find(sharpFile, {
-            target_device: 'mobile'
-          }).resized_file_path
-        );
-
-        item_attributes.push({
-          id: attribute.id,
-          value: {
-            high_url: origin_file_name,
-            medium_url: desktop_file_name,
-            low_url: mobile_file_name
+  return new Promise(async (resolve, reject) => {
+    await Promise.all([...convertImageFilePromises])
+      .spread(async (...sharpFilesArray) => {
+        //Save query parameters into ctx.args.data, except `item_attributes` will be handled later
+        _.forOwn(query_params, (value, key) => {
+          if (key != 'item_attributes' && key != 'access_token') {
+            ctx.args.data[key] = value;
           }
         });
-      }
+        ctx.args.data['item_typeId'] = item_type.id;
 
-      Array.prototype.push.apply(
-        item_attributes,
-        _.get(query_params, 'item_attributes')
-      );
-      ctx.args.data['item_attributes'] = item_attributes;
-    })
-    .catch(error => {
-      logger.error(error, __filename);
-      throw error;
-    });
+        //Add 3 urls: original url, desktop image url and mobile image url into http response
+        //iterate list of upload files, then set item_attributes for each of file
+        var item_attributes = [];
+        for (const [index, sharpFile] of sharpFilesArray.entries()) {
+          var origin_file_name = path.basename(
+            _.get(sharpFile, '[0].origin_file_path')
+          );
+          var desktop_file_name = path.basename(
+            _.find(sharpFile, {
+              target_device: 'desktop'
+            }).resized_file_path
+          );
+          var mobile_file_name = path.basename(
+            _.find(sharpFile, {
+              target_device: 'mobile'
+            }).resized_file_path
+          );
+
+          var attribute_id = _.chain(sharpFile)
+            .find(ele => {
+              return !_.isUndefined(ele.fieldname_upload);
+            })
+            .get('fieldname_upload')
+            .value();
+
+          //fieldname of uploaded file is maybe equal to `attribute_id` if found in DB
+          var attribute = await checkAttributeId(ctx, attribute_id);
+
+          item_attributes.push({
+            id: attribute.id,
+            value: {
+              high_url: origin_file_name,
+              medium_url: desktop_file_name,
+              low_url: mobile_file_name
+            }
+          });
+        }
+
+        Array.prototype.push.apply(
+          item_attributes,
+          _.get(query_params, 'item_attributes')
+        );
+        ctx.args.data['item_attributes'] = item_attributes;
+
+        resolve();
+      })
+      .catch(error => {
+        logger.error(error, __filename);
+        reject(error);
+      });
+  });
 }
 
 /**
@@ -131,38 +144,67 @@ async function validateItemData(item_object) {
   return validation_result.value;
 }
 
-function determineItemTypeIdAndAttributeIdAsync(ctx, item_typeId) {
-  //get or create item_type=image in DB
+function checkItemType(ctx, item_typeId) {
   var app = ctx.req.app;
   var itemTypeModel = app.models.item_type;
-  var attributeModel = app.models.attribute;
   var itemTypeFindByIdPromise = Promise.promisify(itemTypeModel.findById).bind(
     itemTypeModel
   );
-  var attributeUpsertPromise = Promise.promisify(
-    attributeModel.upsertWithWhere
-  ).bind(attributeModel);
 
-  return Promise.all([
-    itemTypeFindByIdPromise(item_typeId),
-    attributeUpsertPromise(
-      {
-        code: 'image'
-      },
-      {
-        code: 'image',
-        label: 'Image',
-        data_type: 'url',
-        is_active: 1
-      }
-    ).catch(error => {
-      logger.error(`Unable to create attribute is 'image' in DB`, __filename);
-      throw error;
-    })
-  ]);
+  return itemTypeFindByIdPromise(item_typeId);
 }
 
-function convertImageFileAsync(savedAbsoluteImagePath) {
+async function checkAttributeId(ctx, attribute_id) {
+  //get or create item_type=image in DB
+  var app = ctx.req.app;
+  var attributeModel = app.models.attribute;
+
+  var attributeFindByIdPromise = Promise.promisify(
+    attributeModel.findById
+  ).bind(attributeModel);
+
+  var attribute_found = await attributeFindByIdPromise(
+    _.defaultTo(
+      _.toNumber(attribute_id) > 0 ? _.toNumber(attribute_id) : undefined,
+      'id_not_exists'
+    )
+  );
+
+  if (!_.isNull(attribute_found)) {
+    return attribute_found;
+  }
+
+  var attributeFindOrCreatePromise = Promise.promisify(
+    attributeModel.findOrCreate
+  ).bind(attributeModel);
+
+  try {
+    return await attributeFindOrCreatePromise(
+      {
+        where: {
+          code: 'file'
+        }
+      },
+      {
+        code: 'file',
+        label: 'File',
+        data_type: 'file',
+        is_active: 1
+      }
+    );
+  } catch (error) {
+    logger.error(`Unable to create attribute is 'file' in DB`, __filename);
+    throw error;
+  }
+}
+/**
+ *
+ *
+ * @param {string} savedAbsoluteImagePath
+ * @param {object} [file_params] optional file parameters
+ * @returns
+ */
+function convertImageFileAsync(savedAbsoluteImagePath, file_params) {
   var imageConverter = new ImageConverter({
     desktop: {
       width: process.env.IMAGE_DESKTOP_WIDTH,
@@ -183,7 +225,16 @@ function convertImageFileAsync(savedAbsoluteImagePath) {
     savedAbsoluteImagePath,
     'desktop'
   );
-  return Promise.all([convertToMobilePromise, convertToDesktopPromise]);
+
+  var fileParamsPromise = new Promise((resolve, reject) => {
+    return resolve(file_params);
+  });
+
+  return Promise.all([
+    convertToMobilePromise,
+    convertToDesktopPromise,
+    fileParamsPromise
+  ]);
 }
 
 function _isReqTypeIsUploadFile(req) {

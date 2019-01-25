@@ -7,7 +7,9 @@ const util = require('util');
 //Define Joi schema for each of data types
 const joiSchemas = {
   stringSchema: Joi.string().empty(''),
+  textSchema: Joi.string().empty(''),
   urlSchema: Joi.string().empty(''),
+  fileSchema: Joi.string().empty(''),
   htmlSchema: Joi.string()
     .base64()
     .empty(''),

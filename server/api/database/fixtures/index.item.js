@@ -1,5 +1,8 @@
 const faker = require('faker/locale/en');
 
+const URL_REGX =
+  '^(?:([\\w+\\-.]+):)?\\/\\/(?:(\\w+:\\w+)@)?([\\w.-]*)(?::(\\d+))?(.*)$';
+
 module.exports.generate_item_data = async function(
   NUMBER_RECORDS,
   MIN_NUMBER_RECORDS
@@ -9,7 +12,7 @@ module.exports.generate_item_data = async function(
   await _generate_attribute();
 
   await require('./many-to-many.fixtures')(
-    NUMBER_RECORDS,
+    20,
     'item_type',
     'attribute',
     'item_attribute_template',
@@ -43,7 +46,7 @@ async function _generate_attribute() {
     code: 'title',
     label: 'Title',
     description: 'title',
-    data_type: 'string'
+    data_type: 'text'
   });
 
   await require('./model.fixtures')(1, 'attribute', {
@@ -51,25 +54,31 @@ async function _generate_attribute() {
     code: 'description',
     label: 'Description',
     description: 'body content or description',
-    data_type: 'string'
+    data_type: 'text'
+  });
+
+  await require('./model.fixtures')(1, 'attribute', {
+    //attribute_id = 3
+    code: 'file',
+    label: 'File',
+    data_type: 'file',
+    op_regex: URL_REGX
   });
 
   await require('./model.fixtures')(1, 'attribute', {
     //attribute_id = 3
     code: 'image',
     label: 'Image',
-    data_type: 'url',
-    op_regex:
-      '^(?:([\\w+\\-.]+):)?\\/\\/(?:(\\w+:\\w+)@)?([\\w.-]*)(?::(\\d+))?(.*)$'
+    data_type: 'file',
+    op_regex: URL_REGX
   });
 
   await require('./model.fixtures')(1, 'attribute', {
     //attribute_id = 4
     code: 'video',
     label: 'Video',
-    data_type: 'url',
-    op_regex:
-      '^(?:([\\w+\\-.]+):)?\\/\\/(?:(\\w+:\\w+)@)?([\\w.-]*)(?::(\\d+))?(.*)$'
+    data_type: 'file',
+    op_regex: URL_REGX
   });
 }
 
