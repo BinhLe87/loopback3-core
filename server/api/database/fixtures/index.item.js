@@ -31,7 +31,7 @@ async function _generate_item_type(NUMBER_RECORDS) {
     //item_type_id = 1
     code: {
       func: faker.random.arrayElement,
-      args: ['paragraph']
+      args: ['paragraph', 'video', 'image', 'question', ' document']
     },
     label: '${code}'
   });
@@ -83,7 +83,7 @@ async function _generate_item(NUMBER_RECORDS) {
     item_attributes: [
       {
         id: 1,
-        values: '<%= %long_text %>'
+        value: '<%= %long_text %>'
       }
     ]
   });

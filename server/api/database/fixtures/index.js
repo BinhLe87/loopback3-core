@@ -8,7 +8,7 @@ const debug = require('debug')('index_fixtures');
 
 /**
  * Support following random data types:
- * - Case 1: fakerjs pure function
+ * - Case 1: fakerjs pure function. Ex: faker.lorem.paragraph
  * - Case 2: fakerjs function with arguments: declared by object has {func, args}
  * - Case 3: refer to other field's value: '${<field_referred_to>}'   (place in single quote mark)
  * - Case 4: lodash string pattern: example is 'Library <%= %d %>'. Now, just support random %d numberic value
