@@ -14,7 +14,7 @@
  * @param {Object} err - The error object.
  * @param {number} err.code - Error Code.
  * @param {string} err.mssg - Error message.
- * @param {Object} err.data - Error detail object.
+ * @param {Object} err.details - Error detail object.
  *
  */
 module.exports = function() {
@@ -29,10 +29,10 @@ module.exports = function() {
     var error_response = _.get(err, 'output.payload', {});
 
     if (process.env.NODE_ENV === 'production') {
-      error_response.data = {};
+      error_response.details = {};
     } else {
       //in development environment, for debug purpose, it will print out details if any
-      error_response.data = err.data || err.stack || {};
+      error_response.details = err.details || err.stack || {};
     }
 
     //log

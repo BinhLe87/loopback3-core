@@ -19,6 +19,7 @@
   },
   "mixins": {
     "TimeStamp": true,
+    "ActiveStatusDb": true,
     "BelongsToIntegrityCheck": false
   },
   "properties": {
