@@ -17,11 +17,23 @@ const RESOURCE_TYPE = {
 
 module.exports = function(app) {
   var remotes = app.remotes();
+  const content_types_will_ignore_format = `.*(loopback\\/json|text\\/html).*`;
+
   remotes.after('**', function(ctx, next) {
     transformFileNameInDBToFileURL(ctx);
 
     var req_accept_header = _.get(ctx, 'req.headers.accept');
-    if (req_accept_header == 'loopback/json' || _.isNull(ctx.result)) {
+    req_accept_header =
+      req_accept_header == '*/*'
+        ? _.get(ctx, 'res._headers.content-type', req_accept_header)
+        : req_accept_header;
+
+    if (
+      new RegExp(content_types_will_ignore_format, 'gi').test(
+        req_accept_header
+      ) ||
+      _.isNull(ctx.result)
+    ) {
       ctx.resolveReponseOperation =
         jsonAPIFormatterUtil.override_resolveReponseOperation;
       return next();
