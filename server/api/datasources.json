@@ -1,12 +1,2 @@
 {
-  "db": {
-    "name": "db",
-    "connector": "memory"
-  },
-  "cc_mysql": {
-    "url": "mysql://root@127.0.0.1:3306/couchingcloud",
-    "name": "cc_mysql",
-    "connector": "mysql",
-    "normalizeUndefinedInQuery": "nullify"
-  }
 }

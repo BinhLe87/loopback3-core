@@ -6,6 +6,10 @@ ENV tools_dir=${server_dir}/tools
 ## Print node version
 RUN node -v
 
+##Install vim
+RUN apt-get update
+RUN apt-get --assume-yes install vim
+
 WORKDIR ${container_dir}
 ## Bundle app source
 COPY . ${container_dir}
@@ -32,7 +36,7 @@ RUN make
 ## Start api server
 RUN npm install -g pm2
 WORKDIR ${container_dir}
-ENTRYPOINT pm2 start ecosystem.config.js --env development\
+ENTRYPOINT pm2 start ecosystem.config.js --env local\
     && pm2 status \
     && tail -f /dev/null
 EXPOSE 8080

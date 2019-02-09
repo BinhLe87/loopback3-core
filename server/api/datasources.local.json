@@ -1,0 +1,12 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "cc_mysql": {
+    "url": "mysql://root@host.docker.internal:3306/couchingcloud",
+    "name": "cc_mysql",
+    "connector": "mysql",
+    "normalizeUndefinedInQuery": "nullify"
+  }
+}

@@ -4,7 +4,8 @@ var command = '';
 
 //----------------For API service
 shell.pushd('server/api');
-command = 'npm ci';
+//command = 'npm ci';
+command = 'npm i';
 console.log(command);
 shell.exec(command);
 

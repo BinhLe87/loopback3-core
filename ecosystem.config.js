@@ -12,6 +12,9 @@ module.exports = {
       env_production: {
         NODE_ENV: 'production'
       },
+      env_local: {
+        NODE_ENV: 'local'
+      },
       instances: 2,
       exec_mode: 'cluster'
     },
