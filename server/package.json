@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "joi": "^13.6.0",
+    "joi": "^14.3.1",
     "winston": "^3.1.0",
     "winston-daily-rotate-file": "^3.3.2",
     "fs-extra": "^6.0.1"
