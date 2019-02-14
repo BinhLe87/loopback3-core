@@ -38,6 +38,9 @@
       }
     }
   },
+  "auth:before": {
+    "./middleware/addRequestID": {}      
+  },
   "auth": {
     "./middleware/authenBySSO": {
       "enabled": false
