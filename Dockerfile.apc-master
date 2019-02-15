@@ -10,7 +10,7 @@ RUN node -v; exit 0
 RUN docker -v; exit 0
 ## Print npm version
 RUN npm -v; exit 0
-### Upgrade npm version to 6.4.1, in order to use command `npm ci`
+### Upgrade npm version to 6.4.1, in order to use command `npm install`
 RUN npm install -g npm@6.4.1
 
 WORKDIR ${container_dir}
@@ -19,10 +19,10 @@ COPY . ${container_dir}
 
 #First, install npm modules serves for installing Docker container
 WORKDIR ${container_dir}
-RUN npm ci
+RUN npm install
 #Second, Install shared npm modules will be used in all microservices
 WORKDIR ${server_dir}
-RUN npm ci
+RUN npm install
 #Next, Install independent npm modules for each of microservices
 WORKDIR ${container_dir}
 RUN node script/install_npm_modules.js

@@ -13,7 +13,7 @@
     "start": "eslint && NODE_ENV=development nodemon .",
     "start-no-watch": "NODE_ENV=development node .",
     "start-staging": "DEBUG=* NODE_ENV=staging node .",
-    "debug": "eslint && DEBUG=*,-nodemon:watch* NODE_ENV=development nodemon --nolazy --inspect .",
+    "debug": "eslint && DEBUG=*,-nodemon:watch* NODE_ENV=development nodemon --nolazy --inspect --watch ./..",
     "posttest": "npm run lint > logs/eslint_log.txt && nsp check",
     "precommit": "lint-staged",
     "prettier": "prettier --ignore-path .eslintignore --write '**/*.js'",

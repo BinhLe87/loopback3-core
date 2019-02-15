@@ -24,7 +24,7 @@ var envVarsSchema = joi
       .falsy('FALSE')
       .falsy('false')
       .default(true),
-    LOGS_DIR: joi.string().default(`../../logs/${process.env.SERVICE_NAME}`)
+    LOGS_DIR: joi.string().default(path.join(__dirname, `../../logs/${process.env.SERVICE_NAME}`))
   })
   .unknown();
 
@@ -71,15 +71,17 @@ const fileFormat = winston.format.combine(
   winston.format.splat(),
   winston.format.printf(info => {
     const ts = info.timestamp.slice(0, 19).replace('T', ' ');
+    const request_id = info.request_id || '<unknown_request_id>';
+
     if (info.args) {
-      return `${ts} [${process.pid}] [${info.level}]: ${info.message} ${
+      return `${request_id} ${ts} [${process.pid}] [${info.level}]: "${info.message}" ${
         Object.keys(info.args).length ||
         Object.getOwnPropertyNames(info.args).length
           ? JSON.stringify(info.args, null, 2)
           : ''
       }`;
     } else {
-      return `${ts} [${process.pid}] [${info.level}]: ${info.message}`;
+      return `${request_id} ${ts} [${process.pid}] [${info.level}]: "${info.message}"`;
     }
   })
 );
