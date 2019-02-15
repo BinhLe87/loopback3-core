@@ -38,7 +38,7 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
     return convertImageFileAsync(file.path, {
       fieldname_upload: file.fieldname
     }).catch(error => {
-      logger.error(`Error converting the image at ${file.path}`, __filename);
+      logger.warn(`Error converting the image at ${file.path}`, ctx.req);
     });
   });
 
@@ -100,7 +100,7 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
         resolve();
       })
       .catch(error => {
-        logger.error(error, __filename);
+        logger.warn(error, ctx.req);
         reject(error);
       });
   });
@@ -193,7 +193,7 @@ async function checkAttributeId(ctx, attribute_id) {
       }
     );
   } catch (error) {
-    logger.error(`Unable to create attribute is 'file' in DB`, __filename);
+    logger.warn(`Unable to create attribute is 'file' in DB`);
     throw error;
   }
 }

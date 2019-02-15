@@ -97,8 +97,8 @@ var logger = winston.createLogger({
     }),
     new DailyRotateFile({
       dirname: envVars.LOGS_DIR,
-      filename: 'silly.%DATE%.log',
-      level: 'silly'
+      filename: 'info.%DATE%.log',
+      level: 'info'
     }),
     new DailyRotateFile({
       dirname: envVars.LOGS_DIR,

@@ -46,6 +46,9 @@ module.exports = function(app) {
     parseResouceFactory(ctx)
       .then(function(responseInJsonAPI) {
         ctx.result = responseInJsonAPI;
+
+        logger.info(ctx.result, ctx.req);
+
         next();
       })
       .catch(function(err) {

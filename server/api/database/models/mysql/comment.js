@@ -34,13 +34,13 @@ module.exports = function(Comment) {
 
       Reply.destroyAll({ parent: deleted_comment_id }, (err, info) => {
         if (err) {
-          logger.error(
+          logger.warn(
             `Error deleting related replies of comment has ID is ${deleted_comment_id}`
           );
-          logger.error(err);
+          logger.warn(err);
         }
 
-        logger.info(
+        logger.warn(
           `Finish deleting ${
             info.count
           } replies of comment has ID is ${deleted_comment_id}`

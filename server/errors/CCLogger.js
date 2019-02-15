@@ -4,17 +4,17 @@ var path = require('path');
 var _ = require('lodash');
 var util = require('util');
 
-var errorLoggerInstance; //singleton instance
+var CCLoggerInstance; //singleton instance
 
-class ErrorLogger {
+class CCLogger {
   constructor() {}
 
   static getInstance() {
-    if (!errorLoggerInstance) {
-      errorLoggerInstance = new ErrorLogger();
+    if (!CCLoggerInstance) {
+      CCLoggerInstance = new CCLogger();
     }
 
-    return errorLoggerInstance;
+    return CCLoggerInstance;
   }
   /**
    * Generate error message if not match condition
@@ -23,7 +23,7 @@ class ErrorLogger {
    * @param {boolean} condition
    * @param {string} message Lodash message template. Example '"<%=name%>" should be an object'
    * @param {string} strings the data object variable name
-   * @memberof ErrorLogger
+   * @memberof CCLogger
    */
   assert(condition, message, strings) {
     if (!condition) {
@@ -115,7 +115,7 @@ class ErrorLogger {
  * @param {*} [options.is_tracing_methods] enable Error.captureStackTrace() for tracing series of methods were called
  * @param {*} [options.omit_tracing_from_func] function which will ignore start from
  * @returns {} {message, meta: {...}}
- * @memberof ErrorLogger
+ * @memberof CCLogger
  */
 generateErrorMessage(error_level = 'info', error = {}, req, options = {}) {
 
@@ -168,7 +168,7 @@ generateErrorMessage(error_level = 'info', error = {}, req, options = {}) {
 
     try {
       var parsedErrString = util.inspect(error, {
-        showHidden: true,
+        showHidden: false,
         depth: 5,
         compact: false,
         breakLength: 80
@@ -177,7 +177,7 @@ generateErrorMessage(error_level = 'info', error = {}, req, options = {}) {
       return parsedErrString;
     } catch (err) {
       winston.error(
-        'errorLogger.js: Can not parse error into string: ' + err.message
+        'CCLogger.js: Can not parse error into string: ' + err.message
       );
       return error;
     }
@@ -185,5 +185,5 @@ generateErrorMessage(error_level = 'info', error = {}, req, options = {}) {
 }
 
 module.exports = {
-  logger: ErrorLogger.getInstance()
+  logger: CCLogger.getInstance()
 };

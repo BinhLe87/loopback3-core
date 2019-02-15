@@ -54,7 +54,7 @@ async function uploadFileController(ctx) {
 
     return _.get(result, 'result', result); //will be return by shareMethod built-in function as default
   } catch (upload_error) {
-    logger.error(upload_error, __filename);
+    logger.error(upload_error, ctx.req);
     throw upload_error;
   }
 }
