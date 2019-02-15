@@ -4,8 +4,10 @@ ENV server_dir=${container_dir}/server
 ENV tools_dir=${server_dir}/tools
 
 ## Print node version
-RUN node -v
+RUN node -v; exit 0
 
+## Print docker version
+RUN docker -v; exit 0
 ## Print npm version
 RUN npm -v; exit 0
 ### Upgrade npm version to 6.4.1, in order to use command `npm ci`
