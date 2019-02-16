@@ -15,7 +15,7 @@ const _ = require('lodash');
 const LoopbackUtil = require('./helpers/loopbackUtil');
 
 var app = (module.exports = loopback());
-var { logger } = require('../errors/errorLogger');
+var { logger } = require('../errors/CCLogger');
 //Set global instance variables
 global.logger = logger;
 const { exec } = require('child_process');
@@ -49,7 +49,7 @@ exec('node -v', function(err, stdout, stderr) {
 
   if (!is_valid_node_version) {
     let err_msg = `Application require NodeJS version must greater than v${required_node_version}, but got ${cur_node_version}`;
-    logger.error(err_msg, __filename);
+    logger.error(err_msg);
 
     return;
   }

@@ -35,7 +35,7 @@ module.exports = function() {
               error.data =
                 'Not received acccess_token and user_id from SSO service';
 
-              logger.error(error, __filename);
+              logger.warn(error, req);
               return next(error);
             }
 
