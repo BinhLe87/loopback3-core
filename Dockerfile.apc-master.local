@@ -17,9 +17,6 @@ RUN npm install -g npm@6.4.1
 RUN apt-get update
 RUN apt-get --assume-yes install vim
 
-##Install netstat
-RUN apt-get --assume-yes install net-tools
-
 WORKDIR ${container_dir}
 ## Bundle app source
 COPY . ${container_dir}

@@ -36,7 +36,7 @@ module.exports = function() {
     }
 
     //log
-    logger.warn(error_response, req);
+    logger.info(error_response);
 
     // Respond using the appropriate custom response
     res.status(error_response.statusCode);

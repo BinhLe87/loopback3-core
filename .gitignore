@@ -41,3 +41,7 @@ server/api/upload/api
 server/vendors
 # server/docs_web/*
 # !*/**/*.md
+
+
+#aws
+/**/*aws*

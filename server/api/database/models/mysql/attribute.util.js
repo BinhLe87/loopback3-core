@@ -33,8 +33,9 @@ Object.defineProperty(joiSchemas, 'numberSchema', {
  */
 function _identifyJoiSchemaForDataType(data_type, options = {}) {
   if (typeof data_type != 'string') {
-    logger.warn(
-      `method identifyJoiSchemaForDataType(): data_type must be a string, but got ${typeof data_type}`
+    logger.error(
+      `method identifyJoiSchemaForDataType(): data_type must be a string, but got ${typeof data_type}`,
+      __filename
     );
     throw new TypeError('data_type must be a string type');
   }
@@ -73,7 +74,7 @@ async function validateAttributesByItemtypeId(
 ) {
   if (!Array.isArray(attributesWillCheck)) {
     var detailMsg = `validateAttributesByItemtypeId() requires 'attributesWillCheck' argument must be an array, but got ${typeof attributesWillCheck}`;
-    logger.warn(detailMsg);
+    logger.error(detailMsg);
 
     let error = new Error(
       `Error: Can not validate attributes of item type at the moment. Please try again later`
@@ -229,7 +230,7 @@ function ___validateValuesByJoi(
 function _parseAttributeOptions(attribute) {
   if (typeof attribute != 'object') {
     var detailMsg = `parseAttributeOptions() requires 'attribute' argument must be an object, but got ${typeof attribute}`;
-    logger.warn(detailMsg);
+    logger.error(detailMsg);
 
     let error = new Error(
       `Error: Unable to identify the constraint options of attribute ${attribute}. Please try again later`

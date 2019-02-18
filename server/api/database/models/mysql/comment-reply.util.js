@@ -48,8 +48,9 @@ async function adjustReplyCountInParentComment(
     },
     function(err, tx) {
       tx.observe('timeout', function(context, next) {
-        logger.warn(
-          'adjustReplyCountInParentComment(): Timeout committing transaction'
+        logger.error(
+          'adjustReplyCountInParentComment(): Timeout committing transaction',
+          __filename
         );
         return next(
           Boom.badGateway(
@@ -75,18 +76,20 @@ async function adjustReplyCountInParentComment(
               { transaction: tx },
               function(update_err, new_parent_comment) {
                 if (update_err) {
-                  logger.warn(
-                    `Error adjusting reply_count by ${value_will_adjust}`
+                  logger.error(
+                    `Error adjusting reply_count by ${value_will_adjust}`,
+                    __filename
                   );
-                  logger.warn(update_err);
+                  logger.error(update_err, __filename);
                 }
 
                 tx.commit(function(commit_err) {
                   if (commit_err) {
-                    logger.warn(
-                      `Error committing transaction after adjusting reply_count by ${value_will_adjust}`
+                    logger.error(
+                      `Error committing transaction after adjusting reply_count by ${value_will_adjust}`,
+                      __filename
                     );
-                    logger.warn(commit_err);
+                    logger.error(commit_err, __filename);
                   }
                 });
               }
