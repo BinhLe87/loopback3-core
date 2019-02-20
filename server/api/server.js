@@ -19,8 +19,8 @@ var { logger } = require('../errors/errorLogger');
 //Set global instance variables
 global.logger = logger;
 const { exec } = require('child_process');
-const { formatMessage } = require('../config/components/globalize/globalize');
-global.__i18n = global.__locale = formatMessage;
+// const { formatMessage } = require('../config/components/globalize/globalize');
+// global.__i18n = global.__locale = formatMessage;
 global._ = _;
 global.boom = global.Boom = require('boom');
 _.set(global, 'helper.inspect', require('./helpers/printHelper').inspect);

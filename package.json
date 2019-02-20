@@ -23,6 +23,7 @@
     "shelljs": "^0.8.2"
   },
   "devDependencies": {
+    "commander": "^2.19.0",
     "debug": "^4.0.1",
     "faker": "^4.1.0",
     "joi": "^14.0.0",

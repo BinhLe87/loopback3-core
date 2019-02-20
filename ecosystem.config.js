@@ -15,6 +15,9 @@ module.exports = {
       env_local: {
         NODE_ENV: 'local'
       },
+      env_aws: {
+        NODE_ENV: 'aws'
+      },
       instances: 2,
       exec_mode: 'cluster'
     },
@@ -22,7 +25,15 @@ module.exports = {
       name: 'redis-server',
       interpreter: '/bin/sh',
       script: 'script/start-redis.sh',
-      out_file: 'logs/redis.log'
+      out_file: 'logs/redis.log',
+      autorestart: false
+    },
+    {
+      name: 'rabbitmq-server',
+      interpreter: '/bin/sh',
+      script: 'script/start-rabbitmq.sh',
+      out_file: 'logs/rabbitmq.log',
+      autorestart: false
     }
   ]
 };

@@ -17,6 +17,8 @@ RUN npm install -g npm@6.4.1
 RUN apt-get update
 RUN apt-get --assume-yes install vim
 
+RUN apt-get --assume-yes install net-tools
+
 WORKDIR ${container_dir}
 ## Bundle app source
 COPY . ${container_dir}
@@ -39,6 +41,17 @@ WORKDIR ${tools_dir}
 RUN tar xzf redis-4.0.11.tar.gz
 WORKDIR redis-4.0.11
 RUN make
+
+##Install RabbitMQ
+RUN apt-get --assume-yes install apt-transport-https
+RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+RUN dpkg -i erlang-solutions_1.0_all.deb
+RUN apt-get update
+RUN apt-get --assume-yes install erlang
+RUN echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | tee /etc/apt/sources.list.d/bintray.rabbitmq.list
+RUN wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | apt-key add -
+RUN apt-get update
+RUN apt-get --assume-yes install rabbitmq-server
 
 ## Start api server
 RUN npm install -g pm2
