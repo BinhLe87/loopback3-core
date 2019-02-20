@@ -39,6 +39,11 @@
       "invert": true,
       "polymorphic": "workbook_owner_link"
     },
+    "workbook_chapters": {
+      "type": "hasMany",
+      "model": "workbook_chapter",
+      "foreignKey": "workbookId"
+    },
     "chapters": {
       "type": "hasMany",
       "model": "chapter",

@@ -26,5 +26,11 @@ module.exports = function(server) {
     moveItemPositionController
   );
 
+  //move position of a workbook/chapter/page from this parent to another parent.
+  router.patch(
+    `${restApiRoot}/:scope_model/:scope_model_id/move_from/:from_parent_model_id/move_to/:to_parent_model_id/at_position/:to_model_id?`,
+    moveItemPositionController
+  );
+
   server.use(router);
 };

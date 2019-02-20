@@ -9,13 +9,13 @@ exports.moveItemPositionController = moveItemPositionController;
 exports.moveItemPosition = moveItemPosition;
 
 /**
- * validate url params of moving position api
+ * validate url params of moving position inside one parent object
  *
  * @param {*} params
- * @returns {object} if valid, return an object contains valid values including default values,
- * otherwise throws an error instance of Boom
+ * @returns {object|Boom} if valid, return an object contains valid values including default values,
+ * otherwise return an instance of Boom
  */
-function _validateURLParams(params) {
+function _validateURLParams_move_inside(params) {
   const url_params_joi = Joi.alternatives().try(
     Joi.object()
       .keys({
@@ -80,7 +80,7 @@ function _validateURLParams(params) {
   var url_params_validate_result = url_params_joi.validate(params);
 
   if (url_params_validate_result.error) {
-    throw Boom.badRequest(
+    return Boom.badRequest(
       `Invalid url of moving position! Sample valid url has format like ${app.get(
         'restApiRoot'
       )}/workbooks/9/chapters/{from_chapter_id}/move/{to_chapter_id}`,
@@ -91,48 +91,137 @@ function _validateURLParams(params) {
   return url_params_validate_result.value;
 }
 
+/**
+ * validate url params of moving position outside one parent object
+ *
+ * @param {*} params
+ * @returns {object|Boom} if valid, return an object contains valid values including default values,
+ * otherwise return an instance of Boom
+ */
+function _validateURLParams_move_outside(params) {
+  const url_params_joi = Joi.alternatives().try(
+    Joi.object()
+      .keys({
+        scope_model: Joi.string()
+          .valid('pages')
+          .required(),
+        scope_model_id: Joi.any().required(),
+        from_model_id: Joi.any().required(),
+        to_model_id: Joi.any().required(),
+        relation_model_name: Joi.string().default('page_item'),
+        scope_model_foreign_key: Joi.string().default('pageId'),
+        from_model_foreign_key: Joi.string().default('itemId')
+      })
+      .unknown()
+  );
+
+  var url_params_validate_result = url_params_joi.validate(params);
+
+  if (url_params_validate_result.error) {
+    return Boom.badRequest(
+      `Invalid url of moving position! Sample valid url has format like ${app.get(
+        'restApiRoot'
+      )}/pages/9/move_from/{from_chapter_id}/move_to/{to_chapter_id}`,
+      url_params_validate_result.error
+    );
+  }
+
+  return url_params_validate_result.value;
+}
+/**
+ * Determine moving type is inside or outside in one parent object
+ * @param {object} params
+ * @returns {object} {
+ *                      moving_type: (one of values inside/outside/unknown),
+ *                      value: (value returns from joi validation)
+ *                    }
+ */
+function _determineMovingType(params) {
+  //attempt to validate one by one type
+  var result;
+  result = _validateURLParams_move_inside(params);
+
+  if (!(result instanceof Boom))
+    return { moving_type: 'inside', value: result.value };
+
+  result = _validateURLParams_move_outside(params);
+
+  if (!(result instanceof Boom))
+    return { moving_type: 'outside', value: result.value };
+
+  return { moving_type: 'unknown', value: params };
+}
+
 async function moveItemPositionController(req, res, next) {
   try {
-    var url_params = _validateURLParams(req.params);
+    var { value: url_params, moving_type } = _determineMovingType(req.params);
 
-    switch (url_params.action) {
-      case 'swap':
-        await swapTwoItemPositions(url_params);
+    if (moving_type == 'unknown') {
+      throw Boom.badRequest('Invalid URL params');
+    }
 
-        var swap_success_message_template = _.template(
-          `Done swap positions between from_model_id '<%= from_model_id %>' and to_model_id <%= to_model_id %>!`
-        );
-
-        res.send(
-          swap_success_message_template({
-            from_model_id: url_params.from_model_id,
-            to_model_id: url_params.to_model_id
-          })
-        );
-        break;
-
-      case 'move':
-        var { new_position_string } = await _moveItemPosition(url_params);
-
-        var move_success_message_template = _.template(
-          `Updated from_model_id '<%= from_model_id %>' with new position is <%= new_position_string %>!`
-        );
-
-        res.send(
-          move_success_message_template({
-            from_model_id: url_params.from_model_id,
-            new_position_string: new_position_string
-          })
-        );
-
-        break;
-
-      default:
-        next();
+    if (moving_type == 'inside') {
+      moveInsideController(req, res, next, url_params);
+    } else if (moving_type == 'outside') {
+      //test
+      logger.info('test');
     }
   } catch (move_error) {
     next(move_error);
   }
+}
+
+async function moveInsideController(req, res, next, url_params) {
+  switch (url_params.action) {
+    case 'swap':
+      await swapTwoItemPositions(url_params);
+
+      var swap_success_message_template = _.template(
+        `Done swap positions between from_model_id '<%= from_model_id %>' and to_model_id <%= to_model_id %>!`
+      );
+
+      res.send(
+        swap_success_message_template({
+          from_model_id: url_params.from_model_id,
+          to_model_id: url_params.to_model_id
+        })
+      );
+      break;
+
+    case 'move':
+      var { new_position_string } = await _moveItemPosition(url_params);
+
+      var move_success_message_template = _.template(
+        `Updated from_model_id '<%= from_model_id %>' with new position is <%= new_position_string %>!`
+      );
+
+      res.send(
+        move_success_message_template({
+          from_model_id: url_params.from_model_id,
+          new_position_string: new_position_string
+        })
+      );
+
+      break;
+
+    default:
+      next();
+  }
+}
+
+async function moveOutsideController(req, res, next, url_params) {
+  var { new_position_string } = await _moveItemPosition(url_params);
+
+  var move_success_message_template = _.template(
+    `Updated from_model_id '<%= from_model_id %>' with new position is <%= new_position_string %>!`
+  );
+
+  res.send(
+    move_success_message_template({
+      from_model_id: url_params.from_model_id,
+      new_position_string: new_position_string
+    })
+  );
 }
 
 async function swapTwoItemPositions(url_params) {
@@ -168,7 +257,7 @@ async function swapTwoItemPositions(url_params) {
  * @returns {string} if success, return new position string and new position index of from_model, otherwise throw an error instance of Boom if any errors occurred
  */
 async function moveItemPosition(url_params, options) {
-  url_params = _validateURLParams(url_params);
+  url_params = _validateURLParams_move_inside(url_params);
   return await _moveItemPosition(url_params, options);
 }
 
