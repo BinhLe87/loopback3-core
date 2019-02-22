@@ -10,7 +10,8 @@
   "indexes": {},
   "validations": [],
   "relations": {},
-  "acls": [{
+  "acls": [
+    {
       "permission": "DENY",
       "principalType": "ROLE",
       "principalId": "$everyone"
@@ -45,6 +46,36 @@
       "http": {
         "verb": "post",
         "path": "/upload"
+      }
+    },
+    "move_position": {
+      "accepts": [
+        {
+          "arg": "tree_view",
+          "type": "object",
+          "description": "tree view",
+          "required": true
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        },
+        {
+          "arg": "options",
+          "type": "object",
+          "http": "optionsFromRequest"
+        }
+      ],
+      "returns": {
+        "arg": "message",
+        "type": "string"        
+      },
+      "http": {
+        "verb": "patch",
+        "path": "/move_position"
       }
     }
   }

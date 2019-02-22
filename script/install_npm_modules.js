@@ -30,6 +30,14 @@ require('../server/api/helpers/loopbackUtil').apply_hot_fix().then(changes => {
 });
 
 
+//----------------For server/services
+shell.pushd('server/services');
+//command = 'npm ci';
+command = 'npm i';
+console.log(command);
+shell.exec(command);
+
+
 
 
 
