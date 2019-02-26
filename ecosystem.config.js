@@ -34,6 +34,19 @@ module.exports = {
       script: 'script/start-rabbitmq.sh',
       out_file: 'logs/rabbitmq.log',
       autorestart: false
+    },
+    {
+      name: 'service-rabbitmq',
+      script: 'server/services/index.js',
+      args: ["--service=rabbitmq"],
+      out_file: 'logs/service-rabbitmq.log',
+      autorestart: false,
+      env: {
+        NODE_ENV: 'staging'
+      },
+      env_development: {
+        NODE_ENV: 'development'
+      },
     }
   ]
 };

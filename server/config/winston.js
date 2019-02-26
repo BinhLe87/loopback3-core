@@ -16,7 +16,7 @@ var envVarsSchema = joi
     CONSOLE_LEVEL: joi
       .string()
       .allow(['error', 'warn', 'info', 'verbose', 'debug', 'silly'])
-      .default('silly'),
+      .default('debug'),
     LOGGER_ENABLED: joi
       .boolean()
       .truthy('TRUE')

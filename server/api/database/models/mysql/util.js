@@ -4,8 +4,11 @@ const debug = require('debug')('util.js');
 const {
   uploadFileController
 } = require('../../../controllers/upload/uploadFile');
+const validation_utils = require('../../../../utils/validators');
 
-const Channel = require('../../../../config/rabbitmq')();
+const { create_channel, send_message } = require('../../../../config/rabbitmq');
+const queue_name = 'move_position';
+var rabbitmq_channel = create_channel(queue_name);
 
 module.exports = async function(Util) {
   Util.upload = async function(ctx, options, cb) {
@@ -15,30 +18,35 @@ module.exports = async function(Util) {
   };
 
   Util.move_position = async function(tree_view, ctx, options, cb) {
-    var queue = 'move_position';
     var req = ctx.req;
 
-    Channel(queue, function(err, channel, conn) {
-      if (err) {
-        logger.error(err, req);
-      } else {
-        var tree_view = _.get(req.body, 'tree_view');
+    //validate format of tree view
+    //-----------------
 
-        channel.sendToQueue(queue, encode(tree_view), {
-          persistent: true
-        });
-
-        setImmediate(function() {
-          channel.close();
-          conn.close();
-        });
-      }
-
-      cb(null, 'OK');
-    });
-
-    function encode(message) {
-      return new Buffer(JSON.stringify(message));
+    var tree_view_joi_result = validation_utils.workbook_chapter_tree_view_joi.validate(
+      tree_view,
+      validation_utils.baseJoiOptions
+    );
+    if (tree_view_joi_result.error) {
+      return cb(
+        Boom.badRequest(
+          'Wrong format of tree view!!!',
+          tree_view_joi_result.error
+        )
+      );
     }
+
+    var request_id = req.headers['X-Request-ID'];
+
+    var channel = await rabbitmq_channel;
+
+    var result = await send_message(
+      channel,
+      tree_view_joi_result.value,
+      queue_name,
+      request_id
+    );
+
+    cb(null, 'OK');
   };
 };
