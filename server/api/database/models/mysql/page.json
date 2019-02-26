@@ -9,17 +9,14 @@
   "mixins": {
     "TimeStamp": true,
     "ActiveStatusDb": true,
-    "BelongsToIntegrityCheck": false
+    "BelongsToIntegrityCheck": false,
+    "SortDisplayIndex": true
   },
   "properties": {
     "title": {
       "type": "string",
       "required": true
     }
-  },
-  "scope": {
-
-    "order": "createdAt DESC"
   },
   "validations": [],
   "relations": {

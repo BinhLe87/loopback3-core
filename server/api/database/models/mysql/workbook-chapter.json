@@ -27,7 +27,8 @@
   },
   "mixins": {
     "TimeStamp": true,
-    "BelongsToIntegrityCheck": false
+    "BelongsToIntegrityCheck": false,
+    "SortDisplayIndex": true
   },
   "properties": {
     "display_index": {

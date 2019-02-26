@@ -121,7 +121,7 @@ generateErrorMessage(error_level = 'info', error = {}, req, options = {}) {
 
     var error_message = this.parseErrorObjectToString(error);
     var meta = {};
-    const critical_errors = /(error|fatal)/gi;
+    const critical_errors = /(error|fatal|warn)/gi;
 
     if(critical_errors.test(error_level)) { //enable tracing series of methods invoked
 

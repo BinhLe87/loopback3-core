@@ -77,7 +77,7 @@
   },
   "chapter_page": {
     "dataSource": "cc_mysql",
-    "public": false
+    "public": true
   },
   "item": {
     "dataSource": "cc_mysql",

@@ -20,8 +20,14 @@
             "type": "node",
             "request": "launch",
             "name": "Debug current file",
-            "program": "${file}",
-            "stopOnEntry": false
+            //"program": "${file}",
+            "program":  "${workspaceFolder}/demo/test.js",
+            //"program":  "${workspaceFolder}/server/services/index.js",
+            "stopOnEntry": false,
+            "args": [
+                "--service",
+                "rabbitmq"
+            ],            
         },
         {
             "type": "node",
