@@ -66,7 +66,7 @@ async function move_position_handler(tree_view_client) {
       }
     
     } catch (error) {
-      logger.warn(`Error updating position at path ${key}!!!: ` + inspect(error));
+      logger.warn(`Error updating position at path ${key}!!!: ` + inspect(_.get(error, 'response.data', error)));
     }
   })
 

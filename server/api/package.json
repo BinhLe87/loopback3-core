@@ -10,7 +10,7 @@
     "clean": "rimraf build",
     "prebuild": "npm run clean",
     "build": "webpack --mode production --config webpack.config.js",
-    "start": "eslint && NODE_ENV=development nodemon .",
+    "start": "eslint && DEBUG=*,-nodemon:watch* NODE_ENV=development nodemon .",
     "start-no-watch": "NODE_ENV=development node .",
     "start-staging": "DEBUG=* NODE_ENV=staging node .",
     "debug": "eslint && DEBUG=*,-nodemon:watch* NODE_ENV=development nodemon --nolazy --inspect-brk .",

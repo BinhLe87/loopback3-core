@@ -13,7 +13,7 @@ module.exports = function(Model, options) {
 
   var deleteById = Model.deleteById;
 
-  Model.deleteById = async function(id) {
+  Model.deleteById = async function(id, filter, callback) {
     var findByIdPromise = Promise.promisify(Model.findById).bind(Model);
     var found_model_item = await findByIdPromise(id);
 
@@ -35,7 +35,7 @@ module.exports = function(Model, options) {
     };
     //add resultType in order to parse later in jsonApiFormatter.js
 
-    return updated_model_item;
+    callback(null, updated_model_item);
   };
 
   Model.observe('access', async function(ctx) {

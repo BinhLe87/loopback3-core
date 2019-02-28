@@ -74,14 +74,14 @@ const fileFormat = winston.format.combine(
     const request_id = info.request_id || '<unknown_request_id>';
 
     if (info.args) {
-      return `${request_id} ${ts} [${process.pid}] [${info.level}]: "${info.message}" ${
+      return `${request_id} ${ts} [${process.pid}] [${info.level}]: ${info.message} ${
         Object.keys(info.args).length ||
         Object.getOwnPropertyNames(info.args).length
           ? JSON.stringify(info.args, null, 2)
           : ''
       }`;
     } else {
-      return `${request_id} ${ts} [${process.pid}] [${info.level}]: "${info.message}"`;
+      return `${request_id} ${ts} [${process.pid}] [${info.level}]: ${info.message}`;
     }
   })
 );

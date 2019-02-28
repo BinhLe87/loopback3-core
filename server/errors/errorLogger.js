@@ -121,15 +121,15 @@ generateErrorMessage(error_level = 'info', error = {}, req, options = {}) {
 
     var error_message = this.parseErrorObjectToString(error);
     var meta = {};
-    const critical_errors = /(error|fatal)/gi;
+    const critical_errors = /(error|fatal|warn)/gi;
 
     if(critical_errors.test(error_level)) { //enable tracing series of methods invoked
 
       options.is_tracing_methods = true;    
       
-      if(_.isNil(req)) {
+      if(_.isNil(req) && options.is_require_request_arg === true) {
 
-        this.warn('Can not determine request_id for error tracing', req, {is_tracing_methods: true});
+        this.info(`Should pass 'request' argument when logging critical error levels for tracing purpose`, req, {is_tracing_methods: true, is_require_request_arg: false});
       }
     }
 
@@ -141,7 +141,7 @@ generateErrorMessage(error_level = 'info', error = {}, req, options = {}) {
     if(req) {
 
       //extract X-Request-ID from req
-      var request_id = req.headers['X-Request-ID'];
+      var request_id = req.headers && req.headers['X-Request-ID'];
       meta.request_id = request_id;
     }
 

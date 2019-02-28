@@ -27,7 +27,7 @@ demo/dir_structure
 logs
 
 #client folder
-**/client
+client
 
 
 #config files only for local environments

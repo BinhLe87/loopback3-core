@@ -11,6 +11,7 @@ RUN docker -v; exit 0
 ## Print npm version
 RUN npm -v; exit 0
 ### Upgrade npm version to 6.4.1, in order to use command `npm install`
+RUN apt-get update
 RUN npm install -g npm@6.4.1
 
 WORKDIR ${container_dir}
@@ -36,9 +37,21 @@ RUN tar xzf redis-4.0.11.tar.gz
 WORKDIR redis-4.0.11
 RUN make
 
+##Install RabbitMQ
+RUN apt-get update
+RUN apt-get --assume-yes install apt-transport-https
+RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+RUN dpkg -i erlang-solutions_1.0_all.deb
+RUN apt-get update
+RUN apt-get --assume-yes install erlang
+RUN echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | tee /etc/apt/sources.list.d/bintray.rabbitmq.list
+RUN wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | apt-key add -
+RUN apt-get update
+RUN apt-get --assume-yes install rabbitmq-server
+
 ## Start api server
-RUN npm install -g pm2
 WORKDIR ${container_dir}
+RUN npm install -g pm2
 ENTRYPOINT pm2 start ecosystem.config.js \
     && pm2 status \
     && tail -f /dev/null

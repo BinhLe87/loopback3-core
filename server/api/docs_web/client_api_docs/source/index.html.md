@@ -26,12 +26,14 @@ includes:
 
   - api/workbook/workbook_index
   - api/workbook/workbook_list
-  - api/workbook/workbook_chapter
+  - api/workbook/workbook_chapter_get
+  - api/workbook/workbook_chapter_add
   - api/workbook/workbook_move_chapter
   - api/workbook/workbook_upload
 
   - api/chapter/chapter_index
-  - api/chapter/chapter_page
+  - api/chapter/chapter_page_get
+  - api/chapter/chapter_page_add
   - api/chapter/chapter_move_page
 
   - api/page/page_index

@@ -21,7 +21,10 @@ module.exports = function(Pageitem) {
 
       //if param 'insert_after_item_id' is passed, insert new item right below `insert_after_item_id` in page
       //otherwise, by default, it will insert in last position in page if insert_after_item_id = undefined
-      var insert_after_item_id = _.get(ctx, 'options.insert_after_item_id');
+      var insert_after_item_id = _.get(
+        ctx,
+        'options.req.body.insert_after_item_id'
+      );
       //create url_params argument to call function in api 'moving position of item within a page'
       var url_params = {
         scope_model: 'pages',
@@ -35,7 +38,7 @@ module.exports = function(Pageitem) {
       var { new_position_index: new_position } = await moveItemPosition(
         url_params,
         {
-          is_processing_create_page_item: true
+          is_create_activity: true
         }
       );
 

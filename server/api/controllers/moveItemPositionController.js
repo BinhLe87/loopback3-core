@@ -297,7 +297,7 @@ async function _moveItemPosition(url_params, options = {}) {
       : _.last(sorted_positions).display_index;
     var new_last_position = cur_last_position + 1;
 
-    if (options.is_processing_create_page_item != true) {
+    if (options.is_create_activity != true) {
       await updatePositionForObjectInstance(
         from_model_instance,
         new_last_position
@@ -378,7 +378,11 @@ async function _moveItemPosition(url_params, options = {}) {
               );
             }
 
-            if (options.is_processing_create_page_item != true) {
+            if (
+              options.is_create_activity != true &&
+              from_model_instance &&
+              from_model_new_position
+            ) {
               var updated_from_model = await updatePositionForObjectInstance(
                 from_model_instance,
                 from_model_new_position,
@@ -513,19 +517,9 @@ function _checkAllModelIDsExists(
   to_model_id,
   options = {}
 ) {
-  if (options.is_processing_create_page_item == true) {
-    //ignore checking the exists of `from_model_id` and `to_model_id`
-    // because this is creating 'page_item relationship' process, not move/swap position process
-
-    return {
-      from_model_instance: undefined,
-      to_model_instance: undefined
-    };
-  }
-
   //check whether from_model_id exists in model scope
   var found_from_model_instance;
-  if (options.skip_update_from_model_position != true) {
+  if (options.is_create_activity != true) {
     found_from_model_instance = _.find(list_positions, item => {
       return item[from_model_foreign_key] == from_model_id;
     });

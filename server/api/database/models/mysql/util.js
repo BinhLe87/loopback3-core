@@ -20,9 +20,6 @@ module.exports = async function(Util) {
   Util.move_position = async function(tree_view, ctx, options, cb) {
     var req = ctx.req;
 
-    //validate format of tree view
-    //-----------------
-
     var tree_view_joi_result = validation_utils.workbook_chapter_tree_view_joi.validate(
       tree_view,
       validation_utils.baseJoiOptions
@@ -40,9 +37,13 @@ module.exports = async function(Util) {
 
     var channel = await rabbitmq_channel;
 
+    var tree_view_string = _.isPlainObject(tree_view_joi_result.value)
+      ? JSON.stringify(tree_view_joi_result.value)
+      : tree_view_joi_result.value;
+
     var result = await send_message(
       channel,
-      tree_view_joi_result.value,
+      tree_view_string,
       queue_name,
       request_id
     );

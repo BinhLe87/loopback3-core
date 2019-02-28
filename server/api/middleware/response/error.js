@@ -32,7 +32,8 @@ module.exports = function() {
       error_response.details = {};
     } else {
       //in development environment, for debug purpose, it will print out details if any
-      error_response.details = err.details || err.stack || {};
+      error_response.details =
+        err.details || _.get(err, 'data.details') || err.stack || {};
     }
 
     //log

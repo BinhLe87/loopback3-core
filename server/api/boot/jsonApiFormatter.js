@@ -12,7 +12,8 @@ const app = require('../server');
 const RESOURCE_TYPE = {
   single: 'single',
   collection: 'collection',
-  object: 'object' //not model, just raw data object as error object, status object
+  object: 'object', //not model, just raw data object as error object, status object\
+  unknown: 'unknown' //unable to determine resource type
 };
 
 module.exports = function(app) {
@@ -105,9 +106,7 @@ function determineSingleOrCollectionResource(ctx) {
     return RESOURCE_TYPE.object;
   }
 
-  throw new TypeError(
-    'Unable to specify resource type is single object or array of resource objects'
-  );
+  return RESOURCE_TYPE.unknown;
 }
 
 async function parseResouceFactory(ctx) {
@@ -125,6 +124,10 @@ async function parseResouceFactory(ctx) {
 
     case RESOURCE_TYPE.object: //this may be error object or status object return from loopback
       result = ctx.result; //process nothing, preserve the original value
+      return result;
+
+    case RESOURCE_TYPE.unknown:
+      result = ctx.result;
       return result;
 
     default:
@@ -165,13 +168,6 @@ async function parseResouceFactory(ctx) {
 }
 
 function parseSingleResource(ctx) {
-  var resourceType = determineSingleOrCollectionResource(ctx);
-  if (resourceType != RESOURCE_TYPE.single) {
-    throw new TypeError(
-      `function parseSingleResource() requires parameter as single object, but got ${resourceType}`
-    );
-  }
-
   var toplevelMembers = parseIdAndType(ctx);
   var relationships = parseRelationships(ctx);
   var attributes_included = parseIncludedDataAndAttributes(ctx);

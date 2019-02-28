@@ -9,7 +9,8 @@
   "mixins": {
     "TimeStamp": true,
     "ActiveStatusDb": true,
-    "BelongsToIntegrityCheck": false
+    "BelongsToIntegrityCheck": false,
+    "SortDisplayIndex": true
   },
   "properties": {
     "title": {

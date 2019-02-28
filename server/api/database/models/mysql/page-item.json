@@ -27,7 +27,8 @@
   },
   "mixins": {
     "TimeStamp": true,
-    "BelongsToIntegrityCheck": false
+    "BelongsToIntegrityCheck": false,
+    "SortDisplayIndex": true
   },
   "properties": {
     "display_index": {
@@ -35,9 +36,6 @@
       "required": true,
       "default" : 0
     }
-  },
-  "scope": {
-    "order": "display_index ASC"
   },
   "validations": [],
   "relations": {

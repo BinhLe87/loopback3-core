@@ -281,7 +281,10 @@
                     <a href="#list-workbooks" class="toc-h2 toc-link" data-title="List workbooks">List workbooks</a>
                   </li>
                   <li>
-                    <a href="#list-chapters-of-a-workbook" class="toc-h2 toc-link" data-title="List chapters of a workbook">List chapters of a workbook</a>
+                    <a href="#get-tree-list-workbook-gt-chapters-gt-pages" class="toc-h2 toc-link" data-title="Get tree list workbook =&gt; chapters =&gt; pages">Get tree list workbook =&gt; chapters =&gt; pages</a>
+                  </li>
+                  <li>
+                    <a href="#add-a-chapter-into-a-workbook" class="toc-h2 toc-link" data-title="Add a chapter into a workbook">Add a chapter into a workbook</a>
                   </li>
                   <li>
                     <a href="#move-position-of-a-chapter-within-a-workbook" class="toc-h2 toc-link" data-title="Move position of a chapter within a workbook">Move position of a chapter within a workbook</a>
@@ -296,6 +299,9 @@
               <ul class="toc-list-h2">
                   <li>
                     <a href="#list-pages-of-a-chapter" class="toc-h2 toc-link" data-title="List pages of a chapter">List pages of a chapter</a>
+                  </li>
+                  <li>
+                    <a href="#add-a-page-into-a-chapter" class="toc-h2 toc-link" data-title="Add a page into a chapter">Add a page into a chapter</a>
                   </li>
                   <li>
                     <a href="#move-position-of-a-page-within-a-chapter" class="toc-h2 toc-link" data-title="Move position of a page within a chapter">Move position of a page within a chapter</a>
@@ -949,20 +955,59 @@ Return the items has <code>id</code> field greater than 20</p>
 </tbody></table>
 <h3 id='response'>Response</h3>
 <p>If successful, return an object contains <code>data</code> property is an array of workbooks.</p>
-<h2 id='list-chapters-of-a-workbook'>List chapters of a workbook</h2>
-<p>Return list of chapters of a workbook.</p>
+<h2 id='get-tree-list-workbook-gt-chapters-gt-pages'>Get tree list workbook =&gt; chapters =&gt; pages</h2>
+<p>Return tree list workbook =&gt; chapters =&gt; pages</p>
 
 <blockquote>
 <p>Example Request</p>
 </blockquote>
 <pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
-  <span class="s1">'http://localhost:8080/api/workbooks/1/chapters?access_token=1YgNIc7EFtjnjuf087mHMVwUmxOTQkaHSAaoIWsnjtlDP2tId4cHCZDmYZY54OtM'</span>
+  <span class="s1">'http://localhost:8080/api/workbooks/{workbook_id}?access_token={access_token}&amp;filter={"include": {"chapters": "pages"}}'</span>
 </code></pre>
 <blockquote>
 <p>Example Response</p>
 </blockquote>
-<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
-<p><strong>GET</strong> <code>http://localhost:8080/api/workbooks/{workbook_id}/chapters?access_token={access_token}</code></p>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"workbook"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Entrepreneurship Fundamentals: Business Startup Strategies"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Amet ipsam voluptas repudiandae est et eius. Minima quod neque. Quasi ut delectus voluptas culpa perspiciatis. Excepturi quo error voluptatum deserunt mollitia cum."</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"price"</span><span class="p">:</span><span class="w"> </span><span class="mi">75</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"image_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://localhost:8080/upload/jenny-hill-205881-unsplash.jpg"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"is_active"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"included"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chapters"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Team Formation and Organization"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-02-19T03:03:05.000Z"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"updatedAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-02-19T03:03:05.000Z"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"is_active"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"pages"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lean Culture Principles &amp; Practices"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-02-19T03:03:07.000Z"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"updatedAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-02-19T03:03:07.000Z"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"is_active"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Why Lean Culture and Leadership"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-02-19T03:03:07.000Z"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"updatedAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-02-19T03:03:07.000Z"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"is_active"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+            </span><span class="p">}]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/workbooks/{workbook_id}?access_token={access_token}&amp;filter={&quot;include&quot;: {&quot;chapters&quot;: &quot;pages&quot;}}</code></p>
 <h3 id='request-params'>Request params</h3>
 <table><thead>
 <tr>
@@ -987,9 +1032,84 @@ Return the items has <code>id</code> field greater than 20</p>
 <td></td>
 <td>The ID of the workbook will retrieve list of chapters belongs to.</td>
 </tr>
+<tr>
+<td>filter</td>
+<td>string</td>
+<td>Optional</td>
+<td><code>{&quot;include&quot;: {&quot;chapters&quot;: &quot;pages&quot;}}</code></td>
+<td>Include chapters/pages of the workbook as tree list in response value.</td>
+</tr>
 </tbody></table>
 <h3 id='response'>Response</h3>
-<p>If successful, return an object contains list of chapters belongs to this specified workbook.</p>
+<p>If successful, return an object contains tree list workbook =&gt; chapters =&gt; pages.</p>
+<h2 id='add-a-chapter-into-a-workbook'>Add a chapter into a workbook</h2>
+<p>Add a chapter into a workbook</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X POST <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/workbooks/1/chapters?access_token=a628MYIXe9A697xFAcGEg9C9wfWE8Cg0XYzrF8JSrtUwVGhcHQ1peO82MrAPUziH'</span> <span class="se">\</span>
+  -H <span class="s1">'Content-Type: application/x-www-form-urlencoded'</span> <span class="se">\</span>
+  -d <span class="s1">'title=workbook_title&amp;insert_after_item_id=39'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/workbooks/{workbook_id}/chapters?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>workbook_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The ID of the workbook which the new chapter add into</td>
+</tr>
+</tbody></table>
+<h3 id='request-body'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>title</td>
+<td>string</td>
+<td>optional</td>
+<td></td>
+<td>chapter title</td>
+</tr>
+<tr>
+<td>insert_after_item_id</td>
+<td>number</td>
+<td>optional</td>
+<td></td>
+<td>If value is <code>0</code>, the new chapter will move to the top position in the workbook. If value is <code>null</code> or unspecified, the new chapter will move to the last position in the workbook. Otherwise, if value is specified, the new chapter will move to right below the <code>insert_after_item_id</code> chapter.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return a new chapter object</p>
 <h2 id='move-position-of-a-chapter-within-a-workbook'>Move position of a chapter within a workbook</h2>
 <p>Move position of a chapter within a workbook</p>
 
@@ -1152,6 +1272,74 @@ You must provide both query parameters and a file as multipart form data. For re
 </tbody></table>
 <h3 id='response'>Response</h3>
 <p>If successful, return an object contains list of pages belongs to this specified chapter.</p>
+<h2 id='add-a-page-into-a-chapter'>Add a page into a chapter</h2>
+<p>Add a page into a chapter</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X POST <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/chapters/1/pages?access_token=a628MYIXe9A697xFAcGEg9C9wfWE8Cg0XYzrF8JSrtUwVGhcHQ1peO82MrAPUziH'</span> <span class="se">\</span>
+  -H <span class="s1">'Content-Type: application/x-www-form-urlencoded'</span> <span class="se">\</span>
+  -d <span class="s1">'title=page_title&amp;insert_after_item_id=39'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/chapters/{chapter_id}/pages?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>chapter_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The ID of the chapter which the new page add into</td>
+</tr>
+</tbody></table>
+<h3 id='request-body'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>title</td>
+<td>string</td>
+<td>optional</td>
+<td></td>
+<td>page title</td>
+</tr>
+<tr>
+<td>insert_after_item_id</td>
+<td>number</td>
+<td>optional</td>
+<td></td>
+<td>If value is <code>0</code>, the new page will move to the top position in the chapter. If value is <code>null</code> or unspecified, the new page will move to the last position in the chapter. Otherwise, if value is specified, the new page will move to right below the <code>insert_after_item_id</code> page.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return a new page object</p>
 <h2 id='move-position-of-a-page-within-a-chapter'>Move position of a page within a chapter</h2>
 <p>Move position of a page within a chapter</p>
 

@@ -4,7 +4,6 @@ var command = '';
 
 //----------------For API service
 shell.pushd('server/api');
-//command = 'npm ci';
 command = 'npm i';
 console.log(command);
 shell.exec(command);
@@ -31,8 +30,9 @@ require('../server/api/helpers/loopbackUtil').apply_hot_fix().then(changes => {
 
 
 //----------------For server/services
+shell.popd(); //IMPORTANT!!!
 shell.pushd('server/services');
-//command = 'npm ci';
+console.log(shell.pwd());
 command = 'npm i';
 console.log(command);
 shell.exec(command);

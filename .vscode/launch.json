@@ -20,15 +20,22 @@
             "type": "node",
             "request": "launch",
             "name": "Debug current file",
-            "program": "${file}",
-            "stopOnEntry": false
+            //"program": "${file}",
+            //"program":  "${workspaceFolder}/demo/test.js",
+            "program":  "${workspaceFolder}/server/services/index.js",
+            "stopOnEntry": false,
+            "args": [
+                "--service",
+                "rabbitmq",
+                "--env",
+                "development"
+            ],            
         },
         {
             "type": "node",
             "request": "attach",
             "name": "Nodemon APC",
             "stopOnEntry": false,
-            "processId": "${command:PickProcess}",
             "restart": true,
             "protocol": "inspector"
         },
