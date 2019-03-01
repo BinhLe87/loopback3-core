@@ -26,9 +26,7 @@
             "stopOnEntry": false,
             "args": [
                 "--service",
-                "rabbitmq",
-                "--env",
-                "development"
+                "rabbitmq"
             ],            
         },
         {

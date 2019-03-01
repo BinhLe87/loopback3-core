@@ -4,7 +4,6 @@ const program = require("commander");
 const Joi = require("joi");
 const debug = require("debug")(__filename);
 const axios = require("axios");
-const {logger} = require('../errors/errorLogger');
 const {baseJoiOptions} = require('../utils/validators');
 
 
@@ -47,25 +46,8 @@ const dotenv = require("dotenv").config({
   path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`)
 });
 
+const {logger} = require('../errors/errorLogger');
+
 logger.info(`Running at NODE_ENV is ${process.env.NODE_ENV}`);
 
-async function main() {
-  await init_env_variables();
-  require(`./${app_args_joi_result.value.service}`);
-
-  async function init_env_variables() {
-    var { data: login_data } = await axios.request({
-      url: `/login`,
-      method: "post",
-      baseURL: process.env.API_URL,
-      data: {
-        email: process.env.API_LOGIN_EMAIL,
-        password: process.env.API_LOGIN_PASSWORD
-      }
-    });
-
-    process.env.API_ACCESS_TOKEN = login_data.access_token;
-  }
-}
-
-main();
+require(`./${app_args_joi_result.value.service}`);

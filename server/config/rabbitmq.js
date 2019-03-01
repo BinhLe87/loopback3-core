@@ -18,6 +18,7 @@ function create_channel(
 ) {
   // return new Promise((resolve, reject) => {
   if (typeof url == "undefined" || typeof queue_name == "undefined") {
+    logger.error(`Must input 'url' and 'queue' arguments!!!`);
     throw new Error(`Must input 'url' and 'queue' arguments!!!`);
   }
 

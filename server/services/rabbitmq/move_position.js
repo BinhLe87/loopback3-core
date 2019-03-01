@@ -5,6 +5,8 @@ const _ = require("lodash");
 const validation_utils = require('../../utils/validators');
 const {logger} = require('../../errors/errorLogger');
 const {inspect} = require('../../utils/printHelper');
+const api_util = require('../api_util');
+const URI = require('urijs');
 
 
 module.exports = exports = {};
@@ -15,7 +17,6 @@ var queue_name = "move_position";
 
 const channel = create_channel(queue_name)
   .then(channel => {
-
     consume_message(channel, queue_name, async function(msg) {
 
       var message = msg.content.toString();
@@ -33,6 +34,11 @@ const channel = create_channel(queue_name)
 async function move_position_handler(tree_view_client) {
 
   try {
+
+   //login to get access_token api
+   var login_url = new URI('/api/login', process.env.API_URL).toString();
+   await api_util.login(login_url, process.env.API_LOGIN_EMAIL, process.env.API_LOGIN_PASSWORD);
+
   //determine workbook_id from tree_view_client
   var workbook_id_client = tree_view_client.id;
   var tree_data_api = await get_tree_data_from_api(workbook_id_client);
@@ -68,9 +74,7 @@ async function move_position_handler(tree_view_client) {
     } catch (error) {
       logger.warn(`Error updating position at path ${key}!!!: ` + inspect(_.get(error, 'response.data', error)));
     }
-  })
-
-
+  });
   } catch (error) {
 
     logger.info(error);
