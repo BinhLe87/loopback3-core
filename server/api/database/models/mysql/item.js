@@ -8,10 +8,7 @@ const URI = require('urijs');
 const app = require('../../../server');
 const Joi = require('joi');
 const { baseJoiOptions } = require('../../../helpers/validators/joiValidator');
-const {
-  uploadFileAndAddFilePathIntoCtx,
-  validateItemData
-} = require('./item.util');
+const { uploadFileAndAddFilePathIntoCtx } = require('./item.util');
 
 //determine the path of static files
 const fs = require('fs');
@@ -36,13 +33,13 @@ fs.readFile(path.join(__dirname, '../../../middleware.json'), (err, data) => {
 });
 
 module.exports = function(Item) {
-  Item.beforeRemote('create', async function(ctx, modelInstance) {
-    await uploadFileAndAddFilePathIntoCtx(ctx);
-  });
+  // Item.beforeRemote('create', async function(ctx, modelInstance) {
+  //   await uploadFileAndAddFilePathIntoCtx(ctx);
+  // });
 
-  Item.beforeRemote('upsert', async function(ctx, modelInstance) {
-    await uploadFileAndAddFilePathIntoCtx(ctx);
-  });
+  // Item.beforeRemote('upsert', async function(ctx, modelInstance) {
+  //   await uploadFileAndAddFilePathIntoCtx(ctx);
+  // });
 
   /**
    * - Iterates through all `item_attributes` elements, adding additional `attribute` model's fields (code, label, data_type) for each element
