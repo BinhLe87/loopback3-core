@@ -8,7 +8,7 @@
         "pageId": 1
       },
       "options": {
-        "unique": false
+        "unique": true
       }
     },
     "unique_display_in_chapter": {

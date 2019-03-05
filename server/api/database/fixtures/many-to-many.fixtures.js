@@ -67,10 +67,10 @@ async function __generateEntireFakeData(
     ]);
 
     maxIdSourceModel =
-      maxIdSourceModel || options.maxIdSourceModel || numberRecordsWillGenerate;
+      options.maxIdSourceModel || maxIdSourceModel || numberRecordsWillGenerate;
     maxIdDestinationModel =
-      maxIdDestinationModel ||
       options.maxIdDestinationModel ||
+      maxIdDestinationModel ||
       numberRecordsWillGenerate;
 
     var foreignKeySourceModel =
