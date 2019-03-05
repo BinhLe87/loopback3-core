@@ -45,7 +45,7 @@
     }
   },
   "indexes": {
-    "name_type_idx": {
+    "code_idx": {
       "keys": {
         "code": 1
       },
