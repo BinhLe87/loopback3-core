@@ -19,7 +19,8 @@ const debug = require('debug')('index_fixtures');
  */
 async function generate_dummy_data(number_records) {
   const NUMBER_RECORDS = number_records || process.env.NUMBER_RECORDS || 200;
-  const MIN_NUMBER_RECORDS = Math.floor(NUMBER_RECORDS / 6.0); //used for models have a few manual input data
+  const MIN_NUMBER_RECORDS = Math.floor(NUMBER_RECORDS / 4.0); //used for models have a few manual input data
+  const NUMBER_RECORDS_FOR_UNIQUE_CONSTRAINT = NUMBER_RECORDS * 4; //large number because many of them will be ignored due to unique constraints
 
   if (NUMBER_RECORDS <= 0) {
     debug('Error: value of NUMBER_RECORDS must be greater than 0');
@@ -112,7 +113,7 @@ async function generate_dummy_data(number_records) {
   });
 
   await require('./many-to-many.fixtures')(
-    NUMBER_RECORDS,
+    NUMBER_RECORDS_FOR_UNIQUE_CONSTRAINT,
     'workbook',
     'chapter',
     'workbook_chapter',
@@ -134,7 +135,7 @@ async function generate_dummy_data(number_records) {
   });
 
   await require('./many-to-many.fixtures')(
-    NUMBER_RECORDS,
+    NUMBER_RECORDS_FOR_UNIQUE_CONSTRAINT,
     'chapter',
     'page',
     'chapter_page',
@@ -154,7 +155,7 @@ async function generate_dummy_data(number_records) {
   );
 
   await require('./many-to-many.fixtures')(
-    NUMBER_RECORDS,
+    NUMBER_RECORDS_FOR_UNIQUE_CONSTRAINT,
     'page',
     'item',
     'page_item'

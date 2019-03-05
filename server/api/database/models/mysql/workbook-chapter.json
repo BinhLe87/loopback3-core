@@ -3,9 +3,8 @@
   "base": "PersistedModel",
   "idInjection": true,
   "indexes": {
-    "workbook_chapter_idx": {
+    "chapter_idx": {
       "keys": {
-        "workbookId": 1,
         "chapterId": 1
       },
       "options": {

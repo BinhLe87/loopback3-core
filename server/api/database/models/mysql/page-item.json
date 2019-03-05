@@ -3,9 +3,8 @@
   "base": "PersistedModel",
   "idInjection": true,
   "indexes": {
-    "page_item_idx": {
+    "item_idx": {
       "keys": {
-        "pageId": 1,
         "itemId": 1
       },
       "options": {
