@@ -21,9 +21,10 @@ module.exports = function(Model, options) {
       //exists display_index property
 
       orders_array.push('display_index ASC');
+      orders_array.push('updatedAt DESC'); //in case many elements has equal position, it further sorts by updatedAt desc
     }
 
-    _.set(ctx, 'query.order', orders_array.join());
+    _.set(ctx, 'query.order', orders_array);
   });
 
   /////////////

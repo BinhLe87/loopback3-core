@@ -8,7 +8,6 @@ const validation_utils = require('../../../../utils/validators');
 
 const { create_channel, send_message } = require('../../../../config/rabbitmq');
 const queue_name = 'move_position';
-var rabbitmq_channel = create_channel(queue_name);
 
 module.exports = async function(Util) {
   Util.upload = async function(ctx, options, cb) {
@@ -35,7 +34,7 @@ module.exports = async function(Util) {
 
     var request_id = req.headers['X-Request-ID'];
 
-    var channel = await rabbitmq_channel;
+    var channel = await create_channel(queue_name);
 
     var tree_view_string = _.isPlainObject(tree_view_joi_result.value)
       ? JSON.stringify(tree_view_joi_result.value)

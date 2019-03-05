@@ -96,7 +96,9 @@ function determineSingleOrCollectionResource(ctx) {
     return RESOURCE_TYPE.collection;
   } else if (
     typeof result == 'object' &&
-    (ctx.resultType != 'object' && !_.isUndefined(ctx.resultType))
+    (ctx.resultType != 'object' &&
+      !_.isUndefined(ctx.resultType) &&
+      typeof ctx.resultType != 'object')
   ) {
     return RESOURCE_TYPE.single;
   } else if (

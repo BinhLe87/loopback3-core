@@ -65,7 +65,7 @@
   },
   "workbook_chapter": {
     "dataSource": "cc_mysql",
-    "public": false
+    "public": true
   },
   "workbook_share": {
     "dataSource": "cc_mysql",
