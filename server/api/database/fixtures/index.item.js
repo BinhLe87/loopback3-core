@@ -22,23 +22,23 @@ exports.generate_item_data = async function(
 };
 
 async function _generate_item_types() {
-  _.forOwn(ITEM_TYPES, async (item_type_values, item_type_code) => {
+  for (var [item_type_code, item_type_values] of ITEM_TYPES) {
     await require('./model.fixtures')(1, 'item_type', {
       code: item_type_code,
       label: _.get(item_type_values, 'label', '${code}')
     });
-  });
+  }
 }
 
 async function _generate_attributes() {
-  _.forOwn(ATTRIBUTES, async (attribute_values, attribute_code) => {
+  for (var [attribute_code, attribute_values] of ATTRIBUTES) {
     await require('./model.fixtures')(1, 'attribute', {
       code: attribute_code,
       label: _.get(attribute_values, 'label', '${code}'),
       description: _.get(attribute_values, 'description'),
       data_type: _.get(attribute_values, 'data_type')
     });
-  });
+  }
 }
 
 async function _generate_item(NUMBER_RECORDS) {
