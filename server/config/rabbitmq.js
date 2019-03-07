@@ -11,6 +11,7 @@ exports.create_channel = create_channel;
 exports.send_message = send_message;
 exports.consume_message_direct = consume_message_direct;
 exports.consume_message_topic = consume_message_topic;
+exports.close_connection = close_connection;
 
 var cached_channel;
 var cached_connection;
@@ -18,7 +19,7 @@ var cached_connection;
 const EXCHANGE_NAME = `apc.exchange`;
 //due to all env use same rabbitmq server
 const AUTO_CONN_AFTER_TIME = 10 * 60 * 1000; //10 min
-var bind_queue_to_routingkey = {};
+var actual_AMQP_URL;
 
 function create_channel(
   socketOptions = {},
@@ -70,8 +71,8 @@ function create_channel(
             AUTO_CONN_AFTER_TIME
           );
         }
-        process.once("SIGINT", close_connection.bind(cached_connection));
 
+        actual_AMQP_URL = url;
         cached_channel = channel;
         resolve(channel);
       })
@@ -86,10 +87,14 @@ function create_channel(
 
 function close_connection() {
   if (cached_connection) {
-    cached_channel = null;
-    cached_connection = null;
-
+    
     cached_connection.close();
+    logger.info(`Closed connection to AMQP_URL at ${actual_AMQP_URL}`);
+
+    //reset cached values
+    cached_channel = null;
+    cached_connection = null;    
+    actual_AMQP_URL = undefined;
   }
 }
 

@@ -89,3 +89,21 @@ boot(app, __dirname, function(err) {
 //   // handle the error safely
 //   throw err;
 // })
+
+//---------Cache in advance---------
+var {
+  create_channel: rabbitmq_create_channel,
+  close_connection: rabbitmq_close_connection
+} = require('../config/rabbitmq');
+//init rabbitmq connection and channel
+rabbitmq_create_channel();
+
+//---------Process before exit---------
+process.on('SIGINT', () => {
+  logger.info('Process Interrupted, exiting');
+
+  rabbitmq_close_connection();
+
+  // eventually exit
+  process.exit(); // Add code if necessary
+});
