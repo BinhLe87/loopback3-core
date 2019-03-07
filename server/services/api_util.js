@@ -35,8 +35,3 @@ exports.login = async function (url, email, password, is_use_cache = true) {
 
       return login_data.access_token;
 }
-
-
-{
-    
-  }

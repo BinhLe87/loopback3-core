@@ -10,19 +10,23 @@ module.exports = async function(server) {
 
 function customize_mysql_connector_buildOrderBy(server) {
   server.dataSources.ccMysql.connector.buildOrderBy = function(model, order) {
-    if (!order) {
-      return '';
-    }
-
-    if (/FIELD\(.*\)/.test(order)) {
-      //for ORDER BY FIELD(...) => process nothing
-      return 'ORDER BY ' + order;
-    }
-
-    var self = this;
     if (typeof order === 'string') {
       order = [order];
     }
+
+    if (!order || order.length == 0) {
+      return '';
+    }
+
+    var order_string = order.join(',');
+
+    if (/FIELD\(.*\)/.test(order_string)) {
+      //for ORDER BY FIELD(...) => process nothing
+      return 'ORDER BY ' + order.join(',');
+    }
+
+    var self = this;
+
     var clauses = [];
     for (var i = 0, n = order.length; i < n; i++) {
       var t = order[i].split(/[\s,]+/);
