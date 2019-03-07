@@ -1,4 +1,4 @@
-var { create_channel, consume_message } = require("../../config/rabbitmq");
+var { create_channel, consume_message_direct } = require("../../config/rabbitmq");
 const axios = require("axios");
 const debug = require("debug")(__filename);
 const _ = require("lodash");
@@ -11,11 +11,11 @@ const URI = require("urijs");
 module.exports = exports = {};
 exports.__convert_to_page_positions_format = __convert_to_page_positions_format;
 
-var queue_name = "move_position";
+var routing_key = "move_position";
 
-const channel = create_channel(queue_name)
+const channel = create_channel()
   .then(channel => {
-    consume_message(channel, queue_name, async function(msg) {
+    consume_message_direct(channel, routing_key, async function(msg) {
       var message = msg.content.toString();
       logger.info("=> received", message);
       const { correlationId, replyTo } = msg.properties;
@@ -40,8 +40,7 @@ async function move_position_handler(tree_view_client) {
 
     var positions_need_update = __convert_to_page_positions_format(
       tree_view_client
-      );
-    
+      )
 
     //send update_position command to queue
     _.forOwn(positions_need_update, async (value, key) => {

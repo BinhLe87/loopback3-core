@@ -7,7 +7,7 @@ const {
 const validation_utils = require('../../../../utils/validators');
 
 const { create_channel, send_message } = require('../../../../config/rabbitmq');
-const queue_name = 'move_position';
+const routing_key = 'move_position';
 
 module.exports = async function(Util) {
   Util.upload = async function(ctx, options, cb) {
@@ -34,18 +34,15 @@ module.exports = async function(Util) {
 
     var request_id = req.headers['X-Request-ID'];
 
-    var channel = await create_channel(queue_name);
+    var channel = await create_channel({ auto_close_connection: true });
 
     var tree_view_string = _.isPlainObject(tree_view_joi_result.value)
       ? JSON.stringify(tree_view_joi_result.value)
       : tree_view_joi_result.value;
 
-    var result = send_message(
-      channel,
-      tree_view_string,
-      queue_name,
+    var result = send_message(channel, tree_view_string, routing_key, {
       request_id
-    );
+    });
 
     cb(null, 'OK');
   };
