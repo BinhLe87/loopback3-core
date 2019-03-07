@@ -18,7 +18,9 @@ const debug = require('debug')('index_fixtures');
  * @param {number} [number_records] the number of records needs to generate dummy data
  */
 async function generate_dummy_data(number_records) {
-  const NUMBER_RECORDS = number_records || process.env.NUMBER_RECORDS || 200;
+  const NUMBER_RECORDS = _.toInteger(
+    number_records || process.env.NUMBER_RECORDS || 200
+  );
   const MIN_NUMBER_RECORDS = NUMBER_RECORDS; //used for models have a few manual input data
 
   if (NUMBER_RECORDS <= 0) {
