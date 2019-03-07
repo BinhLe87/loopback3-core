@@ -40,7 +40,7 @@ module.exports = async function(Util) {
       ? JSON.stringify(tree_view_joi_result.value)
       : tree_view_joi_result.value;
 
-    var result = await send_message(
+    var result = send_message(
       channel,
       tree_view_string,
       queue_name,
