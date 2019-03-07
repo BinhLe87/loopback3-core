@@ -1511,104 +1511,60 @@ In order to swap positions between two items, you can use API instead:<br>
 <h2 id='create-item-at-specific-position-in-page'>Create item at specific position in page</h2>
 <p>Create and add item at specific position in page relying on <code>insert_after_item_id</code> parameter in request body.</p>
 
+<ul>
+<li>Before calling this api, you must determine which <code>item_typeId</code> and <code>item_attributes</code> you&#39;d like to apply for new item. To achieve that, you can call these APIs in order as below:
+
+<ol>
+<li>To get list of item types: <code>GET</code> /api/item_types</li>
+<li>To get list attributes associated with a specific <code>item_typeId</code>: <code>GET</code> /api/item_types/{item_typeId}/attributes</li>
+<li>Then you will pass these <code>attribute_id</code> into an array <code>item_attributes</code> property in following <em>creating item</em> API.</li>
+</ol></li>
+</ul>
+
 <blockquote>
 <p>Sample Request</p>
 </blockquote>
 <pre class="highlight shell tab-shell"><code>curl -X POST <span class="se">\</span>
   <span class="s1">'http://localhost:8080/api/pages/1/items?access_token=sqlrd4F3Q9Xi5vXmS0dtRvFobcVaRTNGug2AGHauhlSo3hTbvHTbCtHFPDs7ZMqV'</span> <span class="se">\</span>
-  -H <span class="s1">'Cache-Control: no-cache'</span> <span class="se">\</span>
   -H <span class="s1">'Content-Type: application/json'</span> <span class="se">\</span>
-  -H <span class="s1">'Postman-Token: a8b41aff-b1b6-4f64-a698-dc1f49a366ac'</span> <span class="se">\</span>
   -d <span class="s1">'{
-  "title": "item_video",
+  "title": "item_text",
   "item_attributes": [
     {
       "id": 1,
-       "value": "title_new"
+       "value": "item_title"
     },
     {
      "id": 2,
-     "value": "http://google.com/logo.jpg"
+      "value": "item_description"
     }
   ],
-  "is_public": 0,
   "item_typeId": 1,
-  "insert_after_item_id": 0
+  "insert_after_item_id": 9
 }'</span>
 </code></pre>
 <blockquote>
 <p>Sample Response</p>
 </blockquote>
 <pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">232</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w">
     </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"item"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"item_video"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"item_text"</span><span class="p">,</span><span class="w">
         </span><span class="s2">"item_attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
             </span><span class="p">{</span><span class="w">
                 </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"title_new"</span><span class="w">
+                </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"item_title"</span><span class="w">
             </span><span class="p">},</span><span class="w">
             </span><span class="p">{</span><span class="w">
                 </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://google.com/logo.jpg"</span><span class="w">
+                </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"item_description"</span><span class="w">
             </span><span class="p">}</span><span class="w">
         </span><span class="p">],</span><span class="w">
-        </span><span class="s2">"is_public"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"is_active"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"is_public"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
         </span><span class="s2">"item_typeId"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-        </span><span class="s2">"insert_after_item_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="s2">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="s2">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-10-25T04:45:31.446Z"</span><span class="p">,</span><span class="w">
-        </span><span class="s2">"updatedAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-10-25T04:45:31.446Z"</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="s2">"relationships"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="s2">"pages"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-                </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/pages/232?filter[include][pages]"</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"related"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/pages/232/pages"</span><span class="w">
-            </span><span class="p">}</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-                </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/pages/232?filter[include][attributes]"</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"related"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/pages/232/attributes"</span><span class="w">
-            </span><span class="p">}</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="s2">"itemtype"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-                </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/pages/232?filter[include][itemtype]"</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"related"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/pages/232/itemtype"</span><span class="w">
-            </span><span class="p">}</span><span class="w">
-        </span><span class="p">}</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="s2">"schema"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="s2">"item_attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-                </span><span class="s2">"object"</span><span class="w">
-            </span><span class="p">],</span><span class="w">
-            </span><span class="s2">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"an array of attribute objects"</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="s2">"is_public"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
-            </span><span class="s2">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-            </span><span class="s2">"generated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-            </span><span class="s2">"updateOnly"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="s2">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="s2">"required"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-            </span><span class="s2">"defaultFn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"now"</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="s2">"updatedAt"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="s2">"required"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="s2">"item_typeId"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+        </span><span class="s2">"insert_after_item_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="w">
     </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre><h3 id='http-request'>HTTP Request</h3>

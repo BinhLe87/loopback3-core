@@ -1,29 +1,31 @@
 ##Create item at specific position in page
 Create and add item at specific position in page relying on `insert_after_item_id` parameter in request body.
 
+- Before calling this api, you must determine which `item_typeId` and `item_attributes` you'd like to apply for new item. To achieve that, you can call these APIs in order as below:
+  1. To get list of item types: `GET` /api/item_types
+  2. To get list attributes associated with a specific `item_typeId`: `GET` /api/item_types/{item_typeId}/attributes
+  3. Then you will pass these `attribute_id` into an array `item_attributes` property in following *creating item* API.
+
 > Sample Request
 
 ```shell
 curl -X POST \
   'http://localhost:8080/api/pages/1/items?access_token=sqlrd4F3Q9Xi5vXmS0dtRvFobcVaRTNGug2AGHauhlSo3hTbvHTbCtHFPDs7ZMqV' \
-  -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/json' \
-  -H 'Postman-Token: a8b41aff-b1b6-4f64-a698-dc1f49a366ac' \
   -d '{
-  "title": "item_video",
+  "title": "item_text",
   "item_attributes": [
   	{
   	  "id": 1,
-       "value": "title_new"
+       "value": "item_title"
     },
     {
      "id": 2,
-     "value": "http://google.com/logo.jpg"
+      "value": "item_description"
     }
   ],
-  "is_public": 0,
   "item_typeId": 1,
-  "insert_after_item_id": 0
+  "insert_after_item_id": 9
 }'
 ```
 
@@ -31,75 +33,24 @@ curl -X POST \
 
 ```json
 {
-    "id": 232,
+    "id": 20,
     "type": "item",
     "attributes": {
-        "title": "item_video",
+        "title": "item_text",
         "item_attributes": [
             {
                 "id": 1,
-                "value": "title_new"
+                "value": "item_title"
             },
             {
                 "id": 2,
-                "value": "http://google.com/logo.jpg"
+                "value": "item_description"
             }
         ],
-        "is_public": false,
+        "is_active": true,
+        "is_public": true,
         "item_typeId": 1,
-        "insert_after_item_id": 0
-    },
-    "meta": {
-        "createdAt": "2018-10-25T04:45:31.446Z",
-        "updatedAt": "2018-10-25T04:45:31.446Z"
-    },
-    "relationships": {
-        "pages": {
-            "links": {
-                "self": "http:/localhost:8080/api/pages/232?filter[include][pages]",
-                "related": "http:/localhost:8080/api/pages/232/pages"
-            }
-        },
-        "attributes": {
-            "links": {
-                "self": "http:/localhost:8080/api/pages/232?filter[include][attributes]",
-                "related": "http:/localhost:8080/api/pages/232/attributes"
-            }
-        },
-        "itemtype": {
-            "links": {
-                "self": "http:/localhost:8080/api/pages/232?filter[include][itemtype]",
-                "related": "http:/localhost:8080/api/pages/232/itemtype"
-            }
-        }
-    },
-    "schema": {
-        "title": {
-            "type": "string"
-        },
-        "item_attributes": {
-            "type": [
-                "object"
-            ],
-            "description": "an array of attribute objects"
-        },
-        "is_public": {
-            "type": "boolean",
-            "default": 1
-        },
-        "id": {
-            "id": 1,
-            "generated": true,
-            "updateOnly": true
-        },
-        "createdAt": {
-            "required": true,
-            "defaultFn": "now"
-        },
-        "updatedAt": {
-            "required": true
-        },
-        "item_typeId": {}
+        "insert_after_item_id": 9
     }
 }
 ```
