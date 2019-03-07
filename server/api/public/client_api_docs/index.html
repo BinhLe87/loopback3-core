@@ -1962,7 +1962,7 @@ You must provide both query parameters and a file as multipart form data. For re
 
 <p><img src="http://dev01.cc.cloud:49173/public/assets/images/upload_api_postman.jpg" alt="upload api capture postman" /></p>
 <h2 id='update-tree-position-levels'>Update tree position levels</h2>
-<p>Update tree position levels starting from a workbook - chapter(s) - page(s)</p>
+<p>Update tree position levels that allow starting at any level in the tree - means support to update a part of tree level of workbook - chapter(s) - page(s) - item(s).</p>
 
 <blockquote>
 <p>Example Request</p>
@@ -1971,7 +1971,7 @@ You must provide both query parameters and a file as multipart form data. For re
   <span class="s1">'http://localhost:8080/api/util/move_position?access_token={access_token}'</span> <span class="se">\</span>
   -H <span class="s1">'Content-Type: application/x-www-form-urlencoded'</span> <span class="se">\</span>
   -d <span class="nv">tree_view</span><span class="o">={</span>tree_position_levels<span class="o">}</span>
-</code></pre><pre class="highlight json tab-json"><code><span class="err">This</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">sample</span><span class="w"> </span><span class="err">tree_view</span><span class="w"> </span><span class="err">object</span><span class="w"> </span><span class="err">json</span><span class="p">:</span><span class="w">
+</code></pre><pre class="highlight json tab-json"><code><span class="err">This</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">sample</span><span class="w"> </span><span class="err">of</span><span class="w"> </span><span class="err">entire</span><span class="w"> </span><span class="err">tree_view</span><span class="w"> </span><span class="err">object</span><span class="w"> </span><span class="err">json</span><span class="p">,</span><span class="w"> </span><span class="err">however</span><span class="w"> </span><span class="err">you</span><span class="w"> </span><span class="err">can</span><span class="w"> </span><span class="err">update</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">part</span><span class="w"> </span><span class="err">of</span><span class="w"> </span><span class="err">tree</span><span class="w"> </span><span class="err">if</span><span class="w"> </span><span class="err">needed</span><span class="p">:</span><span class="w">
 
 </span><span class="p">{</span><span class="w">
     </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
@@ -1980,29 +1980,36 @@ You must provide both query parameters and a file as multipart form data. For re
         </span><span class="p">{</span><span class="w">
             </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
             </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chapter"</span><span class="p">,</span><span class="w">            
-            </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
             </span><span class="s2">"elements"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
                 </span><span class="p">{</span><span class="w">
                     </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">19</span><span class="p">,</span><span class="w">
                     </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"page"</span><span class="p">,</span><span class="w">
-                    </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+                    </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"elements"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                        </span><span class="p">{</span><span class="w">
+                            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+                            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"item"</span><span class="p">,</span><span class="w">            
+                            </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+                        </span><span class="p">}</span><span class="w">
+                    </span><span class="p">]</span><span class="w">
                 </span><span class="p">},</span><span class="w">
                 </span><span class="p">{</span><span class="w">
                     </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w">
                     </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"page"</span><span class="p">,</span><span class="w">
-                    </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+                    </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
                 </span><span class="p">}</span><span class="w">                  
             </span><span class="p">]</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="p">{</span><span class="w">
             </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
             </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chapter"</span><span class="p">,</span><span class="w">            
-            </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
             </span><span class="s2">"elements"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
                 </span><span class="p">{</span><span class="w">
                     </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">33</span><span class="p">,</span><span class="w">
                     </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"page"</span><span class="p">,</span><span class="w">
-                    </span><span class="s2">"display"</span><span class="p">:</span><span class="mi">0</span><span class="w">
+                    </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
                 </span><span class="p">}</span><span class="w">
 
             </span><span class="p">]</span><span class="w">
@@ -2051,7 +2058,7 @@ You must provide both query parameters and a file as multipart form data. For re
 <td>json</td>
 <td>Required</td>
 <td></td>
-<td>The tree position levels starting from a workbook - chapter(s) - page(s). See example <code>tree_view</code> json object in <em>Example Request</em> section above.</td>
+<td>tree position levels that allow starting at any level in the tree - means support to update a part of tree level of workbook - chapter(s) - page(s) - item(s). See example <code>tree_view</code> json object in <em>Example Request</em> section above. #</td>
 </tr>
 </tbody></table>
 <h3 id='response'>Response</h3>

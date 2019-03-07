@@ -1,5 +1,5 @@
 ## Update tree position levels
-Update tree position levels starting from a workbook - chapter(s) - page(s)
+Update tree position levels that allow starting at any level in the tree - means support to update a part of tree level of workbook - chapter(s) - page(s) - item(s).
 
 > Example Request
 
@@ -12,7 +12,7 @@ curl -X PATCH \
 
 
 ```json
-This is a sample tree_view object json:
+This is a sample of entire tree_view object json, however you can update a part of tree if needed:
 
 {
     "id": 10,
@@ -21,29 +21,36 @@ This is a sample tree_view object json:
         {
             "id": 5,
             "type": "chapter",            
-            "display": 0,
+            "display": 1,
             "elements": [
                 {
                     "id": 19,
                     "type": "page",
-                    "display": 0
+                    "display": 1,
+                    "elements": [
+                        {
+                            "id": 10,
+                            "type": "item",            
+                            "display": 1
+                        }
+                    ]
                 },
                 {
                     "id": 13,
                     "type": "page",
-                    "display": 1
+                    "display": 2
                 }                  
             ]
         },
         {
             "id": 4,
             "type": "chapter",            
-            "display": 1,
+            "display": 2,
             "elements": [
                 {
                     "id": 33,
                     "type": "page",
-                    "display":0
+                    "display": 1
                 }
                 
             ]
@@ -75,7 +82,7 @@ This is a sample tree_view object json:
 
 | Parameter       | Data type | Required? | Default | Description |                                                     
 | --------------- | --------- | --------- | ------- | ----------- |
-|tree_view | json | Required | | The tree position levels starting from a workbook - chapter(s) - page(s). See example `tree_view` json object in *Example Request* section above.  |
+|tree_view | json | Required | | tree position levels that allow starting at any level in the tree - means support to update a part of tree level of workbook - chapter(s) - page(s) - item(s). See example `tree_view` json object in *Example Request* section above. #   |
 
 
 

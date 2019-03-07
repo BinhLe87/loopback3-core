@@ -16,7 +16,7 @@ _workbook_chapter_page_attribtues_joi = Joi.object().keys({
       id: Joi.number().required()
   }),
   elements: Joi.array()
-    .items(Joi.lazy(() => _workbook_chapter_page_joi))
+    .items(Joi.lazy(() => workbook_chapter_page_item_joi))
     .description("array of child elements")
 });
 
@@ -26,12 +26,12 @@ const _workbook_joi = _workbook_chapter_page_attribtues_joi
   })
   .unknown(false);
 
-const _workbook_chapter_page_joi = _workbook_chapter_page_attribtues_joi.keys({
-    type: Joi.any().valid("workbook", "chapter", "page").required()
+const workbook_chapter_page_item_joi = _workbook_chapter_page_attribtues_joi.keys({
+    type: Joi.any().valid("workbook", "chapter", "page", "item").required()
 }).unknown(false);
 
 
 module.exports = exports = {};
-exports.workbook_chapter_tree_view_joi = _workbook_chapter_page_joi;
+exports.workbook_chapter_page_item_joi = workbook_chapter_page_item_joi;
 exports.baseJoiOptions = baseJoiOptions;
 

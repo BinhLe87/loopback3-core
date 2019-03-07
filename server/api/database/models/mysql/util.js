@@ -19,7 +19,7 @@ module.exports = async function(Util) {
   Util.move_position = async function(tree_view, ctx, options, cb) {
     var req = ctx.req;
 
-    var tree_view_joi_result = validation_utils.workbook_chapter_tree_view_joi.validate(
+    var tree_view_joi_result = validation_utils.workbook_chapter_page_item_joi.validate(
       tree_view,
       validation_utils.baseJoiOptions
     );
