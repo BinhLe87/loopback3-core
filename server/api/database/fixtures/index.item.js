@@ -51,6 +51,13 @@ async function _generate_item(NUMBER_RECORDS) {
     item_attributes: [
       {
         id: 1,
+        value: {
+          func: faker.random.arrayElement,
+          args: require('./_sample.data').workbook_title
+        }
+      },
+      {
+        id: 2,
         value: '<%= %long_text %>'
       }
     ]
