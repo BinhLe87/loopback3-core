@@ -22,3 +22,19 @@ async function _generate_attributes_for_paragraph() {
     display_index: aNumberCounter.increaseByOne()
   });
 }
+
+async function _generate_attributes_for_image() {
+  await require('./model.fixtures')(1, 'item_attribute_template', {
+    item_typeId: ITEM_TYPES.get('image').id, //image
+    attributeId: ATTRIBUTES.get('image').id, //image
+    display_index: aNumberCounter.resetIndex().increaseByOne()
+  });
+}
+
+async function _generate_attributes_for_video() {
+  await require('./model.fixtures')(1, 'item_attribute_template', {
+    item_typeId: ITEM_TYPES.get('video').id, //video
+    attributeId: ATTRIBUTES.get('video').id, //video
+    display_index: aNumberCounter.resetIndex().increaseByOne()
+  });
+}

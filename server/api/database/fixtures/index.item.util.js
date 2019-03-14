@@ -68,7 +68,7 @@ ATTRIBUTES.set('image', {
 ATTRIBUTES.set('video', {
   id: aNumberCounter.increaseByOne(),
   label: 'Video',
-  data_type: 'file',
+  data_type: 'iframe',
   op_regex: URL_REGX
 });
 

@@ -87,4 +87,29 @@ exports.page_title = [
   'Project Delivery - The Three Key Cycles'
 ];
 
+exports.video_iframe = [
+  '<iframe width="560" height="315" src="https://www.youtube.com/embed/TOvsm3kbODs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+  '<iframe width="560" height="315" src="https://www.youtube.com/embed/PWmhl6rzVpM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+];
+
+exports.item_image_url = [
+  'http://dev01.cc.cloud:49173/upload/rawpixel-703134-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/olu-eletu-13086-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/william-iven-22449-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/rawpixel-558597-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/rawpixel-659501-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/gaelle-marcel-680430-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/carl-heyerdahl-181868-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/alesia-kazantceva-283291-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/jeff-sheldon-3231-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/icons8-team-649367-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/jenny-hill-205881-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/rawpixel-574844-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/rawpixel-670711-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/rawpixel-653764-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/rawpixel-665368-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/rawpixel-706373-unsplash.jpg',
+  'http://dev01.cc.cloud:49173/upload/rawpixel-743065-unsplash.jpg'
+];
+
 exports.item_paragraph_title = exports.page_title;

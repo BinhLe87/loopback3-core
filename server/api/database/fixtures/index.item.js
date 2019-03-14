@@ -42,23 +42,65 @@ async function _generate_attributes() {
 }
 
 async function _generate_item(NUMBER_RECORDS) {
-  await require('./model.fixtures')(NUMBER_RECORDS, 'item', {
+  const NUMBER_ITEM_TYPES = 3.0; //REMEMBER CHANGE EXACTLY NUMBER OF ITEM TYPES WILL GENERATED.
+  const NUMBER_RECORDS_EACH_TYPE = Math.floor(
+    NUMBER_RECORDS / NUMBER_ITEM_TYPES
+  );
+
+  //`paragraph` item
+  await require('./model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
     title: {
       func: faker.random.arrayElement,
       args: require('./_sample.data').page_title
     },
-    item_typeId: 1,
+    item_typeId: ITEM_TYPES.get('paragraph').id,
     item_attributes: [
       {
-        id: 1,
+        id: ATTRIBUTES.get('title').id,
         value: {
           func: faker.random.arrayElement,
           args: require('./_sample.data').workbook_title
         }
       },
       {
-        id: 2,
+        id: ATTRIBUTES.get('description').id,
         value: '<%= %long_text %>'
+      }
+    ]
+  });
+
+  //`image` item
+  await require('./model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
+    title: {
+      func: faker.random.arrayElement,
+      args: require('./_sample.data').page_title
+    },
+    item_typeId: ITEM_TYPES.get('image').id,
+    item_attributes: [
+      {
+        id: ATTRIBUTES.get('image').id,
+        value: {
+          func: faker.random.arrayElement,
+          args: require('./_sample.data').item_image_url
+        }
+      }
+    ]
+  });
+
+  //`video` item
+  await require('./model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
+    title: {
+      func: faker.random.arrayElement,
+      args: require('./_sample.data').page_title
+    },
+    item_typeId: ITEM_TYPES.get('video').id,
+    item_attributes: [
+      {
+        id: ATTRIBUTES.get('video').id,
+        value: {
+          func: faker.random.arrayElement,
+          args: require('./_sample.data').video_iframe
+        }
       }
     ]
   });

@@ -8,4 +8,6 @@ module.exports = function(Page) {
     ctx,
     modelInstance
   ) {});
+
+  Page.observe('loaded', async function(ctx) {});
 };

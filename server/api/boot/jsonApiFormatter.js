@@ -397,6 +397,7 @@ function parseIncludedDataAndAttributes_parseAttributes(ctx) {
   delete ctx_result_data.id;
   delete ctx_result_data.createdAt;
   delete ctx_result_data.updatedAt;
+  delete ctx_result_data._relation_model;
 
   resource_data.attributes = ctx_result_data;
 
@@ -425,19 +426,13 @@ function parseMetaFieldsForSingleResouce(ctx) {
 
   var createdAt = _.get(result, 'createdAt');
   var updatedAt = _.get(result, 'updatedAt');
+  var _relation_model = _.get(result, '_relation_model');
 
   meta = Object.assign(
     {},
-    _.isUndefined(createdAt)
-      ? {}
-      : {
-          createdAt: createdAt
-        },
-    _.isUndefined(updatedAt)
-      ? {}
-      : {
-          updatedAt: updatedAt
-        }
+    _.pick(_relation_model, ['display_index']),
+    { createdAt }, //order matters since it will override the createdAt and updatedAt in _relation_model if having
+    { updatedAt }
   );
 
   return _.isEmpty(meta)
