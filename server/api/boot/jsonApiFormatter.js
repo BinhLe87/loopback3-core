@@ -308,6 +308,20 @@ function _generateSubContext(
   _.set(_ctx, 'req.forcedSelfFullUrl', forcedSelfFullUrl);
   _.set(_ctx, 'args.filter', _.cloneDeep(ctx.args.filter));
 
+  //get current relation level
+  var cur_relation = _.get(ctx, 'args.filter.include');
+  var next_relation_will_process;
+  if (_.isPlainObject(cur_relation)) {
+    var child_relation;
+
+    child_relation = _.get(
+      ctx,
+      `args.filter.include.${Object.keys(cur_relation)[0]}`
+    );
+    next_relation_will_process = child_relation;
+  }
+  _.set(_ctx, 'args.filter.include', next_relation_will_process);
+
   return _ctx;
 }
 
@@ -340,7 +354,7 @@ function parseIncludedDataAndAttributes_parseIncludedData(ctx) {
   var includedData = _.isEmpty(relations) ? null : [];
 
   for (let relation_name of relations) {
-    let result_data = ctx.result.__data;
+    let result_data = ctx.result.__data || ctx.result;
 
     //determine real model name of relation. Do this way sinece in case of Polymorphic relation,
     //relation name probably is different with real model name of relation
@@ -351,7 +365,7 @@ function parseIncludedDataAndAttributes_parseIncludedData(ctx) {
 
     if (_.isEmpty(relation_model_name)) return null;
 
-    let relation_data = result_data[relation_model_name];
+    let relation_data = result_data[relation_model_name] || result_data;
 
     //standardize relation_data variable always becomes array type
     var relation_data_array = Array.isArray(relation_data)
@@ -365,12 +379,18 @@ function parseIncludedDataAndAttributes_parseIncludedData(ctx) {
         //TODO: support contains 'included' property deeper
         var _ctx = _generateSubContext(ctx, relation_model_name, _attributes);
         var _topMember = parseIdAndType(_ctx);
+        var _attributes_included = parseIncludedDataAndAttributes(_ctx);
+        var _meta = parseMetaFieldsForSingleResouce(_ctx);
 
-        //remove 'id' property from attributes
-        delete _attributes.id;
-        var _included_item = Object.assign({}, _topMember, {
-          attributes: _attributes
-        });
+        var _included_item = Object.assign(
+          {},
+          _topMember,
+          {
+            attributes: _attributes
+          },
+          _attributes_included,
+          _meta
+        );
 
         includedData.push(_included_item);
       }
@@ -381,8 +401,9 @@ function parseIncludedDataAndAttributes_parseIncludedData(ctx) {
 }
 
 function parseIncludedDataAndAttributes_parseAttributes(ctx) {
-  var ctx_result_data = _.clone(ctx.result.__data);
+  var ctx_result_data = _.clone(ctx.result.__data || ctx.result);
 
+  if (!ctx_result_data) return {};
   var resource_data = {};
 
   //delete included resources in 'attributes' property since it will be moved to 'included' property
@@ -393,8 +414,8 @@ function parseIncludedDataAndAttributes_parseAttributes(ctx) {
   }
 
   //delete 'id' property from attributes since it was moved to top member properties
-  //delete result.id;
   delete ctx_result_data.id;
+  //delete properties since they were moved to 'meta' fields
   delete ctx_result_data.createdAt;
   delete ctx_result_data.updatedAt;
   delete ctx_result_data._relation_model;
@@ -564,8 +585,6 @@ function parseIncludesFilter(ctx) {
   //get list of include filters
   var includes = _.get(ctx, 'args.filter.include', []);
   if (typeof includes == 'object') {
-    //only one include filter
-
     return Object.keys(includes);
   }
 
