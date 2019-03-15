@@ -7,6 +7,8 @@ const {
 
 module.exports.generate_item_type_attribute = async function() {
   await _generate_attributes_for_paragraph();
+  await _generate_attributes_for_image();
+  await _generate_attributes_for_video();
 };
 
 async function _generate_attributes_for_paragraph() {
