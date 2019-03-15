@@ -2,6 +2,7 @@
 
 //Ref: https://loopback.io/doc/en/lb3/Customizing-models.html
 //Ref: https://loopback.io/doc/en/lb3/Defining-mixins.html
+var { logger } = require('../../errors/errorLogger');
 
 module.exports = function(Model, options) {
   Model.observe('loaded', async function(ctx) {
@@ -19,7 +20,7 @@ module.exports = function(Model, options) {
       var destination_model_id = data[`${destination_model}Id`];
 
       if (!destination_model_id) {
-        logger.warning(
+        logger.warn(
           `Not found any value for destination_model_id with name is ${destination_model}Id}`
         );
         return;
