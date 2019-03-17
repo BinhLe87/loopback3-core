@@ -88,9 +88,13 @@ exports.page_title = [
 ];
 
 exports.video_iframe = [
-  '<iframe width="560" height="315" src="https://www.youtube.com/embed/TOvsm3kbODs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
-  '<iframe width="560" height="315" src="https://www.youtube.com/embed/PWmhl6rzVpM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
-  '<iframe width="560" height="315" src="https://www.youtube.com/embed/K7YMEFjh724" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+  'https://youtu.be/TOvsm3kbODs',
+  'https://youtu.be/PWmhl6rzVpM',
+  'https://youtu.be/K7YMEFjh724',
+  'https://youtu.be/9TycLR0TqFA',
+  'https://youtu.be/rIaz-l1Kf8w',
+  'https://youtu.be/3eljozEWpf8',
+  'https://youtu.be/mPRUNGGORDo'
 ];
 
 exports.item_image_url = [
