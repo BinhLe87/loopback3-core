@@ -42,6 +42,12 @@ function create_channel(
       .connect(url, socketOptions)
       .then(conn => {
         cached_connection = conn;
+
+        conn.on('error', function(error) {
+          logger.error(`Error connection to AMQP_URL at ${actual_AMQP_URL}:` + inspect(error));
+          close_connection();
+        })
+
         return conn.createChannel();
       })
       .then(async channel => {
@@ -60,6 +66,10 @@ function create_channel(
 
         await channel.assertExchange(EXCHANGE_NAME, "topic", {
           durable: false
+        });
+        channel.on('error', function(err) {
+
+          close_connection();
         });
         logger.info(`Successfully connected to AMQP_URL at ${url}`);
 
@@ -87,13 +97,13 @@ function create_channel(
 
 function close_connection() {
   if (cached_connection) {
-    
+
     cached_connection.close();
     logger.info(`Closed connection to AMQP_URL at ${actual_AMQP_URL}`);
 
     //reset cached values
     cached_channel = null;
-    cached_connection = null;    
+    cached_connection = null;
     actual_AMQP_URL = undefined;
   }
 }
