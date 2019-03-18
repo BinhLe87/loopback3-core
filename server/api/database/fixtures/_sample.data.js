@@ -87,10 +87,10 @@ exports.page_title = [
   'Project Delivery - The Three Key Cycles'
 ];
 
-exports.video_iframe = [
-  '<iframe width="560" height="315" src="https://www.youtube.com/embed/TOvsm3kbODs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
-  '<iframe width="560" height="315" src="https://www.youtube.com/embed/PWmhl6rzVpM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
-  '<iframe width="560" height="315" src="https://www.youtube.com/embed/K7YMEFjh724" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+exports.video_url = [
+  'https://www.youtube.com/embed/TOvsm3kbODs',
+  'https://www.youtube.com/embed/PWmhl6rzVpM',
+  'https://www.youtube.com/embed/K7YMEFjh724'
 ];
 
 exports.item_image_url = [

@@ -99,7 +99,7 @@ async function _generate_item(NUMBER_RECORDS) {
         id: ATTRIBUTES.get('video').id,
         value: {
           func: faker.random.arrayElement,
-          args: require('./_sample.data').video_iframe
+          args: require('./_sample.data').video_url
         }
       }
     ]
