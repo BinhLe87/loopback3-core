@@ -66,12 +66,12 @@ ATTRIBUTES.set('question', {
   label: 'Question',
   data_type: 'text'
 });
-ATTRIBUTES.set('shortAnswer', {
+ATTRIBUTES.set('short_answer', {
   id: aNumberCounter.increaseByOne(),
   label: 'Short Answer',
   data_type: 'boolean'
 });
-ATTRIBUTES.set('multipleChoices', {
+ATTRIBUTES.set('multiple_choices', {
   id: aNumberCounter.increaseByOne(),
   label: 'Multiple Choices',
   data_type: 'boolean'

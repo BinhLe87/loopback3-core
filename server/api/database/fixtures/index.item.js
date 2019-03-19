@@ -121,7 +121,7 @@ async function _generate_item(NUMBER_RECORDS) {
         }
       },
       {
-        id: ATTRIBUTES.get('shortAnswer').id,
+        id: ATTRIBUTES.get('short_answer').id,
         value: {
           func: faker.random.arrayElement,
           args: [true, false]
