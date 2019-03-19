@@ -91,15 +91,15 @@ exports.item_question = [
   'Why Lean Culture and Leadership?',
   'What is Lean?',
   'Why Keeping Project Stakeholders Engaged?',
-  'How to write the Project Scope Statement?',
+  'How to write the Project Scope Statement?'
 ];
 
 exports.item_answer = [
   'This is option 1',
   'This is option 2',
   'This is option 3',
-  'This is option 4',
-]
+  'This is option 4'
+];
 
 exports.video_url = [
   'https://www.youtube.com/embed/TOvsm3kbODs',
