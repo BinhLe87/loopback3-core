@@ -47,7 +47,7 @@ async function _generate_attributes() {
 }
 
 async function _generate_item(NUMBER_RECORDS) {
-  const NUMBER_ITEM_TYPES = 3.0; //REMEMBER CHANGE EXACTLY NUMBER OF ITEM TYPES WILL GENERATED.
+  const NUMBER_ITEM_TYPES = ITEM_TYPES.size; //REMEMBER CHANGE EXACTLY NUMBER OF ITEM TYPES WILL GENERATED.
   const NUMBER_RECORDS_EACH_TYPE = Math.floor(
     NUMBER_RECORDS / NUMBER_ITEM_TYPES
   );
@@ -60,13 +60,6 @@ async function _generate_item(NUMBER_RECORDS) {
     },
     item_typeId: ITEM_TYPES.get('paragraph').id,
     item_attributes: [
-      // {
-      //   id: ATTRIBUTES.get('title').id,
-      //   value: {
-      //     func: faker.random.arrayElement,
-      //     args: require('./_sample.data').workbook_title
-      //   }
-      // },
       {
         id: ATTRIBUTES.get('content').id,
         value: '<%= %long_text %>'
