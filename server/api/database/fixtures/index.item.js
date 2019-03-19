@@ -60,15 +60,15 @@ async function _generate_item(NUMBER_RECORDS) {
     },
     item_typeId: ITEM_TYPES.get('paragraph').id,
     item_attributes: [
+      // {
+      //   id: ATTRIBUTES.get('title').id,
+      //   value: {
+      //     func: faker.random.arrayElement,
+      //     args: require('./_sample.data').workbook_title
+      //   }
+      // },
       {
-        id: ATTRIBUTES.get('title').id,
-        value: {
-          func: faker.random.arrayElement,
-          args: require('./_sample.data').workbook_title
-        }
-      },
-      {
-        id: ATTRIBUTES.get('description').id,
+        id: ATTRIBUTES.get('content').id,
         value: '<%= %long_text %>'
       }
     ]
@@ -104,7 +104,61 @@ async function _generate_item(NUMBER_RECORDS) {
         id: ATTRIBUTES.get('video').id,
         value: {
           func: faker.random.arrayElement,
-          args: require('./_sample.data').video_iframe
+          args: require('./_sample.data').video_url
+        }
+      }
+    ]
+  });
+
+  //`text_question` item
+  await require('./model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
+    title: {
+      func: faker.random.arrayElement,
+      args: require('./_sample.data').page_title
+    },
+    item_typeId: ITEM_TYPES.get('text_question').id,
+    item_attributes: [
+      {
+        id: ATTRIBUTES.get('question').id,
+        value: {
+          func: faker.random.arrayElement,
+          args: require('./_sample.data').item_question
+        }
+      },
+      {
+        id: ATTRIBUTES.get('short_answer').id,
+        value: {
+          func: faker.random.arrayElement,
+          args: [true, false]
+        }
+      }
+    ]
+  });
+
+  //`multiple_choice_question` item
+  await require('./model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
+    title: {
+      func: faker.random.arrayElement,
+      args: require('./_sample.data').page_title
+    },
+    item_typeId: ITEM_TYPES.get('multiple_choice_question').id,
+    item_attributes: [
+      {
+        id: ATTRIBUTES.get('question').id,
+        value: {
+          func: faker.random.arrayElement,
+          args: require('./_sample.data').item_question
+        }
+      },
+      {
+        id: ATTRIBUTES.get('answers').id,
+        value: _.values(require('./_sample.data').item_answer).join('\n')
+      },
+      {
+        id: ATTRIBUTES.get('multiple_choices').id,
+        value: {
+          func: faker.random.arrayElement,
+          args: [true, false]
         }
       }
     ]

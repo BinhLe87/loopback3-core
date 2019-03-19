@@ -37,9 +37,17 @@ ITEM_TYPES.set('image', {
   id: aNumberCounter.increaseByOne(),
   label: 'image'
 });
-ITEM_TYPES.set('question', {
+ITEM_TYPES.set('text_question', {
   id: aNumberCounter.increaseByOne(),
-  label: 'question'
+  label: 'text_question'
+});
+ITEM_TYPES.set('multiple_choice_question', {
+  id: aNumberCounter.increaseByOne(),
+  label: 'multiple_choice_question'
+});
+ITEM_TYPES.set('yes_no_question', {
+  id: aNumberCounter.increaseByOne(),
+  label: 'yes_no_question'
 });
 
 var ATTRIBUTES = new Map();
@@ -48,10 +56,30 @@ ATTRIBUTES.set('title', {
   label: 'Title',
   data_type: 'text'
 });
-ATTRIBUTES.set('description', {
+ATTRIBUTES.set('content', {
   id: aNumberCounter.increaseByOne(),
-  label: 'Description',
+  label: 'Content',
   data_type: 'text'
+});
+ATTRIBUTES.set('question', {
+  id: aNumberCounter.resetIndex().increaseByOne(),
+  label: 'Question',
+  data_type: 'text'
+});
+ATTRIBUTES.set('short_answer', {
+  id: aNumberCounter.increaseByOne(),
+  label: 'Short Answer',
+  data_type: 'boolean'
+});
+ATTRIBUTES.set('multiple_choices', {
+  id: aNumberCounter.increaseByOne(),
+  label: 'Multiple Choices',
+  data_type: 'boolean'
+});
+ATTRIBUTES.set('answers', {
+  id: aNumberCounter.increaseByOne(),
+  label: 'Answers',
+  data_type: 'array'
 });
 ATTRIBUTES.set('file', {
   id: aNumberCounter.increaseByOne(),
@@ -70,7 +98,7 @@ ATTRIBUTES.set('image', {
 ATTRIBUTES.set('video', {
   id: aNumberCounter.increaseByOne(),
   label: 'Video',
-  data_type: 'iframe',
+  data_type: 'url',
   op_regex: URL_REGX,
   op_required: true
 });
