@@ -110,7 +110,7 @@ async function uploadFileAndAddFilePathIntoCtx(ctx) {
  * Validate and return 'new' item_object is maybe changed after converting values if any
  *
  * @param {*} item_object
- * @returns {object} a (new) item_object
+ * @returns {object} a (new) item_object or throw error if invalid item data
  */
 async function validateItemData(item_object) {
   var data = item_object;

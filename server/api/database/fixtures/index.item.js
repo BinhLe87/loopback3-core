@@ -36,7 +36,12 @@ async function _generate_attributes() {
       code: attribute_code,
       label: _.get(attribute_values, 'label', '${code}'),
       description: _.get(attribute_values, 'description'),
-      data_type: _.get(attribute_values, 'data_type')
+      data_type: _.get(attribute_values, 'data_type'),
+      op_required: _.get(attribute_values, 'op_required'),
+      op_default: _.get(attribute_values, 'op_default'),
+      op_min: _.get(attribute_values, 'op_min'),
+      op_max: _.get(attribute_values, 'op_max'),
+      op_regex: _.get(attribute_values, 'op_regex')
     });
   }
 }

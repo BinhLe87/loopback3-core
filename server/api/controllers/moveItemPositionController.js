@@ -235,7 +235,8 @@ async function swapTwoItemPositions(url_params) {
     sorted_positions,
     url_params.from_model_foreign_key,
     url_params.from_model_id,
-    url_params.to_model_id
+    url_params.to_model_id,
+    { url_params }
   );
 
   var { from_model_instance, to_model_instance } = existing_result;
@@ -284,7 +285,7 @@ async function _moveItemPosition(url_params, options = {}) {
     url_params.from_model_foreign_key,
     url_params.from_model_id,
     url_params.to_model_id,
-    options
+    Object.assign({}, { url_params }, options)
   );
 
   var { from_model_instance, to_model_instance } = existing_result;
@@ -541,7 +542,11 @@ function _checkAllModelIDsExists(
 
     if (_.isUndefined(found_to_model_instance)) {
       throw Boom.notFound(
-        `Not found to_model id is '${to_model_id}' in the model scope`
+        `Not found to_model id is '${to_model_id}' in the '${_.get(
+          options,
+          'url_params.scope_model',
+          'from_model'
+        )}' scope`
       );
     }
   }

@@ -8,7 +8,7 @@ const URI = require('urijs');
 const app = require('../../../server');
 const Joi = require('joi');
 const { baseJoiOptions } = require('../../../helpers/validators/joiValidator');
-const { uploadFileAndAddFilePathIntoCtx } = require('./item.util');
+const { validateItemData } = require('./item.util');
 
 //determine the path of static files
 const fs = require('fs');
@@ -34,7 +34,7 @@ fs.readFile(path.join(__dirname, '../../../middleware.json'), (err, data) => {
 
 module.exports = function(Item) {
   // Item.beforeRemote('create', async function(ctx, modelInstance) {
-  //   await uploadFileAndAddFilePathIntoCtx(ctx);
+  //   await validateItemData(ctx);
   // });
 
   // Item.beforeRemote('upsert', async function(ctx, modelInstance) {
@@ -129,6 +129,10 @@ module.exports = function(Item) {
 
         debug(ctx.instance);
       }
+    } else {
+      //create new item
+
+      await validateItemData(data);
     }
   });
 

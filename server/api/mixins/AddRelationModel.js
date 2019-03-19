@@ -20,9 +20,9 @@ module.exports = function(Model, options) {
       var destination_model_id = data[`${destination_model}Id`];
 
       if (!destination_model_id) {
-        logger.warn(
-          `Not found any value for destination_model_id with name is ${destination_model}Id}`
-        );
+        // logger.warn(
+        //   `Not found any value for destination_model_id with name is ${destination_model}Id}`
+        // );
         return;
       }
 

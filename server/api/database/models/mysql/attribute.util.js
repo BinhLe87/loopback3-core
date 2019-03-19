@@ -128,23 +128,20 @@ function __validateInputAttributesWithInDB(
       return req_attribute.id == attributeInDB.id;
     });
 
-    //NOTE: No need to check because it will be validated later based on `op_required` property
-    // if (_.isEmpty(sameAttrIds)) {
-    //   throw new Error(
-    //     `Error: Invalid attributes. The itemtypeId '${itemTypeId}' must contain at least one attribute has id '${
-    //       attributeInDB.id
-    //     }' (${attributeInDB.label}) as in template`
-    //   );
-    // }
-
     //extra constraints of an attribute in database will has prefix column name is 'op_'
     var extraConstraints = _parseAttributeOptions(attributeInDB);
+
+    if (_.isEmpty(sameAttrIds)) {
+      sameAttrIds = [{}]; //add dummy element to go into validation process because it maybe a required attribute in DB
+    }
+
     for (let attrWillCheck of sameAttrIds) {
       //convert attribute will check to corresponding Joi schema through data type of attribute
       let curJoiSchema = _identifyJoiSchemaForDataType(
         attributeInDB.data_type,
         extraConstraints
       );
+
       var valueOfAttrWillCheck = attrWillCheck.values;
       if (_.isUndefined(valueOfAttrWillCheck)) {
         valueOfAttrWillCheck = attrWillCheck.value; //'value' and 'values' are alias
@@ -165,7 +162,6 @@ function __validateInputAttributesWithInDB(
         ___validateValuesByJoi(
           valuesWillValidateByJoi,
           curJoiSchema,
-          attrWillCheck,
           attributeInDB,
           shouldUseDefaultValue
         )
@@ -178,20 +174,24 @@ function __validateInputAttributesWithInDB(
 /**
  *
  *
- * @param {*} valuesWillValidateByJoi
+ * @param {array} valuesWillValidateByJoi
  * @param {*} curJoiSchema
  * @param {*} attrWillCheck
- * @param {*} attributeInDB
  * @returns {object} error object
  */
 function ___validateValuesByJoi(
   valuesWillValidateByJoi,
   curJoiSchema,
   attrWillCheck,
-  attributeInDB,
   shouldUseDefaultValue
 ) {
   var validateErrorMessages = {};
+
+  if (!Array.isArray(valuesWillValidateByJoi)) {
+    let msg_error = `___validateValuesByJoi() requires 'valuesWillValidateByJoi' is array type, but got ${typeof valuesWillValidateByJoi}`;
+    logger.error(msg_error);
+    throw new boom.badImplementation('Internal Server Error', msg_error);
+  }
 
   for (let valueWillValidate of valuesWillValidateByJoi) {
     Joi.validate(
@@ -204,7 +204,7 @@ function ___validateValuesByJoi(
           any: {
             required: `property of attribute id '${
               attrWillCheck.id
-            }' was not specified`
+            }' has code='${attrWillCheck.code}' was not specified`
           }
         }
       },
@@ -213,9 +213,9 @@ function ___validateValuesByJoi(
           let err_message_ele = `item_attributes[id=${attrWillCheck.id}]`;
           validateErrorMessages[err_message_ele] = {};
           validateErrorMessages[err_message_ele].attribute_code =
-            attributeInDB.code;
+            attrWillCheck.code;
           validateErrorMessages[err_message_ele].data_type =
-            attributeInDB.data_type;
+            attrWillCheck.data_type;
           validateErrorMessages[err_message_ele].errors = err.details;
         }
         if (shouldUseDefaultValue) {
@@ -248,10 +248,15 @@ function _parseAttributeOptions(attribute) {
       let option_names = /^(?:op_)(.+)/.exec(key);
       if (!_.isEmpty(option_names) && !_.isNull(value)) {
         //attemp to cast to number
-        let toNumber = _.toNumber(value);
-        value = _.isNaN(toNumber) ? value : toNumber;
+        value = _.isNumber(value) ? _.toNumber(value) : value;
 
-        accum[option_names[1]] = value;
+        if (_.isNumber(value) || _.isBoolean(value)) {
+          //is number or is boolean
+          accum[option_names[1]] = value;
+        } else if (!_.isEmpty(value)) {
+          //is string and not empty
+          accum[option_names[1]] = value;
+        }
       }
       return accum;
     },

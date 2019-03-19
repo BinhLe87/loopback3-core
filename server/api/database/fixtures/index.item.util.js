@@ -57,19 +57,22 @@ ATTRIBUTES.set('file', {
   id: aNumberCounter.increaseByOne(),
   label: 'File',
   data_type: 'file',
-  op_regex: URL_REGX
+  op_regex: URL_REGX,
+  op_required: true
 });
 ATTRIBUTES.set('image', {
   id: aNumberCounter.increaseByOne(),
   label: 'Image',
   data_type: 'file',
-  op_regex: URL_REGX
+  op_regex: URL_REGX,
+  op_required: true
 });
 ATTRIBUTES.set('video', {
   id: aNumberCounter.increaseByOne(),
   label: 'Video',
   data_type: 'iframe',
-  op_regex: URL_REGX
+  op_regex: URL_REGX,
+  op_required: true
 });
 
 exports.ITEM_TYPES = ITEM_TYPES;
