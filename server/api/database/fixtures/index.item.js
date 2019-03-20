@@ -119,6 +119,13 @@ async function _generate_item(NUMBER_RECORDS) {
         }
       },
       {
+        id: ATTRIBUTES.get('answer').id,
+        value: {
+          func: faker.random.arrayElement,
+          args: require('./_sample.data').item_answer
+        }
+      },
+      {
         id: ATTRIBUTES.get('short_answer').id,
         value: {
           func: faker.random.arrayElement,
@@ -144,8 +151,15 @@ async function _generate_item(NUMBER_RECORDS) {
         }
       },
       {
-        id: ATTRIBUTES.get('answers').id,
+        id: ATTRIBUTES.get('choices').id,
         value: require('./_sample.data').item_answer
+      },
+      {
+        id: ATTRIBUTES.get('answers').id,
+        value: {
+          func: faker.random.arrayElement,
+          args: require('./_sample.data').item_answer
+        }
       },
       {
         id: ATTRIBUTES.get('multiple_choices').id,

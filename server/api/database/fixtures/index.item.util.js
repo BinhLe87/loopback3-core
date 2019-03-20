@@ -62,8 +62,14 @@ ATTRIBUTES.set('content', {
   data_type: 'text'
 });
 ATTRIBUTES.set('question', {
-  id: aNumberCounter.increaseByOne(),
+  id: aNumberCounter.resetIndex().increaseByOne(),
   label: 'Question',
+  data_type: 'text'
+});
+
+ATTRIBUTES.set('answer', {
+  id: aNumberCounter.increaseByOne(),
+  label: 'Answer',
   data_type: 'text'
 });
 ATTRIBUTES.set('short_answer', {
@@ -71,36 +77,46 @@ ATTRIBUTES.set('short_answer', {
   label: 'Short Answer',
   data_type: 'boolean'
 });
+
 ATTRIBUTES.set('multiple_choices', {
   id: aNumberCounter.increaseByOne(),
   label: 'Multiple Choices',
   data_type: 'boolean'
+});
+ATTRIBUTES.set('choices', {
+  id: aNumberCounter.increaseByOne(),
+  label: 'Choices',
+  data_type: 'array'
 });
 ATTRIBUTES.set('answers', {
   id: aNumberCounter.increaseByOne(),
   label: 'Answers',
   data_type: 'array'
 });
+
+ATTRIBUTES.set('true', {
+  id: aNumberCounter.increaseByOne(),
+  label: 'True/False',
+  data_type: 'boolean'
+});
+
 ATTRIBUTES.set('file', {
   id: aNumberCounter.increaseByOne(),
   label: 'File',
   data_type: 'file',
-  op_regex: URL_REGX,
-  op_required: true
+  op_regex: URL_REGX
 });
 ATTRIBUTES.set('image', {
   id: aNumberCounter.increaseByOne(),
   label: 'Image',
   data_type: 'file',
-  op_regex: URL_REGX,
-  op_required: true
+  op_regex: URL_REGX
 });
 ATTRIBUTES.set('video', {
   id: aNumberCounter.increaseByOne(),
   label: 'Video',
   data_type: 'url',
-  op_regex: URL_REGX,
-  op_required: true
+  op_regex: URL_REGX
 });
 
 exports.ITEM_TYPES = ITEM_TYPES;

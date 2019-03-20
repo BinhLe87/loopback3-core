@@ -66,6 +66,12 @@ async function _generate_attributes_for_multiple_choice_question() {
 
   await require('./model.fixtures')(1, 'item_attribute_template', {
     item_typeId: ITEM_TYPES.get('multiple_choice_question').id, //multiple_choice_question
+    attributeId: ATTRIBUTES.get('choices').id, //choices
+    display_index: aNumberCounter.increaseByOne()
+  });
+
+  await require('./model.fixtures')(1, 'item_attribute_template', {
+    item_typeId: ITEM_TYPES.get('multiple_choice_question').id, //multiple_choice_question
     attributeId: ATTRIBUTES.get('answers').id, //answers
     display_index: aNumberCounter.increaseByOne()
   });
