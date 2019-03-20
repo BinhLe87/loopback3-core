@@ -10,6 +10,10 @@ const joiSchemas = {
   textSchema: Joi.string().empty(''),
   urlSchema: Joi.string().empty(''),
   fileSchema: Joi.string().empty(''),
+  booleanSchema: Joi.boolean()
+    .truthy(['Y', 'yes'])
+    .falsy(['N', 'no']),
+  arraySchema: Joi.array(),
   htmlSchema: Joi.string()
     .base64()
     .empty(''),

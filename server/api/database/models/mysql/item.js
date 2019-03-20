@@ -96,6 +96,7 @@ module.exports = function(Item) {
   Item.observe('before save', async function(ctx) {
     var data = ctx.instance || ctx.data;
     var ItemModel = app.models.item;
+    var is_create_mode = _.isUndefined(ctx.instance) ? false : true;
 
     var is_duplicate_item_req =
       typeof data.duplicate_from_item_id == 'undefined' ? false : true;
@@ -129,8 +130,8 @@ module.exports = function(Item) {
 
         debug(ctx.instance);
       }
-    } else {
-      //create new item
+    } else if (!is_create_mode) {
+      //update new item
 
       await validateItemData(data);
     }
