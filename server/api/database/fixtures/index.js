@@ -165,8 +165,7 @@ async function generate_dummy_data(number_records) {
     'item',
     'page_item',
     {
-      maxIdSourceModel: Math.floor(NUMBER_RECORDS / 5.0),
-      maxIdDestinationModel: NUMBER_RECORDS
+      maxIdSourceModel: Math.floor(NUMBER_RECORDS / 5.0)
     }
   );
 

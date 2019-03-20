@@ -38,16 +38,16 @@ WORKDIR redis-4.0.11
 RUN make
 
 ##Install RabbitMQ
-RUN apt-get update
-RUN apt-get --assume-yes install apt-transport-https
-RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-RUN dpkg -i erlang-solutions_1.0_all.deb
-RUN apt-get update
-RUN apt-get --assume-yes install erlang
-RUN echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | tee /etc/apt/sources.list.d/bintray.rabbitmq.list
-RUN wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | apt-key add -
-RUN apt-get update
-RUN apt-get --assume-yes install rabbitmq-server
+# RUN apt-get update
+# RUN apt-get --assume-yes install apt-transport-https
+# RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+# RUN dpkg -i erlang-solutions_1.0_all.deb
+# RUN apt-get update
+# RUN apt-get --assume-yes install erlang
+# RUN echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | tee /etc/apt/sources.list.d/bintray.rabbitmq.list
+# RUN wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | apt-key add -
+# RUN apt-get update
+# RUN apt-get --assume-yes install rabbitmq-server
 
 ## Start api server
 WORKDIR ${container_dir}
