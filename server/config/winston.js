@@ -6,6 +6,7 @@ const path = require('path');
 const DailyRotateFile = require('winston-daily-rotate-file');
 var fs = require('fs-extra');
 const util = require('util');
+const {EOL} = require('os');
 
 var envVarsSchema = joi
   .object({
@@ -79,9 +80,9 @@ const fileFormat = winston.format.combine(
         Object.getOwnPropertyNames(info.args).length
           ? JSON.stringify(info.args, null, 2)
           : ''
-      }`;
+      }${EOL}`;
     } else {
-      return `${request_id} ${ts} [${process.pid}] [${info.level}]: ${info.message}`;
+      return `${request_id} ${ts} [${process.pid}] [${info.level}]: ${info.message}${EOL}`;
     }
   })
 );

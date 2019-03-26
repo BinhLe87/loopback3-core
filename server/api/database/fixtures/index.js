@@ -154,7 +154,12 @@ async function generate_dummy_data(number_records) {
     }
   );
 
-  await require('./index.item').generate_item_data(
+  await require('./item/item.index').generate_item_data(
+    NUMBER_RECORDS,
+    MIN_NUMBER_RECORDS
+  );
+
+  await require('./style/style.index').generate_style_data(
     NUMBER_RECORDS,
     MIN_NUMBER_RECORDS
   );

@@ -1,0 +1,45 @@
+{
+  "name": "style_theme_attribute",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "ActiveStatusDb": true,
+    "TimeStamp": true,
+    "BelongsToIntegrityCheck": false
+  },
+  "properties": {
+    "value": {
+      "type": "any",
+      "required": true
+    }
+  },
+  "indexes": {
+    "theme_attribute_idx": {
+      "keys": {
+        "style_themeId": 1,
+        "style_attributeId": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "style_theme": {
+      "type": "belongsTo",
+      "model": "style_theme",
+      "foreignKey": "style_themeId"
+    },
+    "style_attribute": {
+      "type": "belongsTo",
+      "model": "style_attribute",
+      "foreignKey": "style_attributeId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

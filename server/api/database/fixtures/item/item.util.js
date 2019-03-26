@@ -62,7 +62,7 @@ ATTRIBUTES.set('content', {
   data_type: 'text'
 });
 ATTRIBUTES.set('question', {
-  id: aNumberCounter.resetIndex().increaseByOne(),
+  id: aNumberCounter.increaseByOne(),
   label: 'Question',
   data_type: 'text'
 });

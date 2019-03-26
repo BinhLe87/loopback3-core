@@ -31,7 +31,7 @@ client
 
 
 #config files only for local environments
-/server/datasources.local.json
+**/datasources.development.json
 .env.development
 
 #uploads dir

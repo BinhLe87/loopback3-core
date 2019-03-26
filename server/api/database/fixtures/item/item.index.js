@@ -1,9 +1,7 @@
 const faker = require('faker/locale/en');
-const {
-  generate_item_type_attribute
-} = require('./index.item.item_type_attribute');
+const { generate_item_type_attribute } = require('./item.item_type_attribute');
 const _ = require('lodash');
-const { ITEM_TYPES, ATTRIBUTES } = require('./index.item.util');
+const { ITEM_TYPES, ATTRIBUTES } = require('./item.util');
 
 module.exports = exports = {};
 
@@ -23,7 +21,7 @@ exports.generate_item_data = async function(
 
 async function _generate_item_types() {
   for (var [item_type_code, item_type_values] of ITEM_TYPES) {
-    await require('./model.fixtures')(1, 'item_type', {
+    await require('../model.fixtures')(1, 'item_type', {
       code: item_type_code,
       label: _.get(item_type_values, 'label', '${code}')
     });
@@ -32,7 +30,7 @@ async function _generate_item_types() {
 
 async function _generate_attributes() {
   for (var [attribute_code, attribute_values] of ATTRIBUTES) {
-    await require('./model.fixtures')(1, 'attribute', {
+    await require('../model.fixtures')(1, 'attribute', {
       code: attribute_code,
       label: _.get(attribute_values, 'label', '${code}'),
       description: _.get(attribute_values, 'description'),
@@ -53,10 +51,10 @@ async function _generate_item(NUMBER_RECORDS) {
   );
 
   //`paragraph` item
-  await require('./model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
+  await require('../model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
     title: {
       func: faker.random.arrayElement,
-      args: require('./_sample.data').page_title
+      args: require('../_sample.data').page_title
     },
     item_typeId: ITEM_TYPES.get('paragraph').id,
     item_attributes: [
@@ -68,10 +66,10 @@ async function _generate_item(NUMBER_RECORDS) {
   });
 
   //`image` item
-  await require('./model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
+  await require('../model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
     title: {
       func: faker.random.arrayElement,
-      args: require('./_sample.data').page_title
+      args: require('../_sample.data').page_title
     },
     item_typeId: ITEM_TYPES.get('image').id,
     item_attributes: [
@@ -79,17 +77,17 @@ async function _generate_item(NUMBER_RECORDS) {
         id: ATTRIBUTES.get('image').id,
         value: {
           func: faker.random.arrayElement,
-          args: require('./_sample.data').item_image_url
+          args: require('../_sample.data').item_image_url
         }
       }
     ]
   });
 
   //`video` item
-  await require('./model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
+  await require('../model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
     title: {
       func: faker.random.arrayElement,
-      args: require('./_sample.data').page_title
+      args: require('../_sample.data').page_title
     },
     item_typeId: ITEM_TYPES.get('video').id,
     item_attributes: [
@@ -97,17 +95,17 @@ async function _generate_item(NUMBER_RECORDS) {
         id: ATTRIBUTES.get('video').id,
         value: {
           func: faker.random.arrayElement,
-          args: require('./_sample.data').video_url
+          args: require('../_sample.data').video_url
         }
       }
     ]
   });
 
   //`text_question` item
-  await require('./model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
+  await require('../model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
     title: {
       func: faker.random.arrayElement,
-      args: require('./_sample.data').page_title
+      args: require('../_sample.data').page_title
     },
     item_typeId: ITEM_TYPES.get('text_question').id,
     item_attributes: [
@@ -115,14 +113,14 @@ async function _generate_item(NUMBER_RECORDS) {
         id: ATTRIBUTES.get('question').id,
         value: {
           func: faker.random.arrayElement,
-          args: require('./_sample.data').item_question
+          args: require('../_sample.data').item_question
         }
       },
       {
         id: ATTRIBUTES.get('answer').id,
         value: {
           func: faker.random.arrayElement,
-          args: require('./_sample.data').item_answer
+          args: require('../_sample.data').item_answer
         }
       },
       {
@@ -136,10 +134,10 @@ async function _generate_item(NUMBER_RECORDS) {
   });
 
   //`multiple_choice_question` item
-  await require('./model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
+  await require('../model.fixtures')(NUMBER_RECORDS_EACH_TYPE, 'item', {
     title: {
       func: faker.random.arrayElement,
-      args: require('./_sample.data').page_title
+      args: require('../_sample.data').page_title
     },
     item_typeId: ITEM_TYPES.get('multiple_choice_question').id,
     item_attributes: [
@@ -147,18 +145,18 @@ async function _generate_item(NUMBER_RECORDS) {
         id: ATTRIBUTES.get('question').id,
         value: {
           func: faker.random.arrayElement,
-          args: require('./_sample.data').item_question
+          args: require('../_sample.data').item_question
         }
       },
       {
         id: ATTRIBUTES.get('choices').id,
-        value: require('./_sample.data').item_answer
+        value: require('../_sample.data').item_answer
       },
       {
         id: ATTRIBUTES.get('answers').id,
         value: {
           func: faker.random.arrayElement,
-          args: require('./_sample.data').item_answer
+          args: require('../_sample.data').item_answer
         }
       },
       {

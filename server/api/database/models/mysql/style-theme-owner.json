@@ -1,0 +1,50 @@
+{
+  "name": "style_theme_owner",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "ActiveStatusDb": true,
+    "TimeStamp": true,
+    "BelongsToIntegrityCheck": false
+  },
+  "properties": {
+    "theme_owner_id": {
+      "type": "number"
+    },
+    "theme_owner_type": {
+      "type": "string"
+    }
+  },
+  "indexes": {
+    "theme_owner_idx": {
+      "keys": {
+        "style_themeId": 1,
+        "theme_owner_id": 1,
+        "theme_owner_type": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "styleTheme": {
+      "type": "belongsTo",
+      "model": "style_theme",
+      "foreignKey": "style_themeId",
+      "style_theme_link": {
+        "type": "belongsTo",
+        "polymorphic": {
+          "foreignKey": "theme_owner_id",
+          "discriminator": "theme_owner_type"
+        }
+      }
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

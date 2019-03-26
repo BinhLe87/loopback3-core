@@ -10,7 +10,14 @@
     "TimeStamp": true,
     "BelongsToIntegrityCheck": false
   },
-  "properties": {},
+  "properties": {
+    "workbook_owner_id": {
+      "type": "number"
+    },
+    "workbook_owner_type": {
+      "type": "string"
+    }
+  },
   "validations": [],
   "relations": {
     "workbook_owner_link": {

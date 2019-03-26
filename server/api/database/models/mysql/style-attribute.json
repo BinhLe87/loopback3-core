@@ -1,0 +1,46 @@
+{
+  "name": "style_attribute",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "ActiveStatusDb": true,
+    "TimeStamp": true,
+    "BelongsToIntegrityCheck": false
+  },
+  "properties": {
+    "code": {
+      "type": "string",
+      "required": true
+    },
+    "label": {
+      "type": "string"
+    },
+    "data_type": {
+      "type": "string"
+    },
+    "default_value": {
+      "type": "any"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "indexes": {
+    "code_idx": {
+      "keys": {
+        "code": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+  },
+  "acls": [],
+  "methods": {}
+}

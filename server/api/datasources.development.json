@@ -4,7 +4,7 @@
     "connector": "memory"
   },
   "cc_mysql": {
-    "url": "mysql://homestead:secret@192.168.10.10:3306/apc_local",
+    "url": "mysql://root@127.0.0.1:3306/couchingcloud",
     "name": "cc_mysql",
     "connector": "mysql",
     "normalizeUndefinedInQuery": "nullify"

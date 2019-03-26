@@ -59,6 +59,15 @@
         "foreignKey": "workbook_owner_id",
         "discriminator": "workbook_owner_type"
       }
+    },
+    "themes": {
+      "type": "hasMany",
+      "model": "style_theme",
+      "through": "style_theme_owner",
+      "polymorphic": {
+        "foreignKey": "theme_owner_id",
+        "discriminator": "theme_owner_type"
+      }
     }
   },
   "acls": [

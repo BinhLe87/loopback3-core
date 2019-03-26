@@ -97,13 +97,29 @@
   },
   "attribute": {
     "dataSource": "cc_mysql",
-    "public": false
+    "public": true
   },
   "item_attribute_template": {
     "dataSource": "cc_mysql",
     "public": false
   },
   "item_type": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
+  "style_attribute": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
+  "style_theme": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
+  "style_theme_attribute": {
+    "dataSource": "cc_mysql",
+    "public": false
+  },
+  "style_theme_owner": {
     "dataSource": "cc_mysql",
     "public": true
   },
