@@ -1,4 +1,4 @@
-FROM node:9.11.2
+FROM node:11
 ENV container_dir="/usr/src/app/"
 ENV server_dir=${container_dir}/server
 ENV tools_dir=${server_dir}/tools
@@ -45,21 +45,21 @@ WORKDIR redis-4.0.11
 RUN make
 
 ##Install RabbitMQ
-RUN apt-get update
-RUN apt-get --assume-yes install apt-transport-https
-RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-RUN dpkg -i erlang-solutions_1.0_all.deb
-RUN apt-get update
-RUN apt-get --assume-yes install erlang
-RUN echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | tee /etc/apt/sources.list.d/bintray.rabbitmq.list
-RUN wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | apt-key add -
-RUN apt-get update
-RUN apt-get --assume-yes install rabbitmq-server
+# RUN apt-get update
+# RUN apt-get --assume-yes install apt-transport-https
+# RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+# RUN dpkg -i erlang-solutions_1.0_all.deb
+# RUN apt-get update
+# RUN apt-get --assume-yes install erlang
+# RUN echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | tee /etc/apt/sources.list.d/bintray.rabbitmq.list
+# RUN wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | apt-key add -
+# RUN apt-get update
+# RUN apt-get --assume-yes install rabbitmq-server
 
 ##Install Filebeat
-WORKDIR ${tools_dir}
-RUN curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.6.1-linux-x86_64.tar.gz
-RUN tar xzvf filebeat-6.6.1-linux-x86_64.tar.gz
+#WORKDIR ${tools_dir}
+#RUN curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.6.1-linux-x86_64.tar.gz
+#RUN tar xzvf filebeat-6.6.1-linux-x86_64.tar.gz
 ##WORKDIR filebeat-6.6.1-linux-x86_64
 
 ## Start api server
