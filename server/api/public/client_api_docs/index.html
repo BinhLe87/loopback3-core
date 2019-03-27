@@ -292,6 +292,9 @@
                   <li>
                     <a href="#upload-image-for-an-workbook" class="toc-h2 toc-link" data-title="Upload image for an workbook">Upload image for an workbook</a>
                   </li>
+                  <li>
+                    <a href="#list-of-workbook-themes" class="toc-h2 toc-link" data-title="List of workbook themes">List of workbook themes</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -1234,6 +1237,54 @@ You must provide both query parameters and a file as multipart form data. For re
 </aside>
 
 <p><img src="http://dev01.cc.cloud:49173/public/assets/images/upload_api_postman.jpg" alt="upload api capture postman" /></p>
+<h2 id='list-of-workbook-themes'>List of workbook themes</h2>
+<p>Return a list of workbook themes, including style attributes within each theme.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/workbooks/1/themes?access_token=a628MYIXe9A697xFAcGEg9C9wfWE8Cg0XYzrF8JSrtUwVGhcHQ1peO82MrAPUziH&amp;filter[include]=attributes'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://dev01.cc.cloud:49173/api/workbooks/{workbook_id}/themes?access_token={access_token}&amp;filter[include]=attributes</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>workbook_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The ID of the workbook that will receive a list of themes associated with</td>
+</tr>
+<tr>
+<td>filter[include]=attributes</td>
+<td>string</td>
+<td>Optional</td>
+<td></td>
+<td>enable including style attributes within each theme</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains <code>data</code> property is an array of themes of a specified workbook.</p>
 <h1 id='chapter'>Chapter</h1><h2 id='list-pages-of-a-chapter'>List pages of a chapter</h2>
 <p>Return list pages of a chapter.</p>
 

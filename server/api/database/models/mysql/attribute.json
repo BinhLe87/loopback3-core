@@ -20,6 +20,11 @@
     "data_type": {
       "type": "string"
     },
+    "ui_type": {
+      "type": "string",
+      "default": "content",
+      "description": "attribute type is maybe 'content', 'inspector'"
+    },
     "is_active": {
       "type": "boolean",
       "default": 1

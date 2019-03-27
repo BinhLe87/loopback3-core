@@ -30,6 +30,7 @@ includes:
   - api/workbook/workbook_chapter_add
   - api/workbook/workbook_move_chapter
   - api/workbook/workbook_upload
+  - api/workbook/workbook_themes
 
   - api/chapter/chapter_index
   - api/chapter/chapter_page_get
