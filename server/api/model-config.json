@@ -117,7 +117,7 @@
   },
   "style_theme_attribute": {
     "dataSource": "cc_mysql",
-    "public": false
+    "public": true
   },
   "style_theme_owner": {
     "dataSource": "cc_mysql",

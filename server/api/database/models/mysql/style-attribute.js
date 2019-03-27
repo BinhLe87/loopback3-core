@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = function(StyleAttribute) {};
+module.exports = function(style_attribute) {};

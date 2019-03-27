@@ -26,7 +26,8 @@
       "type": "hasMany",
       "model": "style_attribute",
       "foreignKey": "style_themeId",
-      "through": "style_theme_attribute"
+      "through": "style_theme_attribute",
+      "keyThrough": "style_attributeId"
     },
     "workbook": {
       "type": "hasMany",
@@ -37,8 +38,12 @@
       "foreignKey": "theme_owner_id",
       "discriminator": "theme_owner_type"
       }
-      }
-    
+  },
+    "style_theme_owner": {
+      "type": "hasMany",
+      "model": "style_theme_owner",
+      "foreignKey": "style_themeId"
+    }
   },
   "acls": [],
   "methods": {}
