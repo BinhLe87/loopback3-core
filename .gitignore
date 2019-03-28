@@ -20,6 +20,8 @@ npm-debug.log
 
 #documentation/reference files
 docs
+server/api/docs_web/
+
 
 demo/dir_structure
 
