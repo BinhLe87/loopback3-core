@@ -1,7 +1,11 @@
 const faker = require('faker/locale/en');
 const { generate_item_type_attribute } = require('./item.item_type_attribute');
 const _ = require('lodash');
-const { ITEM_TYPES, ATTRIBUTES } = require('./item.util');
+const {
+  ITEM_TYPES,
+  ATTRIBUTES,
+  COMMON_STYLE_ATTRIBUTES
+} = require('./item.util');
 
 module.exports = exports = {};
 
@@ -59,10 +63,10 @@ async function _generate_item(NUMBER_RECORDS) {
     item_typeId: ITEM_TYPES.get('paragraph').id,
     item_attributes: [
       {
-        id: ATTRIBUTES.get('content').id,
+        id: ATTRIBUTES.get('content').id, //content
         value: '<%= %long_text %>'
       }
-    ]
+    ].concat(COMMON_STYLE_ATTRIBUTES)
   });
 
   //`image` item
@@ -80,7 +84,7 @@ async function _generate_item(NUMBER_RECORDS) {
           args: require('../_sample.data').item_image_url
         }
       }
-    ]
+    ].concat(COMMON_STYLE_ATTRIBUTES)
   });
 
   //`video` item
@@ -98,7 +102,7 @@ async function _generate_item(NUMBER_RECORDS) {
           args: require('../_sample.data').video_url
         }
       }
-    ]
+    ].concat(COMMON_STYLE_ATTRIBUTES)
   });
 
   //`text_question` item
@@ -130,7 +134,7 @@ async function _generate_item(NUMBER_RECORDS) {
           args: [true, false]
         }
       }
-    ]
+    ].concat(COMMON_STYLE_ATTRIBUTES)
   });
 
   //`multiple_choice_question` item
@@ -166,6 +170,6 @@ async function _generate_item(NUMBER_RECORDS) {
           args: [true, false]
         }
       }
-    ]
+    ].concat(COMMON_STYLE_ATTRIBUTES)
   });
 }

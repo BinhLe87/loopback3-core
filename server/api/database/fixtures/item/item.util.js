@@ -118,7 +118,48 @@ ATTRIBUTES.set('video', {
   data_type: 'url',
   op_regex: URL_REGX
 });
+ATTRIBUTES.set('style_padding', {
+  id: aNumberCounter.increaseByOne(),
+  label: 'Style Padding',
+  data_type: 'array'
+});
+ATTRIBUTES.set('style_max_width', {
+  id: aNumberCounter.increaseByOne(),
+  label: 'Style Max Width',
+  data_type: 'number'
+});
+ATTRIBUTES.set('style_background_colour', {
+  id: aNumberCounter.increaseByOne(),
+  label: 'Style Background Colour',
+  data_type: 'string'
+});
+ATTRIBUTES.set('style_text_colour', {
+  id: aNumberCounter.increaseByOne(),
+  label: 'Style Text Colour',
+  data_type: 'string'
+});
+
+//Common style attributes
+const COMMON_STYLE_ATTRIBUTES = [
+  {
+    id: ATTRIBUTES.get('style_padding').id, //style_padding
+    value: [10, 10, 10, 10]
+  },
+  {
+    id: ATTRIBUTES.get('style_max_width').id, //style_max_width
+    value: 300
+  },
+  {
+    id: ATTRIBUTES.get('style_background_colour').id, //style_background_colour
+    value: 'FFFFFF'
+  },
+  {
+    id: ATTRIBUTES.get('style_text_colour').id, //style_text_colour
+    value: '000000'
+  }
+];
 
 exports.ITEM_TYPES = ITEM_TYPES;
 exports.ATTRIBUTES = ATTRIBUTES;
+exports.COMMON_STYLE_ATTRIBUTES = COMMON_STYLE_ATTRIBUTES;
 exports.NumberCounter = new NumberCounter();
