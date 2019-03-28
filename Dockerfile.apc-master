@@ -2,6 +2,8 @@ FROM node:11
 ENV container_dir="/usr/src/app/"
 ENV server_dir=${container_dir}/server
 ENV tools_dir=${server_dir}/tools
+ENV tool_redis_file="redis-4.0.11.tar.gz"
+ENV tool_redis_dir="redis-4.0.11"
 
 ## Print node version
 RUN node -v; exit 0
@@ -33,9 +35,12 @@ RUN docker-compose --version; exit 0
 
 ##Install Redis server
 WORKDIR ${tools_dir}
-RUN tar xzf redis-4.0.11.tar.gz
-WORKDIR redis-4.0.11
+RUN tar xzf ${tool_redis_file}}
+WORKDIR ${tool_redis_dir}}
 RUN make
+###Remove tools after done installing
+WORKDIR ${tools_dir}
+RUN rm ${tool_redis_file}}
 
 ##Install RabbitMQ
 # RUN apt-get update
