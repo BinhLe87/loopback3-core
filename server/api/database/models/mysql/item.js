@@ -115,11 +115,20 @@ module.exports = function(Item) {
       }
 
       if (Array.isArray(item_attributes)) {
+        let item_attribute_ids = _.map(
+          item_attributes,
+          item_attribute => item_attribute.id
+        );
+
         var item_attributes_new = [];
         var AttributeModel = app.models.attribute;
-        var findbyIdAttributePromise = Promise.promisify(
-          AttributeModel.findById
+        var findbyIdArrayAttributePromise = Promise.promisify(
+          AttributeModel.find
         ).bind(AttributeModel);
+
+        var found_attributes_db = await findbyIdArrayAttributePromise({
+          where: { id: { inq: item_attribute_ids } }
+        });
 
         for (const [
           index,
@@ -127,24 +136,19 @@ module.exports = function(Item) {
         ] of item_attributes.entries()) {
           var attribute_id = item_attribute_origin.id;
 
-          //only query db if the attribute is missing required fields
-          var item_attribute_keys = _.keys(item_attribute_origin);
-          var attribute_found = {};
-          if (
-            _.difference(['code', 'label', 'data_type'], item_attribute_keys)
-              .length > 0
-          ) {
-            attribute_found = await findbyIdAttributePromise(attribute_id);
-          }
+          var found_attribute_db = {};
+          found_attribute_db = _.find(found_attributes_db, {
+            id: attribute_id
+          });
 
           var item_attribute_new = Object.assign(
             {},
             {
-              code: attribute_found.code,
-              label: attribute_found.label,
-              data_type: attribute_found.data_type
+              code: _.get(found_attribute_db, 'code'),
+              label: _.get(found_attribute_db, 'label'),
+              data_type: _.get(found_attribute_db, 'data_type')
             },
-            item_attribute_origin
+            item_attribute_origin //maintain 'value' that user input
           );
 
           item_attributes_new.push(item_attribute_new);
