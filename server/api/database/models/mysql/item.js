@@ -33,46 +33,113 @@ fs.readFile(path.join(__dirname, '../../../middleware.json'), (err, data) => {
 });
 
 module.exports = function(Item) {
-  // Item.beforeRemote('create', async function(ctx, modelInstance) {
-  //   await validateItemData(ctx);
-  // });
-
-  // Item.beforeRemote('upsert', async function(ctx, modelInstance) {
-  //   await uploadFileAndAddFilePathIntoCtx(ctx);
-  // });
-
   /**
-   * - Iterates through all `item_attributes` elements, adding additional `attribute` model's fields (code, label, data_type) for each element
+   * - Iterates through all `item_attributes` elements (the other of invoking matters)
+   * 1. adding default style attributes upon item type
+   * 2. adding additional `attribute` model's fields (code, label, data_type) for each element
    *
    */
   Item.observe('loaded', async function(ctx) {
+    //1. adding default style attributes upon item type
+    if (ctx.data) {
+      var item_type_id = _.get(ctx.data, 'item_typeId');
+      let item_attributes = _.get(ctx.data, 'item_attributes');
+      let default_style_attributes = [];
+
+      if (typeof item_attributes === 'string') {
+        item_attributes = JSON.parse(item_attributes);
+      }
+
+      if (item_type_id && Array.isArray(item_attributes)) {
+        var ItemAttributeTemplateModel = app.models.item_attribute_template;
+        var findItemAttributeTemplatePromise = Promise.promisify(
+          ItemAttributeTemplateModel.find
+        ).bind(ItemAttributeTemplateModel);
+
+        let active_item_attributes = await findItemAttributeTemplatePromise({
+          where: { is_active: 1, item_typeId: item_type_id },
+          include: {
+            relation: 'attribute',
+            scope: {
+              where: { is_active: 1 }
+            }
+          }
+        });
+
+        for (let active_item_attribute of active_item_attributes) {
+          let attribute = _.get(active_item_attribute, '__data.attribute');
+
+          if (attribute) {
+            const StyleAttributeRegx = /style_.*/gi; //style attribute always has prefix is 'style_' in its code
+            var attr_id = _.get(attribute, 'id');
+            var attr_code = _.get(attribute, 'code');
+            var attr_default_value = _.get(attribute, 'op_default');
+
+            if (StyleAttributeRegx.test(attr_code)) {
+              //this is style attribute
+
+              default_style_attributes.push({
+                id: attr_id,
+                code: attr_code,
+                label: attribute.label,
+                data_type: attribute.data_type,
+                value: attr_default_value
+              });
+            }
+          }
+        }
+      }
+
+      //current user input value always take precedences over default value
+      var item_attributes_has_default_style_attributes = _.unionWith(
+        item_attributes,
+        default_style_attributes,
+        (default_arr, item_arr) => {
+          return default_arr.id === item_arr.id;
+        }
+      );
+
+      ctx.data.item_attributes = JSON.stringify(
+        item_attributes_has_default_style_attributes
+      );
+    }
+
+    // 2. adding additional `attribute` model's fields (code, label, data_type) for each element
     if (
       ctx.data &&
       !_.get(ctx, 'options.is_ignore_query_item_attributes', false)
     ) {
-      var item_attributes = _.get(ctx.data, 'item_attributes');
+      let item_attributes = _.get(ctx.data, 'item_attributes');
       if (typeof item_attributes === 'string') {
         item_attributes = JSON.parse(item_attributes);
       }
 
       if (Array.isArray(item_attributes)) {
         var item_attributes_new = [];
+        var AttributeModel = app.models.attribute;
+        var findbyIdAttributePromise = Promise.promisify(
+          AttributeModel.findById
+        ).bind(AttributeModel);
+
         for (const [
           index,
           item_attribute_origin
         ] of item_attributes.entries()) {
           var attribute_id = item_attribute_origin.id;
-          var AttributeModel = app.models.attribute;
-          var findByIdPromise = Promise.promisify(AttributeModel.findById).bind(
-            AttributeModel
-          );
 
-          var attribute_found = await findByIdPromise(attribute_id);
+          //only query db if the attribute is missing required fields
+          var item_attribute_keys = _.keys(item_attribute_origin);
+          var attribute_found = {};
+          if (
+            _.difference(['code', 'label', 'data_type'], item_attribute_keys)
+              .length > 0
+          ) {
+            attribute_found = await findbyIdAttributePromise(attribute_id);
+          }
 
           var item_attribute_new = Object.assign(
             {},
             {
-              id: attribute_found.id,
               code: attribute_found.code,
               label: attribute_found.label,
               data_type: attribute_found.data_type

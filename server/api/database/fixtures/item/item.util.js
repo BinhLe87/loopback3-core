@@ -121,22 +121,26 @@ ATTRIBUTES.set('video', {
 ATTRIBUTES.set('style_padding', {
   id: aNumberCounter.increaseByOne(),
   label: 'Style Padding',
-  data_type: 'array'
+  data_type: 'array',
+  op_default: [10, 10, 10, 10]
 });
 ATTRIBUTES.set('style_max_width', {
   id: aNumberCounter.increaseByOne(),
   label: 'Style Max Width',
-  data_type: 'number'
+  data_type: 'number',
+  op_default: 300
 });
 ATTRIBUTES.set('style_background_colour', {
   id: aNumberCounter.increaseByOne(),
   label: 'Style Background Colour',
-  data_type: 'string'
+  data_type: 'string',
+  op_default: 'FFFFFF'
 });
 ATTRIBUTES.set('style_text_colour', {
   id: aNumberCounter.increaseByOne(),
   label: 'Style Text Colour',
-  data_type: 'string'
+  data_type: 'string',
+  op_default: '000000'
 });
 
 //Common style attributes
