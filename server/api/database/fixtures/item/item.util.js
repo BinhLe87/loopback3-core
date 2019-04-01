@@ -151,7 +151,7 @@ const COMMON_STYLE_ATTRIBUTES = [
   },
   {
     id: ATTRIBUTES.get('style_max_width').id, //style_max_width
-    value: 300
+    value: 2000
   },
   {
     id: ATTRIBUTES.get('style_background_colour').id, //style_background_colour
