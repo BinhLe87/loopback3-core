@@ -45,10 +45,6 @@ ITEM_TYPES.set('multiple_choice_question', {
   id: aNumberCounter.increaseByOne(),
   label: 'multiple_choice_question'
 });
-ITEM_TYPES.set('yes_no_question', {
-  id: aNumberCounter.increaseByOne(),
-  label: 'yes_no_question'
-});
 
 var ATTRIBUTES = new Map();
 ATTRIBUTES.set('title', {

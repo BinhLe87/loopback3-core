@@ -5,17 +5,6 @@ ENV tools_dir=${server_dir}/tools
 ENV tool_redis_file="redis-4.0.11.tar.gz"
 ENV tool_redis_dir="redis-4.0.11"
 
-## Print node version
-RUN node -v; exit 0
-
-## Print docker version
-RUN docker -v; exit 0
-## Print npm version
-RUN npm -v; exit 0
-### Upgrade npm version to 6.4.1, in order to use command `npm install`
-RUN apt-get update
-RUN npm install -g npm@6.4.1
-
 WORKDIR ${container_dir}
 ## Bundle app source
 COPY . ${container_dir}
@@ -34,10 +23,10 @@ RUN node script/install_npm_modules.js
 RUN docker-compose --version; exit 0
 
 ##Install Redis server
-WORKDIR ${tools_dir}
-RUN tar xzf ${tool_redis_file}
-WORKDIR ${tool_redis_dir}
-RUN make
+# WORKDIR ${tools_dir}
+# RUN tar xzf ${tool_redis_file}
+# WORKDIR ${tool_redis_dir}
+# RUN make
 ###Remove tools after done installing
 WORKDIR ${tools_dir}
 RUN rm ${tool_redis_file}
