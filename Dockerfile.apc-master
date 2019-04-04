@@ -1,9 +1,15 @@
-FROM node:11
+FROM node:11.13.0-alpine
 ENV container_dir="/usr/src/app/"
 ENV server_dir=${container_dir}/server
 ENV tools_dir=${server_dir}/tools
 ENV tool_redis_file="redis-4.0.11.tar.gz"
 ENV tool_redis_dir="redis-4.0.11"
+
+## Print node version
+RUN node -v; exit 0
+
+##Install packages/libs dependencies
+RUN apk --no-cache add --virtual build-dependencies make gcc g++ python
 
 WORKDIR ${container_dir}
 ## Bundle app source
@@ -22,26 +28,17 @@ RUN node script/install_npm_modules.js
 ## Print docker-compose version
 RUN docker-compose --version; exit 0
 
-##Install Redis server
-# WORKDIR ${tools_dir}
-# RUN tar xzf ${tool_redis_file}
-# WORKDIR ${tool_redis_dir}
-# RUN make
-###Remove tools after done installing
-WORKDIR ${tools_dir}
-RUN rm ${tool_redis_file}
 
-##Install RabbitMQ
-# RUN apt-get update
-# RUN apt-get --assume-yes install apt-transport-https
-# RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-# RUN dpkg -i erlang-solutions_1.0_all.deb
-# RUN apt-get update
-# RUN apt-get --assume-yes install erlang
-# RUN echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | tee /etc/apt/sources.list.d/bintray.rabbitmq.list
-# RUN wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | apt-key add -
-# RUN apt-get update
-# RUN apt-get --assume-yes install rabbitmq-server
+#------Clean up all that no longer used (installation files, packages/libs dependencies, apk cache, etc.)
+##Remove tools after done installing
+WORKDIR ${tools_dir}
+RUN rm ${tool_redis_file}; exit 0
+
+##Remove packages/libs dependencies
+RUN apk del build-dependencies
+
+##Remove apk cache
+RUN rm -rf /var/cache/apk/*
 
 ## Start api server
 WORKDIR ${container_dir}
@@ -50,5 +47,3 @@ ENTRYPOINT pm2 start ecosystem.config.js \
     && pm2 status \
     && tail -f /dev/null
 EXPOSE 8080
-
-

@@ -1,25 +1,19 @@
-FROM node:11
+FROM node:11.13.0-alpine
 ENV container_dir="/usr/src/app/"
 ENV server_dir=${container_dir}/server
 ENV tools_dir=${server_dir}/tools
+ENV tool_redis_file="redis-4.0.11.tar.gz"
+ENV tool_redis_dir="redis-4.0.11"
 
 ## Print node version
 RUN node -v; exit 0
 
-## Print docker version
-RUN docker -v; exit 0
-## Print npm version
-RUN npm -v; exit 0
-### Upgrade npm version to 6.4.1, in order to use command `npm ci`
-RUN apt-get update
-RUN npm install -g npm@6.4.1
+##Install tools for dev/debug purpose
+RUN apk --no-cache add vim
+RUN apk --no-cache add net-tools
 
-##Install vim
-RUN apt-get update
-RUN apt-get --assume-yes install vim
-
-RUN apt-get update
-RUN apt-get --assume-yes install net-tools
+##Install packages/libs dependencies
+RUN apk --no-cache add --virtual build-dependencies make gcc g++ python
 
 WORKDIR ${container_dir}
 ## Bundle app source
@@ -42,25 +36,19 @@ RUN docker-compose --version; exit 0
 WORKDIR ${tools_dir}
 RUN tar xzf redis-4.0.11.tar.gz
 WORKDIR redis-4.0.11
-RUN make
+RUN make; exit 0
 
-##Install RabbitMQ
-# RUN apt-get update
-# RUN apt-get --assume-yes install apt-transport-https
-# RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-# RUN dpkg -i erlang-solutions_1.0_all.deb
-# RUN apt-get update
-# RUN apt-get --assume-yes install erlang
-# RUN echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | tee /etc/apt/sources.list.d/bintray.rabbitmq.list
-# RUN wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | apt-key add -
-# RUN apt-get update
-# RUN apt-get --assume-yes install rabbitmq-server
 
-##Install Filebeat
-#WORKDIR ${tools_dir}
-#RUN curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.6.1-linux-x86_64.tar.gz
-#RUN tar xzvf filebeat-6.6.1-linux-x86_64.tar.gz
-##WORKDIR filebeat-6.6.1-linux-x86_64
+#------Clean up all that no longer used (installation files, packages/libs dependencies, apk cache, etc.)
+##Remove tools after done installing
+WORKDIR ${tools_dir}
+RUN rm ${tool_redis_file}; exit 0
+
+##Remove packages/libs dependencies
+RUN apk del build-dependencies
+
+##Remove apk cache
+RUN rm -rf /var/cache/apk/*
 
 ## Start api server
 WORKDIR ${container_dir}
