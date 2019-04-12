@@ -42,7 +42,7 @@ RUN make; exit 0
 #------Clean up all that no longer used (installation files, packages/libs dependencies, apk cache, etc.)
 ##Remove tools after done installing
 WORKDIR ${tools_dir}
-RUN rm ${tool_redis_file}; exit 0
+RUN rm -r *; exit 0
 
 ##Remove packages/libs dependencies
 RUN apk del build-dependencies

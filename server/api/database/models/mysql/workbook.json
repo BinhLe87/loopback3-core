@@ -24,6 +24,20 @@
       "type": "string"
     }
   },
+  "indexes": {
+    "workbook_title_search_idx": {
+     "columns": "title",
+     "kind": "FULLTEXT"
+    },
+    "workbook_description_search_idx": {
+      "columns": "description",
+     "kind": "FULLTEXT"
+    },
+    "workbook_title_description_search_idx": {
+      "columns": "title,description",
+      "kind": "FULLTEXT"
+    }
+  },
   "validations": [],
   "relations": {
     "programs": {

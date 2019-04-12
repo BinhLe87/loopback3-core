@@ -124,7 +124,7 @@ ATTRIBUTES.set('style_max_width', {
   id: aNumberCounter.increaseByOne(),
   label: 'Style Max Width',
   data_type: 'number',
-  op_default: 300
+  op_default: 2000
 });
 ATTRIBUTES.set('style_background_colour', {
   id: aNumberCounter.increaseByOne(),

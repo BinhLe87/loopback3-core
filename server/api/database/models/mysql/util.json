@@ -77,6 +77,25 @@
         "verb": "patch",
         "path": "/move_position"
       }
+    },
+    "search": {
+      "accepts": [             
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "object"        
+      },
+      "http": {
+        "verb": "get",
+        "path": "/search"
+      }
     }
   }
 }
