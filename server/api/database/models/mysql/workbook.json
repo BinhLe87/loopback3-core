@@ -64,6 +64,17 @@
       "foreignKey": "workbookId",
       "through": "workbook_chapter"
     },
+    "workbook_versions": {
+      "type": "hasMany",
+      "model": "workbook_version",
+      "foreignKey": "workbookId"
+    },
+    "versions": {
+      "type": "hasMany",
+      "model": "version",
+      "foreignKey": "workbookId",
+      "through": "workbook_version"
+    },
     "user": {
       "type": "hasMany",
       "model": "user",
