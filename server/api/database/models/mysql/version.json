@@ -1,0 +1,48 @@
+{
+  "name": "version",
+  "plural": "versions",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true,
+    "ActiveStatusDb": true,
+    "BelongsToIntegrityCheck": false,
+    "SortDisplayIndex": true,
+    "AddRelationModel": true
+  },
+  "properties": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "content": {
+      "type": "object",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "workbooks": {
+      "type": "hasMany",
+      "model": "workbook",
+      "foreignKey": "versionId",
+      "through": "workbook_version"
+    }
+  },
+  "acls": [
+    {
+      "permission": "DENY",
+      "principalType": "ROLE",
+      "principalId": "$everyone"
+    },
+    {
+      "permission": "ALLOW",
+      "principalType": "ROLE",
+      "principalId": "$authenticated"
+    }
+  ],
+  "methods": {}
+}
