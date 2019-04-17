@@ -75,6 +75,14 @@
     "dataSource": "cc_mysql",
     "public": false
   },
+  "workbook_version": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
+  "version": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
   "page": {
     "dataSource": "cc_mysql",
     "public": true
