@@ -63,6 +63,10 @@
     "dataSource": "cc_mysql",
     "public": true
   },
+  "competency": {
+    "dataSource": "cc_mysql",
+    "public": true
+  },
   "workbook_chapter": {
     "dataSource": "cc_mysql",
     "public": true
