@@ -1,0 +1,51 @@
+{
+  "name": "competency",
+  "plural": "competencies",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true,
+    "ActiveStatusDb": true,
+    "BelongsToIntegrityCheck": false
+  },
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "mPathId": {
+      "type": "string",
+      "required": true
+    },
+    "mPath": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "indexes": {
+    "name_search_idx": {
+     "columns": "name",
+     "kind": "FULLTEXT"
+    }
+  },
+  "validations": [],
+  "relations": {
+  },
+  "acls": [
+    {
+      "permission": "DENY",
+      "principalType": "ROLE",
+      "principalId": "$everyone"
+    },
+    {
+      "permission": "ALLOW",
+      "principalType": "ROLE",
+      "principalId": "$authenticated"
+    }
+  ],
+  "methods": {},
+  "scope": {
+  }
+}

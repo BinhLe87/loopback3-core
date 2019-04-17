@@ -243,6 +243,8 @@ async function generate_dummy_data(number_records) {
       }
     }
   );
+
+  await require('./competency').generate_competency_keywords();
 }
 
 module.exports = generate_dummy_data;

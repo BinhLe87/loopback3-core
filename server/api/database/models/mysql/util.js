@@ -62,6 +62,10 @@ module.exports = async function(Util) {
         collection: Joi.string()
           .valid(['title', 'description'])
           .default('title,description')
+      }),
+      Joi.object().keys({
+        query: Joi.string().required(),
+        scope: Joi.string().valid(['competency'])
       })
     );
 
@@ -85,7 +89,54 @@ module.exports = async function(Util) {
     try {
       var result;
       if (req_params.scope === 'workbook') {
-        result = await _workbookSearch(req_params.collection, req_params.query);
+        let text_search = req_params.query;
+        //adding '*' after `text_search` for support auto-complete search
+        let wildcard_text_search = text_search + '*';
+
+        result = await _mysql_fulltext_search(
+          'workbook',
+          req_params.collection,
+          wildcard_text_search,
+          'BOOLEAN MODE'
+        );
+      } else if (req_params.scope === 'competency') {
+        let text_search = req_params.query;
+        //adding '*' after `text_search` for support auto-complete search
+        let wildcard_text_search = text_search + '*';
+
+        result = await _mysql_fulltext_search(
+          'competency',
+          'name',
+          wildcard_text_search,
+          'BOOLEAN MODE'
+        );
+
+        //only show children keywords if finish typing a complete word at parent level
+        var parent_result_filtered = await _mysql_fulltext_search(
+          'competency',
+          'name',
+          text_search,
+          'NATURAL LANGUAGE MODE'
+        );
+        if (parent_result_filtered) {
+          if (Array.isArray(parent_result_filtered)) {
+            var CompetencyModel = app.models.competency;
+            var findCompetencyPromise = Promise.promisify(
+              CompetencyModel.find
+            ).bind(CompetencyModel);
+
+            for (let parent_ele of parent_result_filtered) {
+              var children_ele = await findCompetencyPromise({
+                where: { mPath: { like: `${parent_ele.mPath}%` } }
+              });
+
+              result = result.concat(children_ele);
+            }
+          }
+        }
+
+        //remove duplicate elements
+        result = _.uniqBy(result, 'id');
       }
 
       if (result) {
@@ -102,7 +153,12 @@ module.exports = async function(Util) {
       cb(Boom.badImplementation(common_error_message, error));
     }
 
-    async function _workbookSearch(columns_search, text_search) {
+    async function _mysql_fulltext_search(
+      table_name,
+      columns_search,
+      text_search,
+      search_mode = 'BOOLEAN MODE'
+    ) {
       if (!mysql_db) {
         throw Boom.notImplemented(
           common_error_message,
@@ -111,8 +167,8 @@ module.exports = async function(Util) {
       }
 
       const search_sql = `select *
-      from workbook
-      WHERE MATCH (${columns_search}) AGAINST ('${text_search}' IN NATURAL LANGUAGE MODE);`;
+      from ${table_name}
+      WHERE MATCH (${columns_search}) AGAINST ('${text_search}' IN ${search_mode});`;
 
       var search_promise = Promise.promisify(mysql_db.connector.execute).bind(
         mysql_db.connector
