@@ -353,6 +353,9 @@
                   <li>
                     <a href="#update-tree-position-levels" class="toc-h2 toc-link" data-title="Update tree position levels">Update tree position levels</a>
                   </li>
+                  <li>
+                    <a href="#search-text" class="toc-h2 toc-link" data-title="Search text">Search text</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -2070,6 +2073,71 @@ You must provide both query parameters and a file as multipart form data. For re
 </tbody></table>
 <h3 id='response'>Response</h3>
 <p>If successful, return a response status code is 200.</p>
+<h2 id='search-text'>Search text</h2>
+<p>Search text</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/util/search?access_token=a628MYIXe9A697xFAcGEg9C9wfWE8Cg0XYzrF8JSrtUwVGhcHQ1peO82MrAPUziH&amp;query=proj&amp;scope=workbook&amp;collection=description'</span> <span class="se">\</span>
+</code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/util/search?access_token={access_token}&amp;query={query}&amp;scope={scope}&amp;collection={collection}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>query</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>Search query. Should be <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURI">URL-encoded</a></td>
+</tr>
+<tr>
+<td>scope</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>Scope query. Must be in <strong>one</strong> the following values: <code>workbook</code>, <code>competency</code></td>
+</tr>
+<tr>
+<td>collection</td>
+<td>string</td>
+<td>Optional</td>
+<td>For <code>workbook</code> scope, by default, it will search in a mix of <code>title</code> and <code>description</code></td>
+<td>Name of collection to search. For <code>workbook</code> scope, it should be in <strong>one</strong> the following values: <code>title</code>, <code>description</code>, <code>title,description</code></td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return http response status code 200.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>data</td>
+<td>array</td>
+<td>An array of found results.</td>
+</tr>
+</tbody></table>
 <h1 id='errors'>Errors</h1>
 <p>The APC API uses the following error codes:</p>
 

@@ -20,7 +20,12 @@ npm-debug.log
 
 #documentation/reference files
 docs
-server/api/docs_web/
+server/api/docs_web/*
+!server/api/docs_web/client_api_docs/
+server/api/docs_web/client_api_docs/*
+!server/api/docs_web/client_api_docs/source/
+server/api/docs_web/client_api_docs/source/*
+!server/api/docs_web/client_api_docs/source/includes/
 
 
 demo/dir_structure
@@ -30,7 +35,6 @@ logs
 
 #client folder
 client
-
 
 #config files only for local environments
 **/datasources.development.json

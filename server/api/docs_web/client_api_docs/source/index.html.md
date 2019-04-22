@@ -51,6 +51,7 @@ includes:
   - api/util/util_index
   - api/util/util_upload
   - api/util/update_tree_position_levels
+  - api/util/util_search
 
   
   

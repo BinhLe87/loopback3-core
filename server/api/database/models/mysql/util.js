@@ -83,6 +83,10 @@ module.exports = async function(Util) {
     }
 
     var req_params = req_params_joi_result.value;
+
+    //decoded URI
+    req_params.query = decodeURI(req_params.query);
+
     const common_error_message = `Unable to search at the moment`;
 
     //Routing search by scope
