@@ -10,7 +10,6 @@
     "TimeStamp": true,
     "ActiveStatusDb": true,
     "BelongsToIntegrityCheck": false,
-    "SortDisplayIndex": true,
     "AddRelationModel": true
   },
   "properties": {
