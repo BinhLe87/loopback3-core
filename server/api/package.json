@@ -8,13 +8,13 @@
   "scripts": {
     "lint": "eslint .",
     "clean": "rimraf build",
-    "prebuild": "npm run clean",
+    "prebuild": "yarn run clean",
     "build": "webpack --mode production --config webpack.config.js",
     "start": "eslint && DEBUG=*,-nodemon:watch*,-loopback:mixins:time-stamp NODE_ENV=development nodemon .",
     "start-no-watch": "eslint && NODE_ENV=development node .",
     "start-staging": "DEBUG=* NODE_ENV=staging node .",
     "debug": "eslint && DEBUG=*,-nodemon:watch*,-loopback:mixins:time-stamp NODE_ENV=development nodemon --nolazy --inspect-brk .",
-    "posttest": "npm run lint > logs/eslint_log.txt && nsp check",
+    "posttest": "yarn run lint > logs/eslint_log.txt && nsp check",
     "precommit": "lint-staged",
     "prettier": "prettier --ignore-path .eslintignore --write '**/*.js'",
     "eslint": "./node_modules/.bin/eslint --fix --quiet .",
@@ -24,16 +24,16 @@
   "lint-staged": {
     "linters": {
       "*.js": [
-        "npm run prettier",
-        "npm run eslint",
+        "yarn run prettier",
+        "yarn run eslint",
         "git add"
       ],
       "**/client_api_docs/**/*.md": [
-        "npm run client-api-docs",
+        "yarn run client-api-docs",
         "git add server/api/public/client_api_docs/*"
       ],
       "**/server_api_docs/**/*.md": [
-        "npm run server-api-docs",
+        "yarn run server-api-docs",
         "git add server/api/public/server_api_docs/*"
       ]
     }
@@ -85,7 +85,7 @@
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-prettier": "^2.6.2",
     "faker": "^4.1.0",
-    "husky": "^0.14.3",
+    "husky": "^2.2.0",
     "lint-staged": "^7.2.2",
     "nsp": "^2.1.0",
     "prettier": "^1.14.0",
