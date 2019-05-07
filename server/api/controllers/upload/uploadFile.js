@@ -5,6 +5,7 @@ const path = require('path');
 const assert = require('assert');
 const multer = require('multer'),
   FilePathHandler = require('../../helpers/uploadFilePathHandler');
+const { ImageConverter } = require('../../helpers/imageConverter');
 
 const uploadFilePathHandler = new FilePathHandler();
 
@@ -94,6 +95,7 @@ async function saveFile(req, res, options) {
 
   var fileFilter = function(req, file, cb) {
     //cb(new Error('Not allowed to upload at the moment!!!!'));
+
     cb(null, true);
   };
 
@@ -133,7 +135,7 @@ async function _routeUploadControllerByFileType(ctx, query_params) {
       resultType = 'workbook';
       break;
     case 'raw_file':
-      result = await _raw_file_uploader(ctx, query_params);
+      result = await _raw_file_uploader(ctx, { would_convert_images: true });
       resultType = 'object'; //in order to ignore processing by jsonApiFormatter.js
       break;
     default:
@@ -194,10 +196,9 @@ async function _workbook_image_uploader({ req, res }, query_params) {
  * Save raw file and return file path
  *
  * @param {object} ctx context
- * @param {object} query_params query parameters
  * @returns {object} file path
  */
-async function _raw_file_uploader({ req, res }, query_params) {
+async function _raw_file_uploader({ req, res }, options) {
   await saveFile(req, res);
 
   var uploaded_files = req.file || req.files;
@@ -209,13 +210,135 @@ async function _raw_file_uploader({ req, res }, query_params) {
 
   for (const [index, file] of uploaded_files.entries()) {
     var fileNameWillSave = file.filename;
+    var file_path = file.path;
+    var is_image_type = mime_type =>
+      new RegExp(`image\/.*`, 'ig').test(mime_type);
 
-    upload_results.push({
-      file_url: fileNameWillSave
-    });
+    var image_resizes_result;
+    if (is_image_type(file.mimetype) && options.would_convert_images === true) {
+      image_resizes_result = await convertImagesInReqToMultipleSizesAsync(
+        file_path
+      );
+    }
+
+    var result = {};
+    result.file_url = fileNameWillSave;
+    if (!_.isEmpty(image_resizes_result)) {
+      result = Object.assign(
+        {},
+        result,
+        _.chain(_.pick(image_resizes_result, ['medium_url', 'low_url']))
+          .transform((result, value, key) => {
+            result[`file_size_${key}`] = value;
+          }, {})
+          .value()
+      );
+    }
+
+    upload_results.push(result);
   }
 
   return {
     data: upload_results
   };
+}
+
+/**
+ * Process storing uploaded file and adding file storage path into `ctx.args.data` argument was passed.
+ * It also convert additional metadata fields in req.body into `ctx.args.data` in order to save into DB
+ *
+ * @param {string} file_path path of file would be converted
+ * @returns {object} object contains multiple image sizes, including
+ * {
+ *   high_url,
+ *   medium_url,
+ *   low_url
+ * }
+ */
+function convertImagesInReqToMultipleSizesAsync(file_path) {
+  if (typeof file_path == 'undefined') return [];
+
+  var convertImageFilePromise = convertOneImageFileToSizesAsync(file_path);
+
+  return convertImageFilePromise
+    .then(sharpFilesArray => {
+      //Add 3 urls: original url, desktop image url and mobile image url into http response
+      //iterate list of upload files, then set item_attributes for each of file
+      var image_sizes = {};
+      var origin_file_name = path.basename(
+        _.get(sharpFilesArray, '[0].origin_file_path')
+      );
+      var desktop_file_name = path.basename(
+        _.find(sharpFilesArray, {
+          target_device: 'desktop'
+        }).resized_file_path
+      );
+      var mobile_file_name = path.basename(
+        _.find(sharpFilesArray, {
+          target_device: 'mobile'
+        }).resized_file_path
+      );
+
+      image_sizes = {
+        high_url: origin_file_name,
+        medium_url: desktop_file_name,
+        low_url: mobile_file_name
+      };
+
+      return image_sizes;
+    })
+    .catch(error => {
+      logger.error(`Error converting image at path ${file_path}: ${error}`);
+      throw error;
+    });
+}
+
+/**
+ *
+ *
+ * @param {string} savedAbsoluteImagePath
+ * @param {object} [file_params] optional file parameters
+ * @returns
+ */
+function convertOneImageFileToSizesAsync(savedAbsoluteImagePath, file_params) {
+  var imageConverter = new ImageConverter({
+    desktop: {
+      width: process.env.IMAGE_DESKTOP_WIDTH,
+      height: process.env.IMAGE_DESKTOP_HEIGHT
+    },
+    mobile: {
+      width: process.env.IMAGE_MOBILE_WIDTH,
+      height: process.env.IMAGE_MOBILE_HEIGHT
+    },
+    display_mode: 'fitting'
+  });
+
+  var convertToMobilePromise = imageConverter.resizeAsync(
+    savedAbsoluteImagePath,
+    'mobile'
+  );
+  var convertToDesktopPromise = imageConverter.resizeAsync(
+    savedAbsoluteImagePath,
+    'desktop'
+  );
+
+  var fileParamsPromise = new Promise((resolve, reject) => {
+    return resolve(file_params);
+  });
+
+  return Promise.all([
+    convertToMobilePromise,
+    convertToDesktopPromise,
+    fileParamsPromise
+  ]);
+}
+
+function _isReqTypeIsUploadFile(req) {
+  var req_header_content_type = req.headers['content-type'];
+
+  if (req_header_content_type.includes('multipart/form-data')) {
+    return true;
+  }
+
+  return false;
 }

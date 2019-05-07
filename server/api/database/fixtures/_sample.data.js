@@ -2,7 +2,7 @@
 
 module.exports = exports = {};
 
-exports.workbook_image_url = [
+exports.workbook_image_url = exports.item_image_url = [
   'rawpixel-703134-unsplash.jpg',
   'olu-eletu-13086-unsplash.jpg',
   'william-iven-22449-unsplash.jpg',
@@ -105,26 +105,6 @@ exports.video_url = [
   'https://www.youtube.com/embed/TOvsm3kbODs',
   'https://www.youtube.com/embed/PWmhl6rzVpM',
   'https://www.youtube.com/embed/K7YMEFjh724'
-];
-
-exports.item_image_url = [
-  'http://dev01.cc.cloud:49173/upload/rawpixel-703134-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/olu-eletu-13086-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/william-iven-22449-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/rawpixel-558597-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/rawpixel-659501-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/gaelle-marcel-680430-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/carl-heyerdahl-181868-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/alesia-kazantceva-283291-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/jeff-sheldon-3231-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/icons8-team-649367-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/jenny-hill-205881-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/rawpixel-574844-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/rawpixel-670711-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/rawpixel-653764-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/rawpixel-665368-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/rawpixel-706373-unsplash.jpg',
-  'http://dev01.cc.cloud:49173/upload/rawpixel-743065-unsplash.jpg'
 ];
 
 exports.item_paragraph_title = exports.page_title;

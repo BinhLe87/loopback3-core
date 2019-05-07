@@ -133,10 +133,10 @@ function extractAccessToken(req, options) {
       req.params && req.params[param] !== undefined
         ? req.params[param]
         : req.body && req.body[param] !== undefined
-          ? req.body[param]
-          : req.query && req.query[param] !== undefined
-            ? req.query[param]
-            : undefined;
+        ? req.body[param]
+        : req.query && req.query[param] !== undefined
+        ? req.query[param]
+        : undefined;
 
     if (typeof id === 'string') {
       return id;

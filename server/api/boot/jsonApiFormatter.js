@@ -189,7 +189,7 @@ function parseSingleResource(ctx) {
 
 async function parseArrayOfResources(ctx) {
   var resources = ctx.result;
-  var protocolAndHostURL = loopback_util.getBaseURL(ctx.req);
+  var protocolAndHostURL = loopback_util.determineHostBaseURL(ctx.req);
 
   var result = {};
 
@@ -559,14 +559,14 @@ function parseLinks(ctx) {
   var lastAndnextLinks = generateLastAndNextPageReqOriginalURL(ctx);
   if (!_.isUndefined(lastAndnextLinks.next)) {
     var next_link = path.join(
-      loopback_util.getBaseURL(ctx.req),
+      loopback_util.determineHostBaseURL(ctx.req),
       lastAndnextLinks.next
     );
     _.set(links, 'links.next', URI.decode(next_link));
   }
   if (!_.isUndefined(lastAndnextLinks.last)) {
     var last_link = path.join(
-      loopback_util.getBaseURL(ctx.req),
+      loopback_util.determineHostBaseURL(ctx.req),
       lastAndnextLinks.last
     );
     _.set(links, 'links.last', URI.decode(last_link));
@@ -842,7 +842,7 @@ function transformFileNameInDBToFileURL(ctx) {
               //ensure only transform once
               var transformed_file_name = image_url;
               var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
-                ctx,
+                ctx.req,
                 transformed_file_name
               );
 

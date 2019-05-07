@@ -32,7 +32,13 @@ exports.builtInModelNames = _builtInModelNames;
  * @param {ctx.req} req ctx.request
  * @returns
  */
-exports.getBaseURL = function getBaseURL(req) {
+exports.determineHostBaseURL = function determineHostBaseURL(req) {
+  var cc_source_header = _.get(req, 'headers.cc-source');
+
+  if (cc_source_header) {
+    return cc_source_header;
+  }
+
   var url_parts = {
     protocol: req.protocol,
     hostname: req.get('host')
@@ -44,18 +50,18 @@ exports.buildAbsoluteURLFromReqAndRelativePath = function buildAbsoluteURLFromRe
   req,
   relative_path
 ) {
-  return new URI(relative_path, exports.getBaseURL(req)).toString();
+  return new URI(relative_path, exports.determineHostBaseURL(req)).toString();
 };
 /**
  * Attempt to convert transformed file name like `workbook-1_s01_api_20180928_b8c752_299_168.jpeg`
  * to file url like `http:/localhost:8080/upload/api/2018/09/28/workbook-1_s01_api_20180928_b8c752_299_168.jpeg`
  * Notice: If failed, it returns original file name that was passed as an argument
- * @param {*} ctx
+ * @param {*} req http request
  * @param {*} transformed_file_name
  * @returns
  */
 exports.convertTransformedFileNameToFileURL = function convertTransformedFileNameToFileURL(
-  ctx,
+  req,
   transformed_file_name
 ) {
   var relative_file_path;
@@ -66,7 +72,7 @@ exports.convertTransformedFileNameToFileURL = function convertTransformedFileNam
   } catch (transform_error) {}
 
   var transformed_url = exports.buildAbsoluteURLFromReqAndRelativePath(
-    ctx.req,
+    req,
     path.join(
       _.defaultTo(STATIC_FILE_DIR, ''), //based on GLOBAL static directory configuration in Loopback#static middleware
       _.isUndefined(relative_file_path)
@@ -154,4 +160,9 @@ exports.apply_hot_fix = async function apply_hot_fix() {
     );
     throw error;
   }
+};
+
+exports.isImageFile = function(file_name) {
+  var IMAGE_EXT_REGX = /.(jpg|jpeg|png|gif)$/i;
+  return IMAGE_EXT_REGX.test(file_name);
 };

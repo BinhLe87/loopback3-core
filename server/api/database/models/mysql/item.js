@@ -37,9 +37,12 @@ module.exports = function(Item) {
    * - Iterates through all `item_attributes` elements (the other of invoking matters)
    * 1. adding default style attributes upon item type
    * 2. adding additional `attribute` model's fields (code, label, data_type) for each element
+   * 3. tranform image file name to image url
    *
    */
   Item.observe('loaded', async function(ctx) {
+    var ctx_req = _.get(ctx, 'options.req');
+
     //1. adding default style attributes upon item type
     if (ctx.data) {
       var item_type_id = _.get(ctx.data, 'item_typeId');
@@ -157,6 +160,35 @@ module.exports = function(Item) {
         ctx.data.item_attributes = JSON.stringify(item_attributes_new);
       }
     }
+
+    //3. transform image file name to image url
+    if (ctx.data && ctx_req) {
+      let item_attributes = _.get(ctx.data, 'item_attributes');
+      if (typeof item_attributes === 'string') {
+        item_attributes = JSON.parse(item_attributes);
+      }
+
+      if (Array.isArray(item_attributes)) {
+        var item_attributes_tranformed = [];
+
+        for (let attribute_item of item_attributes) {
+          //object type
+
+          _.forOwn(attribute_item, (field_value, field_name) => {
+            //update new image url back to ctx.result
+            attribute_item[field_name] = _transformImageFileNameToImageURL(
+              ctx_req,
+              field_name,
+              field_value
+            );
+          });
+
+          item_attributes_tranformed.push(attribute_item);
+        }
+
+        ctx.data.item_attributes = JSON.stringify(item_attributes_tranformed);
+      }
+    }
   });
 
   /**
@@ -253,16 +285,12 @@ module.exports = function(Item) {
           var attribute_values = _.get(attribute_item, 'values'); //object type
 
           _.forOwn(attribute_values, (field_value, field_name) => {
-            if (['high_url', 'medium_url', 'low_url'].includes(field_name)) {
-              var transformed_file_name = field_value;
-              var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
-                ctx,
-                transformed_file_name
-              );
-
-              //update new image url back to ctx.result
-              attribute_values[field_name] = transformed_file_url;
-            }
+            //update new image url back to ctx.result
+            attribute_values[field_name] = _transformImageFileNameToImageURL(
+              ctx.req,
+              field_name,
+              field_value
+            );
           });
         }
       }
@@ -271,3 +299,28 @@ module.exports = function(Item) {
     next();
   });
 };
+/**
+ * transform image file name to image url if filed name is one of ['high_url', 'medium_url', 'low_url']
+ * or field value has file extension is image type
+ * @param {object} req http request
+ * @param {string} field_name field name
+ * @param {string} field_value may contain image file name
+ * @returns {string} would be transformed to image url if needed
+ */
+function _transformImageFileNameToImageURL(req, field_name, field_value) {
+  if (
+    ['high_url', 'medium_url', 'low_url'].includes(field_name) ||
+    (loopback_util.isImageFile(field_value) &&
+      !RegExp('http.*', 'gi').test(field_value))
+  ) {
+    var transformed_file_name = field_value;
+    var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
+      req,
+      transformed_file_name
+    );
+
+    return transformed_file_url;
+  }
+
+  return field_value;
+}
