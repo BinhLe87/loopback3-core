@@ -1925,7 +1925,9 @@ References: https://developers.facebook.com/docs/graph-api/reference/v3.1/commen
 <pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
     </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="p">{</span><span class="w">
-            </span><span class="s2">"file_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://dev01.cc.cloud:49173/upload/api/2019/01/16/home-office-workspace-768x384_s01_api_20190116_2c23a7.jpg"</span><span class="w">
+            </span><span class="s2">"file_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://dev01.cc.cloud:49173/upload/api/2019/05/06/rawpixel-670711-unsplash_s01_api_20190506_0a716d.jpg"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"file_size_medium_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://dev01.cc.cloud:49173/upload/api/2019/05/06/rawpixel-670711-unsplash_s01_api_20190506_0a716d_900_600.jpg"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"file_size_low_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://dev01.cc.cloud:49173/upload/api/2019/05/06/rawpixel-670711-unsplash_s01_api_20190506_0a716d_562_375.jpg"</span><span class="w">
         </span><span class="p">}</span><span class="w">
     </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
@@ -1962,7 +1964,7 @@ References: https://developers.facebook.com/docs/graph-api/reference/v3.1/commen
 <tr>
 <td>data</td>
 <td>array</td>
-<td>An array of objects, each object contains <code>file_url</code> property is the url of an uploaded file.</td>
+<td>An array of objects, each object contains <code>file_url</code> property is the url of an uploaded file. In addition, if uploaded file is <code>image</code> type, it will contains resized images with different resolutions for desktop device and mobile device in <code>file_size_medium_url</code> field and <code>file_size_low_url</code> field correspondingly.</td>
 </tr>
 </tbody></table>
 

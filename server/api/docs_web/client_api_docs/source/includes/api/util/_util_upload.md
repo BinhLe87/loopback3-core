@@ -20,7 +20,9 @@ curl -X POST \
 {
     "data": [
         {
-            "file_url": "http://dev01.cc.cloud:49173/upload/api/2019/01/16/home-office-workspace-768x384_s01_api_20190116_2c23a7.jpg"
+            "file_url": "http://dev01.cc.cloud:49173/upload/api/2019/05/06/rawpixel-670711-unsplash_s01_api_20190506_0a716d.jpg",
+            "file_size_medium_url": "http://dev01.cc.cloud:49173/upload/api/2019/05/06/rawpixel-670711-unsplash_s01_api_20190506_0a716d_900_600.jpg",
+            "file_size_low_url": "http://dev01.cc.cloud:49173/upload/api/2019/05/06/rawpixel-670711-unsplash_s01_api_20190506_0a716d_562_375.jpg"
         }
     ]
 }
@@ -41,7 +43,7 @@ If successful, return http response status code 200.
 
 | Parameter | Data type | Description |
 | --------- | --------- | --------- |
-| data | array | An array of objects, each object contains `file_url` property is the url of an uploaded file.
+| data | array | An array of objects, each object contains `file_url` property is the url of an uploaded file. In addition, if uploaded file is `image` type, it will contains resized images with different resolutions for desktop device and mobile device in `file_size_medium_url` field and `file_size_low_url` field correspondingly.
 
 
 <aside class="notice">
