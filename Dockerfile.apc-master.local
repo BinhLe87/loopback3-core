@@ -5,32 +5,27 @@ ENV tools_dir=${server_dir}/tools
 ENV tool_redis_file="redis-4.0.11.tar.gz"
 ENV tool_redis_dir="redis-4.0.11"
 
-## Print node version
-RUN node -v; exit 0
-
 ##Install tools for dev/debug purpose
 RUN apk --no-cache add vim
 RUN apk --no-cache add net-tools
 
 ##Install packages/libs dependencies
 RUN apk --no-cache add --virtual build-dependencies make gcc g++ python
+RUN apk --no-cache add yarn
+RUN yarn global add lerna
+RUN lerna -v; exit 0
 
 WORKDIR ${container_dir}
 ## Bundle app source
 COPY . ${container_dir}
 
-#First, install npm modules serves for installing Docker container
+#Install npm packages
 WORKDIR ${container_dir}
-RUN npm install
-#Second, Install shared npm modules will be used in all microservices
-WORKDIR ${server_dir}
-RUN npm install
-#Next, Install independent npm modules for each of microservices
+RUN lerna bootstrap
+
+#Install some stuff scripts
 WORKDIR ${container_dir}
 RUN node script/install_npm_modules.js
-
-## Print docker-compose version
-RUN docker-compose --version; exit 0
 
 ##Install Redis server
 WORKDIR ${tools_dir}

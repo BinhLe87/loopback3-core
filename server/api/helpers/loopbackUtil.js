@@ -162,7 +162,7 @@ exports.apply_hot_fix = async function apply_hot_fix() {
   }
 };
 
-exports.isImageFile = function(file_name) {
+exports.isImageFileExt = function(file_name) {
   var IMAGE_EXT_REGX = /.(jpg|jpeg|png|gif)$/i;
   return IMAGE_EXT_REGX.test(file_name);
 };

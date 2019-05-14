@@ -6,6 +6,11 @@
   "directories": {
     "doc": "docs"
   },
+  "workspaces": {
+    "packages": ["server/*"],
+    "nohoist": ["**/loopback-ds-timestamp-mixin", "**/loopback-ds-timestamp-mixin/**"]
+  },
+  "private": true,
   "scripts": {},
   "repository": {
     "type": "git",
@@ -34,6 +39,7 @@
     "debug": "^4.0.1",
     "faker": "^4.1.0",
     "joi": "^14.0.0",
+    "lerna": "^3.13.4",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "urijs": "^1.19.1"
