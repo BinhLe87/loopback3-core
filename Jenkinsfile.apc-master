@@ -37,7 +37,7 @@ pipeline {
                         //delete the old image
                         sh 'tid=`sudo docker ps | grep apc-master | awk \'{print $2}\' | awk -F: \'{print $2}\'`; if [ ! -z $tid ]; then sudo docker rm -f apc-master-development; sudo docker rmi -f `sudo docker images coachingcloud/automated-push-content:$tid -q`; fi'
                         //run the new one
-                        sh 'COMMIT=`git rev-parse --short HEAD`;sudo docker run --name apc-master-development -d -p 49173:8080 coachingcloud/automated-push-content:dev-apc-master-$BUILD_NUMBER-$COMMIT'
+                        sh 'COMMIT=`git rev-parse --short HEAD`;sudo docker run --name apc-master-development -d -v /tmp/apc-master-development/upload:/usr/src/app/server/api/upload:rw -p 49173:8080 coachingcloud/automated-push-content:dev-apc-master-$BUILD_NUMBER-$COMMIT'
                         sh 'echo "Opening URL: http://dev01.cc.cloud:49173"'
                         // Test service is opening or not
 		        sleep 10
