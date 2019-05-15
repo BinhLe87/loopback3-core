@@ -202,14 +202,6 @@ uploadFilePathHandler.prototype.identifyRelativeDirPathWillSave = function(
   );
 };
 
-uploadFilePathHandler.prototype.identifyRelativeFilePathWillSave = function(
-  transformedFileName
-) {
-  return path.join(
-    this.identifyRelativeDirPathWillSave(transformedFileName),
-    transformedFileName
-  );
-};
 
 /**
  *  Identify directory hierarchy path will store uploaded file.

@@ -55,7 +55,9 @@ exports.buildAbsoluteURLFromReqAndRelativePath = function buildAbsoluteURLFromRe
 /**
  * Attempt to convert transformed file name like `workbook-1_s01_api_20180928_b8c752_299_168.jpeg`
  * to file url like `http:/localhost:8080/upload/api/2018/09/28/workbook-1_s01_api_20180928_b8c752_299_168.jpeg`
- * Notice: If failed, it returns original file name that was passed as an argument
+ * Notice: 
+ * - It may replace domain name in origin url based on transformed file name
+ * - If failed, it returns original file name that was passed as an argument
  * @param {*} req http request
  * @param {*} transformed_file_name
  * @returns
@@ -64,20 +66,23 @@ exports.convertTransformedFileNameToFileURL = function convertTransformedFileNam
   req,
   transformed_file_name
 ) {
-  var relative_file_path;
+  var relative_dir_path = '';
   try {
-    relative_file_path = uploadFilePathHandler.identifyRelativeFilePathWillSave(
+    relative_dir_path = uploadFilePathHandler.identifyRelativeDirPathWillSave(
       transformed_file_name
     );
   } catch (transform_error) {}
+
+  //ignore domain name in `transformed_file_name` argument if having
+  var url = new URI(transformed_file_name);
+  var pure_transformed_file_name = url.filename();
 
   var transformed_url = exports.buildAbsoluteURLFromReqAndRelativePath(
     req,
     path.join(
       _.defaultTo(STATIC_FILE_DIR, ''), //based on GLOBAL static directory configuration in Loopback#static middleware
-      _.isUndefined(relative_file_path)
-        ? transformed_file_name
-        : relative_file_path
+      relative_dir_path,
+      pure_transformed_file_name
     )
   );
 
@@ -166,3 +171,5 @@ exports.isImageFileExt = function(file_name) {
   var IMAGE_EXT_REGX = /.(jpg|jpeg|png|gif)$/i;
   return IMAGE_EXT_REGX.test(file_name);
 };
+
+

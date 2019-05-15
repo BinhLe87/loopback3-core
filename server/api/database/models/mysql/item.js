@@ -310,8 +310,7 @@ module.exports = function(Item) {
 function _transformImageFileNameToImageURL(req, field_name, field_value) {
   if (
     ['high_url', 'medium_url', 'low_url'].includes(field_name) ||
-    (loopback_util.isImageFileExt(field_value) &&
-      !RegExp('http.*', 'gi').test(field_value))
+    (loopback_util.isImageFileExt(field_value))
   ) {
     var transformed_file_name = field_value;
     var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
