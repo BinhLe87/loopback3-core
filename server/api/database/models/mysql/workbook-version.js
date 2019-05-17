@@ -163,7 +163,7 @@ module.exports = function(WorkbookVersion) {
           .map(it =>
             _.assign(it.toJSON(), {
               id: generateUuidMapping(`item-${it.id}`),
-              item_typeId: generateUuidMapping(`item_type-${it.item_typeId}`),
+              // item_typeId: generateUuidMapping(`item_type-${it.item_typeId}`),
               item_attributes: _.chain(it.item_attributes)
                 .filter('id')
                 .map(at =>
@@ -180,7 +180,7 @@ module.exports = function(WorkbookVersion) {
         item_types: _.chain(item_types)
           .map(it =>
             _.assign(it.toJSON(), {
-              id: generateUuidMapping(`item_type-${it.id}`),
+              // id: generateUuidMapping(`item_type-${it.id}`),
               attributes: _.chain(it.attributes)
                 .filter('id')
                 .map(at =>
