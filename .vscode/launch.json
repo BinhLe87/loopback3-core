@@ -19,6 +19,7 @@
         {
             "type": "node",
             "request": "launch",
+            "runtimeExecutable": "/Users/steven_lee/.nvm/versions/node/v11.13.0/bin/node",
             "name": "Debug current file",
             //"program": "${file}",
             //"program":  "${workspaceFolder}/demo/test.js",
