@@ -1,6 +1,6 @@
 {
-  "name": "apc",
-  "version": "1.0.0",
+  "name": "@cc_server/api",
+  "version": "1.4.0",
   "main": "server.js",
   "engines": {
     "node": ">=4"
@@ -42,6 +42,7 @@
     "debug_api": "aaa"
   },
   "dependencies": {
+    "@cc_server/logger": "^1.0.4",
     "@sindresorhus/slugify": "^0.3.0",
     "amqplib": "^0.5.3",
     "bluebird": "^3.5.1",
@@ -98,5 +99,6 @@
     "url": ""
   },
   "license": "UNLICENSED",
-  "description": "cc-automated-push-content"
+  "description": "cc-automated-push-content",
+  "gitHead": "254079792c9ae9fde5b0632a36b0dbdd7f621d3b"
 }

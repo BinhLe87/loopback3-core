@@ -1,0 +1,27 @@
+{
+  "name": "@cc_server/logger",
+  "version": "1.0.4",
+  "description": "> TODO: description",
+  "author": "Binh Le <vanbinh87@gmail.com>",
+  "homepage": "https://github.com/CoachingCloud/automated-push-content/tree/master/packages/logger#readme",
+  "license": "ISC",
+  "main": "lib/logger.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://whisky87@github.com/CoachingCloud/automated-push-content.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/CoachingCloud/automated-push-content/issues"
+  },
+  "gitHead": "254079792c9ae9fde5b0632a36b0dbdd7f621d3b"
+}

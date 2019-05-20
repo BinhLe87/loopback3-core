@@ -2,7 +2,6 @@
 
 //Ref: https://loopback.io/doc/en/lb3/Customizing-models.html
 //Ref: https://loopback.io/doc/en/lb3/Defining-mixins.html
-var { logger } = require('../../errors/errorLogger');
 
 module.exports = function(Model, options) {
   Model.observe('loaded', async function(ctx) {

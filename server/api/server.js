@@ -15,7 +15,7 @@ const _ = require('lodash');
 const LoopbackUtil = require('./helpers/loopbackUtil');
 
 var app = (module.exports = loopback());
-var { logger } = require('../errors/errorLogger');
+var { logger } = require('@cc_server/logger');
 //Set global instance variables
 global.logger = logger;
 const { exec } = require('child_process');

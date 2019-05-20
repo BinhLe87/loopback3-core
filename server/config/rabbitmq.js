@@ -1,7 +1,7 @@
 var amqp = require("amqplib");
 const debug = require("debug")(__filename);
 const EventEmitter = require("events");
-const { logger } = require("../errors/errorLogger");
+const { logger } = require("@cc_server/logger");
 const { inspect } = require("../utils/printHelper");
 
 const REPLY_QUEUE = "amq.rabbitmq.reply-to";
