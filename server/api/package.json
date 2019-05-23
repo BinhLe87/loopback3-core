@@ -1,6 +1,6 @@
 {
   "name": "@cc_server/api",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "main": "server.js",
   "engines": {
     "node": ">=4"
@@ -19,7 +19,8 @@
     "prettier": "prettier --ignore-path .eslintignore --write '**/*.js'",
     "eslint": "./node_modules/.bin/eslint --fix --quiet .",
     "client-api-docs": "cd $PWD/docs_web/client_api_docs && middleman build --build-dir ../../public/client_api_docs",
-    "server-api-docs": "cd $PWD/docs_web/server_api_docs && middleman build --build-dir ../../public/server_api_docs"
+    "server-api-docs": "cd $PWD/docs_web/server_api_docs && middleman build --build-dir ../../public/server_api_docs",
+    "publish": "lerna publish --conventional-commits --yes --no-git-tag-version"
   },
   "lint-staged": {
     "linters": {
@@ -42,7 +43,7 @@
     "debug_api": "aaa"
   },
   "dependencies": {
-    "@cc_server/logger": "^1.0.4",
+    "@cc_server/logger": "^1.1.0",
     "@sindresorhus/slugify": "^0.3.0",
     "amqplib": "^0.5.3",
     "bluebird": "^3.5.1",
@@ -100,5 +101,5 @@
   },
   "license": "UNLICENSED",
   "description": "cc-automated-push-content",
-  "gitHead": "254079792c9ae9fde5b0632a36b0dbdd7f621d3b"
+  "gitHead": "aac4fde9c19135989586599a6d0461ea27326ec8"
 }
