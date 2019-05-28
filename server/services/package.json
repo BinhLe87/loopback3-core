@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@cc_server/logger": "^1.1.0",
+    "@cc_server/utils": "^1.0.0",
     "axios": "^0.18.0",
     "commander": "^2.19.0",
     "debug": "^4.1.1",

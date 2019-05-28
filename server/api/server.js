@@ -23,7 +23,7 @@ const { exec } = require('child_process');
 // global.__i18n = global.__locale = formatMessage;
 global._ = _;
 global.boom = global.Boom = require('boom');
-_.set(global, 'helper.inspect', require('./helpers/printHelper').inspect);
+_.set(global, 'helper.inspect', require('@cc_server/utils/lib/printHelper').inspect);
 LoopbackUtil.getStaticFileDir((err, static_file_dir) => {
   if (!err) {
     global.STATIC_FILE_DIR = static_file_dir;

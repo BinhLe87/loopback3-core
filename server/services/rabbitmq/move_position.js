@@ -4,7 +4,7 @@ const debug = require("debug")(__filename);
 const _ = require("lodash");
 const validation_utils = require("../../utils/validators");
 const { logger } = require("@cc_server/logger");
-const { inspect } = require("../../utils/printHelper");
+const { inspect } = require("@cc_server/utils/lib/printHelper");
 const api_util = require("../api_util");
 const URI = require("urijs");
 

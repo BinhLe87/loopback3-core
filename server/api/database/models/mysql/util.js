@@ -4,7 +4,7 @@ const debug = require('debug')('util.js');
 const {
   uploadFileController
 } = require('../../../controllers/upload/uploadFile');
-const validation_utils = require('../../../../utils/validators');
+const validation_utils = require('../../../helpers/validators/joiValidator');
 
 const { create_channel, send_message } = require('../../../../config/rabbitmq');
 const routing_key = 'move_position';

@@ -6,7 +6,7 @@ const { EventEmitter } = require('events');
 const utils = require('util');
 const moment = require('moment');
 const crypto = require('crypto');
-const FileUtil = require('../../utils/fileUtil');
+const FileUtil = require('@cc_server/utils/lib/fileUtil');
 const slugify = require('@sindresorhus/slugify');
 const _ = require('lodash');
 

@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "@cc_server/logger": "^1.1.0",
+    "@cc_server/utils": "^1.0.0",
     "@sindresorhus/slugify": "^0.3.0",
     "amqplib": "^0.5.3",
     "bluebird": "^3.5.1",

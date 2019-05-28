@@ -9,7 +9,8 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "server/*"
+      "server/*",
+      "."
     ],
     "nohoist": [
       "**/loopback-ds-timestamp-mixin",
@@ -17,7 +18,9 @@
     ]
   },
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "publish": "lerna publish --conventional-commits --yes --no-git-tag-version"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://whisky87@github.com/CoachingCloud/automated-push-content.git"
@@ -31,6 +34,7 @@
   "homepage": "https://github.com/CoachingCloud/automated-push-content#readme",
   "dependencies": {
     "@cc_server/logger": "^1.0.4",
+    "@cc_server/utils": "^1.0.0",
     "amqplib": "^0.5.3",
     "fs-extra": "^6.0.1",
     "joi": "^14.3.1",

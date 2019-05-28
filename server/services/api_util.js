@@ -1,6 +1,6 @@
 module.exports = exports = {};
 const {logger} = require('@cc_server/logger');
-const {inspect} = require('../utils/printHelper');
+const {inspect} = require('@cc_server/utils/lib/printHelper');
 
 const axios = require('axios');
 
