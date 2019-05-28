@@ -1,6 +1,6 @@
 {
   "name": "@cc_server/services",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cc_server/logger": "^1.1.0",
-    "@cc_server/utils": "^1.0.0",
+    "@cc_server/logger": "^1.2.0",
+    "@cc_server/utils": "^1.1.0",
     "axios": "^0.18.0",
     "commander": "^2.19.0",
     "debug": "^4.1.1",
