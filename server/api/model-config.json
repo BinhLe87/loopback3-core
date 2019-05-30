@@ -174,5 +174,9 @@
         }
       }
     }
+  },
+  "automation_subscribe": {
+    "dataSource": "cc_mysql",
+    "public": true
   }
 }

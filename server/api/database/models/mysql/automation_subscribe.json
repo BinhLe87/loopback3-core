@@ -1,6 +1,6 @@
 {
-  "name": "version",
-  "plural": "versions",
+  "name": "automation_subscribe",
+  "plural": "automation_subscribes",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -13,29 +13,40 @@
     "AddRelationModel": true
   },
   "properties": {
-    "title": {
-      "type": "string",
+    "user_id": {
+      "type": "number",
       "required": true
     },
-    "content": {
-      "type": "object",
-      "required": true,
-      "mysql": {
-        "dataType": "longtext"
+    "version_id": {
+      "type": "number",
+      "required": true
+    },
+    "version_type": {
+      "type": "string",
+      "required": false,
+      "default": "workbook"
+    },
+    "deliver_state": {
+      "type": "object"
+    }
+  },
+  "indexes": {
+    "user_version_idx": {
+      "keys": {
+        "user_id": 1,
+        "version_id": 1,
+        "version_type": 1
+      },
+      "options": {
+        "unique": true
       }
     }
   },
   "validations": [],
   "relations": {
-    "workbooks": {
-      "type": "hasMany",
-      "model": "workbook",
-      "foreignKey": "versionId",
-      "through": "workbook_version"
-    },
-    "automation_subscribes": {
-      "type": "hasMany",
-      "model": "automation_subscribe",
+    "version": {
+      "type": "belongsTo",
+      "model": "version",
       "foreignKey": "version_id"
     }
   },
