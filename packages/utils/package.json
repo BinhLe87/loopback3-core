@@ -1,6 +1,6 @@
 {
   "name": "@cc_server/utils",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "> TODO: description",
   "author": "Binh Le <vanbinh87@gmail.com>",
   "homepage": "https://github.com/CoachingCloud/automated-push-content/tree/master/packages/utils#readme",
@@ -11,7 +11,8 @@
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "lib",
+    "script"
   ],
   "publishConfig": {
     "access": "public"
@@ -27,6 +28,8 @@
     "url": "https://github.com/CoachingCloud/automated-push-content/issues"
   },
   "dependencies": {
-    "joi": "^14.3.1"
-  }
+    "joi": "^14.3.1",
+    "lerna": "^3.13.4"
+  },
+  "gitHead": "2263e66d085e97a16d03bb19c30c27fbc3c7c2ae"
 }

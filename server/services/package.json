@@ -1,6 +1,6 @@
 {
   "name": "@cc_server/services",
-  "version": "1.6.0",
+  "version": "1.7.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -19,5 +19,5 @@
     "lodash": "^4.17.11",
     "urijs": "^1.19.1"
   },
-  "gitHead": "aac4fde9c19135989586599a6d0461ea27326ec8"
+  "gitHead": "2263e66d085e97a16d03bb19c30c27fbc3c7c2ae"
 }
