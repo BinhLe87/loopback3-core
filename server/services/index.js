@@ -41,6 +41,7 @@ if (env_variables_joi_result.error) {
 }
 
 process.env.NODE_ENV = env_variables_joi_result.value.NODE_ENV;
+process.env.HOME_ROOT = __dirname;
 
 const dotenv = require("dotenv").config({
   path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`)
