@@ -1,6 +1,6 @@
 {
   "name": "@cc_server/logger",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "> TODO: description",
   "author": "Binh Le <vanbinh87@gmail.com>",
   "homepage": "https://github.com/CoachingCloud/automated-push-content/tree/master/packages/logger#readme",
