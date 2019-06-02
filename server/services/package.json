@@ -9,8 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cc_server/logger": "^1.2.0",
-    "@cc_server/utils": "^1.1.0",
+    "@cc_server/logger": "^1.5.0",
+    "@cc_server/utils": "^1.2.0",
     "axios": "^0.18.0",
     "commander": "^2.19.0",
     "debug": "^4.1.1",

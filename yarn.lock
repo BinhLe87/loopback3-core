@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@cc_server/utils@^1.1.2":
+"@cc_server/utils@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@cc_server/utils/-/utils-1.2.0.tgz#0fc8def5b23e4ae467536c80d6d13e7ad6514f76"
   integrity sha512-juUhap70V9hho1pu0oQsVhlZUZa6FQgeGSa3mEBYBeg1kpXNdPwbeeNtXXjW9n/3i81FQFibcpZ6U04ImkyQ1w==
