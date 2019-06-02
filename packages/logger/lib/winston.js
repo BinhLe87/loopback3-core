@@ -25,7 +25,7 @@ var envVarsSchema = joi
       .falsy('FALSE')
       .falsy('false')
       .default(true),
-    LOGS_DIR: joi.string().default(process.env.HOME_ROOT || path.resolve(process.cwd(), `logs/${process.env.SERVICE_NAME}`))
+    LOGS_DIR: joi.string().default(path.resolve(process.env.HOME_ROOT || process.cwd(), `logs/${process.env.SERVICE_NAME}`))
   })
   .unknown();
 
