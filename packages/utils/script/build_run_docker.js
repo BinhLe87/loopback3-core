@@ -8,9 +8,9 @@ module.exports = exports = build_run_docker();
 function build_run_docker() {
   program
     .version("0.1.0")
-    .option("-i, --imagename <image_name>", "IMAGE_NAME")
-    .option("-t, --target <docker_stage>", "DOCKER_STAGE")
-    .option("-f, --dockerfile <docker_file>. Default is Dockerfile", "DOCKER_FILE")
+    .option("-i, --imagename [imagename]", "IMAGE_NAME")
+    .option("-t, --target", "DOCKER_STAGE")
+    .option("-f, --dockerfile <dockerfile>", "DOCKER_FILE")
     .option("-r, --home_root <home_root>", "HOME_ROOT")
 
     .parse(process.argv);
