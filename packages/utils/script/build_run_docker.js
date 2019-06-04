@@ -3,7 +3,7 @@ const crypto = require("crypto");
 const program = require("commander");
 const path = require("path");
 
-module.exports = exports = build_run_docker();
+build_run_docker();
 
 function build_run_docker() {
   program

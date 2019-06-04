@@ -19,7 +19,7 @@
   },
   "private": true,
   "scripts": {
-    "publish": "lerna publish from-package"
+    "publish": "lerna publish from-package --no-git-tag-version --yes"
   },
   "repository": {
     "type": "git",

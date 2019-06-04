@@ -6,7 +6,7 @@ const {
 } = require('../../../controllers/upload/uploadFile');
 const validation_utils = require('../../../helpers/validators/joiValidator');
 
-const { create_channel, send_message } = require('../../../../config/rabbitmq');
+const { create_channel, send_message } = require('@cc_server/utils').rabbitmq;
 const routing_key = 'move_position';
 const Joi = require('joi');
 const { baseJoiOptions } = require('../../../helpers/validators/joiValidator');

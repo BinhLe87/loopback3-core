@@ -17,7 +17,6 @@ var cached_channel;
 var cached_connection;
 
 const EXCHANGE_NAME = `apc.exchange`;
-//due to all env use same rabbitmq server
 const AUTO_CONN_AFTER_TIME = 10 * 60 * 1000; //10 min
 var actual_AMQP_URL;
 
@@ -34,7 +33,7 @@ function create_channel(
       throw new Error(err_msg);
     }
 
-    if (is_use_channel_cache === true && cached_channel) {
+    if (is_use_channel_cache === true && cached_channel && url === actual_AMQP_URL) {
       return resolve(cached_channel);
     }
 
@@ -165,7 +164,7 @@ function consume_message_topic(channel, queue, routing_key, callback) {
   });
 }
 /**
- * generate a variation of queue name or routing key varies upon NODE_ENV
+ * generate a variation of queue name or routing key varies upon NODE_ENV //due to all env use same rabbitmq server
  *
  * @param {string} queue_or_routing_key queue name or routing key
  */

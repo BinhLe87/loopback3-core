@@ -1,4 +1,4 @@
-var { create_channel, consume_message_direct } = require("../../config/rabbitmq");
+var { create_channel, consume_message_direct } = require("@cc_server/utils").rabbitmq;
 const axios = require("axios");
 const debug = require("debug")(__filename);
 const _ = require("lodash");

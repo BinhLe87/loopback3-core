@@ -96,7 +96,7 @@ boot(app, __dirname, function(err) {
 var {
   create_channel: rabbitmq_create_channel,
   close_connection: rabbitmq_close_connection
-} = require('../config/rabbitmq');
+} = require('@cc_server/utils').rabbitmq;
 //init rabbitmq connection and channel
 rabbitmq_create_channel();
 
