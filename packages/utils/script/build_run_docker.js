@@ -18,10 +18,10 @@ function build_run_docker() {
 
   program.parse(process.argv);
 
-  if (typeof program.home_root === "undefined") {
-    console.error("Must identify --home_root!!!");
-    process.exit(1);
-  }
+  // if (typeof program.home_root === "undefined") {
+  //   console.error("Must identify --home_root!!!");
+  //   process.exit(1);
+  // }
 
   if (typeof program.imagename === "undefined") {
     console.error("Must identify --imagename!!!");
@@ -33,6 +33,9 @@ function build_run_docker() {
 
     shell.exec(...arguments);
   }
+
+  //set default home_root is the current working directory
+  program.home_root = program.home_root || process.cwd();
 
   const image_name = program.imagename;
   const buf = Buffer.alloc(3); //create random 6 characters
