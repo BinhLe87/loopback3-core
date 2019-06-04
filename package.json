@@ -34,7 +34,7 @@
   "homepage": "https://github.com/CoachingCloud/automated-push-content#readme",
   "dependencies": {
     "@cc_server/logger": "^1.5.0",
-    "@cc_server/utils": "^1.3.0",
+    "@cc_server/utils": "^1.4.0",
     "amqplib": "^0.5.3",
     "fs-extra": "^8.0.1",
     "joi": "^14.3.1",
