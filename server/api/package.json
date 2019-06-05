@@ -16,12 +16,15 @@
     "debug": "eslint && DEBUG=*,-nodemon:watch*,-loopback:mixins:time-stamp NODE_ENV=development nodemon --nolazy --inspect-brk .",
     "posttest": "yarn run lint > logs/eslint_log.txt && nsp check",
     "precommit": "lint-staged",
+    "prepush": "yarn publish_all",
     "prettier": "prettier --ignore-path .eslintignore --write '**/*.js'",
     "eslint": "./node_modules/.bin/eslint --fix --quiet .",
     "client-api-docs": "cd $PWD/docs_web/client_api_docs && middleman build --build-dir ../../public/client_api_docs",
     "server-api-docs": "cd $PWD/docs_web/server_api_docs && middleman build --build-dir ../../public/server_api_docs",
-    "publish": "lerna publish --conventional-commits --yes --no-git-tag-version"
+    "publish": "lerna publish from-package --no-git-tag-version --no-push --yes preminor",
+    "publish_all": "lerna publish --no-git-tag-version --no-push --yes preminor"
   },
+  "private": true,
   "lint-staged": {
     "linters": {
       "*.js": [
