@@ -15,13 +15,13 @@ var routing_key = "move_position";
 
 const channel = create_channel()
   .then(channel => {
-    consume_message_direct(channel, routing_key, async function(msg) {
+    consume_message_direct(routing_key, async function(msg) {
       var message = msg.content.toString();
       logger.info("=> received", message);
       const { correlationId, replyTo } = msg.properties;
 
       await move_position_handler(JSON.parse(message));
-    });
+    }, channel);
   })
   .catch(error => {
     logger.error(error);

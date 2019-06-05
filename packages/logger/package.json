@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/CoachingCloud/automated-push-content/issues"
   },
-  "gitHead": "2263e66d085e97a16d03bb19c30c27fbc3c7c2ae"
+  "gitHead": "2263e66d085e97a16d03bb19c30c27fbc3c7c2ae",
+  "dependencies": {
+    "winston": "^3.2.1"
+  }
 }
