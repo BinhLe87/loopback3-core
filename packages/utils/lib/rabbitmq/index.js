@@ -175,6 +175,7 @@ async function consume_message_topic(routing_key, callback, queue_name, channel)
 
   if (queue_name && typeof queue_name !== 'string') {
     channel = queue_name;
+    queue_name = undefined;
   }
 
   if (!channel) {
@@ -228,6 +229,7 @@ async function consume_message_direct(routing_key, callback, queue_name, channel
 
   if (queue_name && typeof queue_name !== 'string') {
     channel = queue_name;
+    queue_name = undefined;
   }
 
   if (!channel) {
