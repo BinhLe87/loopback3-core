@@ -1,6 +1,6 @@
 {
   "name": "@cc_server/api",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "main": "server.js",
   "engines": {
     "node": ">=4"
@@ -43,8 +43,8 @@
     "debug_api": "aaa"
   },
   "dependencies": {
-    "@cc_server/logger": "^1.5.0",
-    "@cc_server/utils": "^1.2.0",
+    "@cc_server/logger": "^1.6.0",
+    "@cc_server/utils": "^1.6.0",
     "@sindresorhus/slugify": "^0.3.0",
     "amqplib": "^0.5.3",
     "bluebird": "^3.5.1",
@@ -102,5 +102,5 @@
   },
   "license": "UNLICENSED",
   "description": "cc-automated-push-content",
-  "gitHead": "2263e66d085e97a16d03bb19c30c27fbc3c7c2ae"
+  "gitHead": "9e1c2cada50eb369d8aafa865e2cb5bf957fb15f"
 }

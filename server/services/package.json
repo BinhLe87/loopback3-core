@@ -1,6 +1,6 @@
 {
   "name": "@cc_server/services",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cc_server/logger": "^1.5.0",
-    "@cc_server/utils": "^1.2.0",
+    "@cc_server/logger": "^1.6.0",
+    "@cc_server/utils": "^1.6.0",
     "axios": "^0.18.0",
     "commander": "^2.19.0",
     "debug": "^4.1.1",
@@ -19,5 +19,5 @@
     "lodash": "^4.17.11",
     "urijs": "^1.19.1"
   },
-  "gitHead": "2263e66d085e97a16d03bb19c30c27fbc3c7c2ae"
+  "gitHead": "9e1c2cada50eb369d8aafa865e2cb5bf957fb15f"
 }

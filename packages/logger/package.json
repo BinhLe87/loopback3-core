@@ -1,6 +1,6 @@
 {
   "name": "@cc_server/logger",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "> TODO: description",
   "author": "Binh Le <vanbinh87@gmail.com>",
   "homepage": "https://github.com/CoachingCloud/automated-push-content/tree/master/packages/logger#readme",
@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/CoachingCloud/automated-push-content/issues"
   },
-  "gitHead": "2263e66d085e97a16d03bb19c30c27fbc3c7c2ae",
+  "gitHead": "9e1c2cada50eb369d8aafa865e2cb5bf957fb15f",
   "dependencies": {
     "winston": "^3.2.1"
   }
