@@ -133,7 +133,7 @@ function close_connection() {
 async function send_message(message, routing_key, channel, options = {}) {
 
   if (!channel) {
-    var channel = await create_channel({ auto_close_connection: true });
+    channel = await create_channel({ auto_close_connection: true });
   }
 
   var message_standard = message;
