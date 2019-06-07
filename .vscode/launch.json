@@ -21,14 +21,16 @@
             "request": "launch",
             "runtimeExecutable": "/Users/steven_lee/.nvm/versions/node/v11.13.0/bin/node",
             "name": "Debug current file",
-            //"program": "${file}",
+            "program": "${file}",
             //"program":  "${workspaceFolder}/demo/test.js",
-            "program":  "${workspaceFolder}/server/services/index.js",
+            //"program":  "${workspaceFolder}/server/services/index.js",
             "stopOnEntry": false,
             "args": [
                 "--service",
-                "rabbitmq"
-            ],            
+                "scheduled_executor"
+            ],
+            "env": {"NODE_ENV": "development"},
+            "envFile": "${workspaceFolder}/packages/utils/.env.development"     
         },
         {
             "type": "node",

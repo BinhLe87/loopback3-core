@@ -1,103 +1,57 @@
-FROM node:9.11.2
+FROM node:11.13.0-alpine
 ENV container_dir="/usr/src/app/"
-ENV server_dir=${container_dir}/server
-ENV tools_dir=${server_dir}/tools
-ENV logstash_dir="/usr/share/logstash/"
-ENV filebeat_dir=${server_dir}/tools/filebeat-6.6.1-linux-x86_64/
+ENV server_dir=${container_dir}/server/
+ENV tools_dir=${server_dir}/tools/
+ENV tool_redis_file="redis-4.0.11.tar.gz"
+ENV tool_redis_dir="redis-4.0.11"
 
-## Print node version
-RUN node -v; exit 0
+##Install tools for dev/debug purpose
+RUN apk --no-cache add vim
+RUN apk --no-cache add net-tools
 
-## Print docker version
-RUN docker -v; exit 0
-## Print npm version
-RUN npm -v; exit 0
-
-
-#Install common packages
-### Upgrade npm version to 6.4.1, in order to use command `npm ci`
-RUN apt-get update
-RUN npm install -g npm@6.4.1
-
-RUN apt-get update
-RUN apt-get --assume-yes install vim
-
-RUN apt-get update
-RUN apt-get --assume-yes install net-tools
-
-RUN apt-get update
-RUN apt-get --assume-yes install apt-transport-https
-
-#Install Java 8 (required by installing logstash)
-WORKDIR ${tools_dir}
-RUN echo "deb http://http.debian.net/debian jessie-backports main" | tee -a /etc/apt/sources.list.d/elastic-6.x.list
-RUN apt-get update
-RUN apt-get install -y -t jessie-backports  openjdk-8-jre-headless ca-certificates-java
-RUN apt-get install -y openjdk-8-jdk
-RUN java -version; exit 0
-
-#Install logstash
-RUN wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
-RUN echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-6.x.list
-RUN apt-get update
-RUN apt-get install -y logstash
-##Config logstash
-ADD server/config/components/logstash/logstash.yml ${logstash_dir}/config/
-ADD server/config/components/logstash/elasticsearch-template-es6x.json ${logstash_dir}/template/
-COPY server/config/components/logstash/logstash-output-amazon_es-6.4.1-java.gem ${logstash_dir}
-ADD server/config/components/logstash/pipeline.conf ${logstash_dir}/pipeline/
-WORKDIR ${logstash_dir}/bin/
-RUN ./logstash-plugin install ${logstash_dir}/logstash-output-amazon_es-6.4.1-java.gem
-RUN ./logstash --version; exit 0
-
-#Install filebeat
-WORKDIR ${tools_dir}
-RUN curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.6.1-linux-x86_64.tar.gz
-RUN tar xzvf filebeat-6.6.1-linux-x86_64.tar.gz
-WORKDIR ${filebeat_dir}
-ADD server/config/components/filebeat/filebeat.yml ${filebeat_dir}
-ADD server/config/components/filebeat/modules.d ${filebeat_dir}/modules.d/
-RUN ./filebeat version; exit 0
+##Install packages/libs dependencies
+RUN apk --no-cache add --virtual build-dependencies make gcc g++ python
+RUN apk --no-cache add linux-headers
 
 WORKDIR ${container_dir}
 ## Bundle app source
-COPY . ${container_dir}
-
-#First, install npm modules serves for installing Docker container
-WORKDIR ${container_dir}
-RUN npm install
-#Second, Install shared npm modules will be used in all microservices
-WORKDIR ${server_dir}
-RUN npm install
-#Next, Install independent npm modules for each of microservices
-WORKDIR ${container_dir}
-RUN node script/install_npm_modules.js
-
-## Print docker-compose version
-RUN docker-compose --version; exit 0
+COPY ./server/tools/. ${tools_dir}
+COPY ./script ${container_dir}
 
 ##Install Redis server
 WORKDIR ${tools_dir}
-RUN tar xzf redis-4.0.11.tar.gz
+RUN tar xzf ${tool_redis_file}
 WORKDIR redis-4.0.11
-RUN make
+RUN make; exit 0
+
+#------Clean up all that no longer used (installation files, packages/libs dependencies, apk cache, etc.)
+##Remove tools after done installing
+WORKDIR ${tools_dir}
+RUN rm ${tool_redis_file}; exit 0
 
 ##Install RabbitMQ
-RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-RUN dpkg -i erlang-solutions_1.0_all.deb
-RUN apt-get update
-RUN apt-get --assume-yes install erlang
-RUN echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | tee /etc/apt/sources.list.d/bintray.rabbitmq.list
-RUN wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | apt-key add -
-RUN apt-get update
-RUN apt-get --assume-yes install rabbitmq-server
+# RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+# RUN dpkg -i erlang-solutions_1.0_all.deb
+# RUN apt-get update
+# RUN apt-get --assume-yes install erlang
+# RUN echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | tee /etc/apt/sources.list.d/bintray.rabbitmq.list
+# RUN wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | apt-key add -
+# RUN apt-get update
+# RUN apt-get --assume-yes install rabbitmq-server
+
+##Remove packages/libs dependencies
+RUN apk del build-dependencies
+
+##Remove apk cache
+RUN rm -rf /var/cache/apk/*
 
 ## Start pm2
-RUN npm install -g pm2
 WORKDIR ${container_dir}
-ADD ecosystem.aws.config.js .
+RUN npm install -g pm2
+ADD ecosystem.config.aws.js .
+RUN mv ecosystem.config.aws.js ecosystem.config.js
 ADD script script/
-ENTRYPOINT pm2 start ecosystem.aws.config.js --env aws --only rabbitmq-server \
+ENTRYPOINT pm2 start ecosystem.config.js --env aws --only redis-server\
     && pm2 status \
     && tail -f /dev/null
 EXPOSE 8080
