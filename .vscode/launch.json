@@ -27,8 +27,12 @@
             "stopOnEntry": false,
             "args": [
                 "--service",
-                "rabbitmq"
-            ],            
+                "rabbitmq",
+                "--env",
+                "development"
+            ],
+            "env": {"NODE_ENV": "development"},
+            //"envFile": "${workspaceFolder}/packages/utils/.env.development"     
         },
         {
             "type": "node",

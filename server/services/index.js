@@ -33,6 +33,8 @@ const env_variables_joi = Joi.object().keys({
   NODE_ENV: Joi.string().default('development')
 })
 
+process.env.NODE_ENV = app_args_joi_result.value.env || process.env.NODE_ENV;
+
 var env_variables_joi_result = Joi.validate(process.env, env_variables_joi, baseJoiOptions);
 
 if (env_variables_joi_result.error) {

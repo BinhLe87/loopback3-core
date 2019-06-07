@@ -10,6 +10,7 @@
     "packages": [
       "packages/*",
       "server/*",
+      "services/*",
       "."
     ],
     "nohoist": [
@@ -19,7 +20,8 @@
   },
   "private": true,
   "scripts": {
-    
+    "publish": "lerna publish from-package --no-git-tag-version --no-push --yes preminor",
+    "publish_all": "lerna publish --no-git-tag-version --no-push --yes preminor"
   },
   "repository": {
     "type": "git",
