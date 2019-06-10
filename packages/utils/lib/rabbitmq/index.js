@@ -2,7 +2,7 @@ var amqp = require("amqplib");
 const debug = require("debug")(__filename);
 const EventEmitter = require("events");
 const { logger } = require("@cc_server/logger");
-const { inspect } = require("@cc_server/utils/lib/printHelper");
+const { inspect } = require("../printHelper");
 const Promise = require('bluebird');
 const uuid = require('uuid');
 
@@ -21,6 +21,8 @@ var cached_connection;
 const EXCHANGE_NAME = `apc.exchange`;
 const AUTO_CONN_AFTER_TIME = 10 * 60 * 1000; //10 min
 var actual_AMQP_URL;
+const DEFAULT_QUEUE_NAME = 'apc_queue';
+const DEFAULT_NODE_ENV = 'development';
 
 function create_channel(
   socketOptions = {},
@@ -154,6 +156,8 @@ async function send_message(message, routing_key, channel, options = {}) {
     })
   );
 
+  debug(`Submitted message '${message_standard}' with routing key '${routing_key_with_env}'`);
+
   return result;
 }
 /**
@@ -186,7 +190,7 @@ async function consume_message_topic(routing_key, callback, queue_name, channel)
     routing_key = [routing_key];
   }
 
-  var queue_name_env = _generate_queue_or_routing_key(queue_name || process.env.SERVICE_NAME);
+  var queue_name_env = _generate_queue_or_routing_key(queue_name || process.env.SERVICE_NAME || DEFAULT_QUEUE_NAME);
 
   channel.assertQueue(queue_name_env, { durable: true }, function(error, ok) {
 
@@ -208,6 +212,8 @@ function _generate_queue_or_routing_key(queue_or_routing_key) {
   if(!queue_or_routing_key) {
     throw new Error('Undefined queue name or routing key');
   }
+
+  var node_env = process.env.NODE_ENV || DEFAULT_NODE_ENV;
 
   return `${process.env.NODE_ENV}.${queue_or_routing_key}`;
 }

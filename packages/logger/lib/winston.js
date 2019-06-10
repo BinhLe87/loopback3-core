@@ -1,31 +1,39 @@
-'use strict';
+"use strict";
 
-var winston = require('winston');
-const joi = require('joi');
-const path = require('path');
-const DailyRotateFile = require('winston-daily-rotate-file');
-var fs = require('fs-extra');
-const util = require('util');
-const {EOL} = require('os');
+var winston = require("winston");
+const joi = require("joi");
+const path = require("path");
+const DailyRotateFile = require("winston-daily-rotate-file");
+var fs = require("fs-extra");
+const util = require("util");
+const { EOL } = require("os");
+var { Loggly } = require("./winston-loggly");
 
 var envVarsSchema = joi
   .object({
     LOGGER_LEVEL: joi
       .string()
-      .allow(['error', 'warn', 'info', 'verbose', 'debug', 'silly'])
-      .default('debug'),
+      .allow(["error", "warn", "info", "verbose", "debug", "silly"])
+      .default("debug"),
     CONSOLE_LEVEL: joi
       .string()
-      .allow(['error', 'warn', 'info', 'verbose', 'debug', 'silly'])
-      .default('debug'),
+      .allow(["error", "warn", "info", "verbose", "debug", "silly"])
+      .default("debug"),
     LOGGER_ENABLED: joi
       .boolean()
-      .truthy('TRUE')
-      .truthy('true')
-      .falsy('FALSE')
-      .falsy('false')
+      .truthy("TRUE")
+      .truthy("true")
+      .falsy("FALSE")
+      .falsy("false")
       .default(true),
-    LOGS_DIR: joi.string().default(path.resolve(process.env.HOME_ROOT || process.cwd(), `logs/${process.env.SERVICE_NAME}`))
+    LOGS_DIR: joi
+      .string()
+      .default(
+        path.resolve(
+          process.env.HOME_ROOT || process.cwd(),
+          `logs/${process.env.SERVICE_NAME}`
+        )
+      )
   })
   .unknown();
 
@@ -50,41 +58,14 @@ const consoleFormat = winston.format.combine(
   winston.format.timestamp(),
   winston.format.align(),
   winston.format.splat(),
-  winston.format.printf(info => {
-    const ts = info.timestamp.slice(0, 19).replace('T', ' ');
-    if (info.args) {
-      return `${ts} [${info.level}]: ${info.message} ${
-        info.level > 3 &&
-        (Object.keys(info.args).length ||
-          Object.getOwnPropertyNames(info.args).length)
-          ? JSON.stringify(info.args, null, 2)
-          : ''
-      }`;
-    } else {
-      return `${ts} [${process.pid}] [${info.level}]: ${info.message}`;
-    }
-  })
+  winston.format.printf(add_message_json_and_format_message)
 );
 
 const fileFormat = winston.format.combine(
   winston.format.timestamp(),
   winston.format.align(),
   winston.format.splat(),
-  winston.format.printf(info => {
-    const ts = info.timestamp.slice(0, 19).replace('T', ' ');
-    const request_id = info.request_id || '<unknown_request_id>';
-
-    if (info.args) {
-      return `${request_id} ${ts} [${process.pid}] [${info.level}]: ${info.message} ${
-        Object.keys(info.args).length ||
-        Object.getOwnPropertyNames(info.args).length
-          ? JSON.stringify(info.args, null, 2)
-          : ''
-      }${EOL}`;
-    } else {
-      return `${request_id} ${ts} [${process.pid}] [${info.level}]: ${info.message}${EOL}`;
-    }
-  })
+  winston.format.printf(add_message_json_and_format_message)
 );
 
 var logger = winston.createLogger({
@@ -93,41 +74,47 @@ var logger = winston.createLogger({
   transports: [
     new DailyRotateFile({
       dirname: envVars.LOGS_DIR,
-      filename: 'error.%DATE%.log',
-      level: 'error'
+      filename: "error.%DATE%.log",
+      level: "error"
     }),
     new DailyRotateFile({
       dirname: envVars.LOGS_DIR,
-      filename: 'silly.%DATE%.log',
-      level: 'silly'
+      filename: "silly.%DATE%.log",
+      level: "silly"
     }),
     new DailyRotateFile({
       dirname: envVars.LOGS_DIR,
-      filename: 'combined.%DATE%.log',
+      filename: "combined.%DATE%.log",
       level: envVars.LOGGER_LEVEL
     }),
     new winston.transports.File({
-      filename: path.join(envVars.LOGS_DIR, 'combined.log'),
+      filename: path.join(envVars.LOGS_DIR, "combined.log"),
       level: envVars.LOGGER_LEVEL
+    }),
+    new Loggly({
+      token: process.env.LOGGLY_TOKEN,
+      subdomain: process.env.LOGGLY_SUBDOMAIN,
+      tags: ["Winston-NodeJS"],
+      json: true
     })
   ],
   exceptionHandlers: [
     new DailyRotateFile({
       dirname: envVars.LOGS_DIR,
-      filename: 'uncaughtException.log'
+      filename: "uncaughtException.log"
     })
   ],
   exitOnError: false
 });
 
 winston.addColors({
-  error: 'red',
-  warn: 'yellow',
-  info: 'cyan',
-  debug: 'green'
+  error: "red",
+  warn: "yellow",
+  info: "cyan",
+  debug: "green"
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
   logger.add(
     new winston.transports.Console({
       format: consoleFormat,
@@ -145,5 +132,38 @@ logger.stream = {
     logger.info(message);
   }
 };
+
+function add_message_json_and_format_message(info) {
+
+  const ts = info.timestamp.slice(0, 19).replace("T", " ");
+  const request_id = info.request_id || "<unknown_request_id>";
+  const env = process.env.NODE_ENV || "development";
+  const service_name = process.env.SERVICE_NAME || "<unknown_service>";
+
+  var message_json = {
+    env,
+    service_name,
+    ts,
+    process_id: process.pid,
+    request_id,
+    level: info.level,
+    message: info.message
+  }
+
+  //add more properties into `info` object at root level
+  info.env = env;
+  info.service_name = service_name;
+  info.request_id = request_id;
+  info.level = info.level;
+  info.message_json = message_json;
+  
+
+  var message_string = '';
+  Object.getOwnPropertyNames(message_json).forEach(function (key, idx, array) {
+    message_string += ' ' + message_json[key];
+  }) 
+
+  return `${message_string}${EOL}`;
+}
 
 module.exports = logger;
