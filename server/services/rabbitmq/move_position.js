@@ -1,4 +1,7 @@
-var { create_channel, consume_message_direct } = require("@cc_server/utils").rabbitmq;
+var {
+  create_channel,
+  consume_message_direct
+} = require("@cc_server/utils").rabbitmq;
 const axios = require("axios");
 const debug = require("debug")(__filename);
 const _ = require("lodash");
@@ -7,21 +10,39 @@ const { logger } = require("@cc_server/logger");
 const { inspect } = require("@cc_server/utils/lib/printHelper");
 const api_util = require("../api_util");
 const URI = require("urijs");
+const {promisify} = require('util');
+const qs = require('qs');
 
 module.exports = exports = {};
 exports.__convert_to_page_positions_format = __convert_to_page_positions_format;
 
+
 var routing_key = "move_position";
+const requestAsync = promisify(axios.request).bind(axios);
+
+axios.interceptors.request.use(request => {
+  console.log('Starting Request', request)
+  return request
+})
+
+axios.interceptors.response.use(response => {
+  console.log('Response:', response)
+  return response
+})
 
 const channel = create_channel()
   .then(channel => {
-    consume_message_direct(routing_key, async function(msg) {
-      var message = msg.content.toString();
-      logger.info("=> received", message);
-      const { correlationId, replyTo } = msg.properties;
+    consume_message_direct(
+      routing_key,
+      async function(msg) {
+        var message = msg.content.toString();
+        logger.info("=> received", message);
+        const { correlationId, replyTo } = msg.properties;
 
-      await move_position_handler(JSON.parse(message));
-    }, channel);
+        await move_position_handler(JSON.parse(message));
+      },
+      channel
+    );
   })
   .catch(error => {
     logger.error(error);
@@ -40,19 +61,18 @@ async function move_position_handler(tree_view_client) {
 
     var positions_need_update = __convert_to_page_positions_format(
       tree_view_client
-      )
+    );
 
     //send update_position command to queue
     _.forOwn(positions_need_update, async (value, key) => {
       try {
-
         let where_filter = {
-          and: [          
+          and: [
             {
-              [value.to_model_field] : value.to_model_value
+              [value.to_model_field]: value.to_model_value
             }
           ]
-        }
+        };
 
         var { data, status } = await _update_position(
           value.relation_model_name,
@@ -64,7 +84,8 @@ async function move_position_handler(tree_view_client) {
         );
         if (status === 200) {
           logger.info(
-            `Done updating position at path ${key} with new value is:` + inspect(data)
+            `Done updating position at path ${key} with new value is:` +
+              inspect(data)
           );
         }
       } catch (error) {
@@ -78,7 +99,6 @@ async function move_position_handler(tree_view_client) {
     logger.info(error);
   }
 }
-
 
 /**
  * convert tree view to object has specified format for compare later
@@ -125,13 +145,13 @@ function __convert_to_page_positions_format(
               object.type,
               parent_key_id
             );
-           
+
             var position_table_fields = ___determinePositionTableFields(
               result_key
             );
 
             final_result[result_key] = {};
-            final_result[result_key].display_index = value;
+            final_result[result_key].display_index = parseInt(value);
             final_result[result_key] = {
               ...final_result[result_key],
               ...position_table_fields
@@ -178,11 +198,14 @@ function __convert_to_page_positions_format(
       var to_model_value = relation_key_regx_result[4];
 
       return {
-        from_model_field: from_model_field + 'Id',
-        from_model_value: from_model_value,
-        to_model_field: to_model_field + 'Id',
-        to_model_value: to_model_value,
-        relation_model_name: RELATIONKEY_RELATIONTABLE_MAPPING[`${from_model_field}-${to_model_field}`]
+        from_model_field: from_model_field + "Id",
+        from_model_value: parseInt(from_model_value),
+        to_model_field: to_model_field + "Id",
+        to_model_value: parseInt(to_model_value),
+        relation_model_name:
+          RELATIONKEY_RELATIONTABLE_MAPPING[
+            `${from_model_field}-${to_model_field}`
+          ]
       };
     } else {
       throw new Error(
@@ -205,7 +228,8 @@ async function _update_position(
   where_filter,
   update_fields
 ) {
-  var update_position_result = await axios.request({
+
+  var update_position_result = await requestAsync({
     url: `/${position_table_name}/update`,
     method: "post",
     baseURL: process.env.API_URL,
@@ -217,7 +241,19 @@ async function _update_position(
     },
     data: {
       ...update_fields
-    }
+    },
+    validateStatus: (status) => {
+      return true;
+    },
+    paramsSerializer: (params) => {
+
+      return qs.stringify(params)
+  },
+  transformResponse: [function (data) {
+    // Do whatever you want to transform the data
+
+    return data;
+  }],
   });
 
   return update_position_result;

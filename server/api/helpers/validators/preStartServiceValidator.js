@@ -9,7 +9,6 @@ var envVarsSchema = joi
   .object({
     SERVICE_NAME: joi
       .string()
-      .length(3)
       .required(),
     NODE_ENV: joi
       .string()

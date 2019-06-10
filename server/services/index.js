@@ -49,8 +49,9 @@ const dotenv = require("dotenv").config({
   path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`)
 });
 
-const {logger} = require('@cc_server/logger');
+ const {logger} = require('@cc_server/logger');
 
-logger.info(`Running at NODE_ENV is ${process.env.NODE_ENV}`);
+ logger.info(`Running at NODE_ENV is ${process.env.NODE_ENV}`);
+
 
 require(`./${app_args_joi_result.value.service}`);
