@@ -1,6 +1,6 @@
 {
   "name": "@cc_server/utils",
-  "version": "1.9.5",
+  "version": "1.9.6",
   "description": "> TODO: description",
   "author": "Binh Le <vanbinh87@gmail.com>",
   "homepage": "https://github.com/CoachingCloud/automated-push-content/tree/master/packages/utils#readme",
@@ -25,6 +25,8 @@
     "url": "https://github.com/CoachingCloud/automated-push-content/issues"
   },
   "dependencies": {
+    "@cc_server/logger": "^1.6.3",
+    "amqplib": "^0.5.3",
     "bluebird": "^3.5.5",
     "dotenv": "^8.0.0",
     "joi": "^14.3.1",
