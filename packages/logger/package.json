@@ -1,6 +1,6 @@
 {
   "name": "@cc_server/logger",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "> TODO: description",
   "author": "Binh Le <vanbinh87@gmail.com>",
   "homepage": "https://github.com/CoachingCloud/automated-push-content/tree/master/packages/logger#readme",
@@ -23,6 +23,9 @@
   },
   "gitHead": "9e1c2cada50eb369d8aafa865e2cb5bf957fb15f",
   "dependencies": {
-    "winston": "^3.2.1"
+    "fs-extra": "^8.0.1",
+    "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^3.9.0",
+    "winston-loggly-bulk": "^3.0.1"
   }
 }
