@@ -49,6 +49,7 @@ RUN rm ${tool_redis_file}; exit 0
 ## Start api server
 WORKDIR ${container_dir}
 RUN npm install -g pm2
+RUN mv ecosystem.config.local.js ecosystem.config.js
 ENTRYPOINT pm2 start ecosystem.config.js --env local\
     && pm2 status \
     && tail -f /dev/null

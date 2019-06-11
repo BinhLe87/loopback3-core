@@ -22,6 +22,20 @@ module.exports = {
       exec_mode: 'cluster'
     },
     {
+      name: 'redis-server',
+      interpreter: '/bin/sh',
+      script: 'script/start-redis.sh',
+      out_file: 'logs/redis.log',
+      autorestart: false
+    },
+    {
+      name: 'rabbitmq-server',
+      interpreter: '/bin/sh',
+      script: 'script/start-rabbitmq.sh',
+      out_file: 'logs/rabbitmq.log',
+      autorestart: false
+    },
+    {
       name: 'service-rabbitmq',
       script: 'server/services/index.js',
       args: ["--service=rabbitmq"],

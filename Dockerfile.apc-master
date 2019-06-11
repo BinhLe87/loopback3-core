@@ -2,8 +2,6 @@ FROM node:11.13.0-alpine
 ENV container_dir="/usr/src/app/"
 ENV server_dir=${container_dir}/server
 ENV tools_dir=${server_dir}/tools
-ENV tool_redis_file="redis-4.0.11.tar.gz"
-ENV tool_redis_dir="redis-4.0.11"
 
 ##Install packages/libs dependencies
 RUN apk --no-cache add --virtual build-dependencies make gcc g++ python

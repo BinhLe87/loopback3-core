@@ -13,5 +13,3 @@ module.exports = exports = utils;
 utils.rabbitmq = require('./lib/rabbitmq');
 utils.validators = require('./lib/validators/joiValidator');
 utils.redis = require('./lib/redis');
-utils.
-
