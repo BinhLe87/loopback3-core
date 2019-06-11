@@ -3,9 +3,9 @@
 
 
 "@cc_server/logger@^1.6.3", "@cc_server/logger@^1.6.5":
-  version "1.6.5"
-  resolved "https://registry.yarnpkg.com/@cc_server/logger/-/logger-1.6.5.tgz#2750c7bec5a1168eed197c7cf8aa1a608a413f65"
-  integrity sha512-PzaVOxc6+uvd4gdcPNKOklVRHoz+hP6vZ+lzEEqLfNFT1IXjEohQgGWgwEEtd4bhv9PHfKZqpvlfn5YVCE6VLA==
+  version "1.6.9"
+  resolved "https://registry.yarnpkg.com/@cc_server/logger/-/logger-1.6.9.tgz#0338c0031dcc9a7c6d8de2cf6b084b2f61dcbf2a"
+  integrity sha512-urRopdPIwk2QAvJMhzga1OS2JQn7c0RTzLgK++FB9gERsbNpJ4WNv/oQQOLQVTvfIccB5t/kfSHVSGWohO9GpA==
   dependencies:
     clone "^2.1.2"
     dotenv "^8.0.0"
@@ -16,9 +16,9 @@
     winston-transport "^4.3.0"
 
 "@cc_server/utils@^1.9.9":
-  version "1.9.10"
-  resolved "https://registry.yarnpkg.com/@cc_server/utils/-/utils-1.9.10.tgz#9d1b9d811155c5ae3c964ab0e107cfc2ded6b8e7"
-  integrity sha512-GRTomZW3rTrLEUZCMphsZdydW6pCoGO3ZXZJesYNxCMy5NGj5n9rOc6JmQfO0ShJMGfRZII4cp7sttIyc+VV8A==
+  version "1.9.11"
+  resolved "https://registry.yarnpkg.com/@cc_server/utils/-/utils-1.9.11.tgz#bda70a160efe560134395111e065775ed77fb413"
+  integrity sha512-kmnE9Qt4wqHQldhZLRsPDXTm2v64PFZo6p7PCSTAyncW1DPG4ICivtg2LSnvRk+Zm/kRR2+KwVtAtvaLudC9ZQ==
   dependencies:
     "@cc_server/logger" "^1.6.3"
     amqplib "^0.5.3"

@@ -3,8 +3,8 @@ const debug = require("debug")(__filename);
 const EventEmitter = require("events");
 const { logger } = require("@cc_server/logger");
 const { inspect } = require("../printHelper");
-const Promise = require('bluebird');
-const uuid = require('uuid');
+const Promise = require("bluebird");
+const uuid = require("uuid");
 
 const REPLY_QUEUE = "amq.rabbitmq.reply-to";
 
@@ -21,8 +21,8 @@ var cached_connection;
 const EXCHANGE_NAME = `apc.exchange`;
 const AUTO_CONN_AFTER_TIME = 10 * 60 * 1000; //10 min
 var actual_AMQP_URL;
-const DEFAULT_QUEUE_NAME = 'apc_queue';
-const DEFAULT_NODE_ENV = 'development';
+const DEFAULT_QUEUE_NAME = "apc_queue";
+const DEFAULT_NODE_ENV = "development";
 
 function create_channel(
   socketOptions = {},
@@ -38,7 +38,11 @@ function create_channel(
       throw new Error(err_msg);
     }
 
-    if (is_use_channel_cache === true && cached_channel && url === actual_AMQP_URL) {
+    if (
+      is_use_channel_cache === true &&
+      cached_channel &&
+      url === actual_AMQP_URL
+    ) {
       return resolve(cached_channel);
     }
 
@@ -47,10 +51,13 @@ function create_channel(
       .then(conn => {
         cached_connection = conn;
 
-        conn.on('error', function(error) {
-          logger.error(`Error connection to AMQP_URL at ${actual_AMQP_URL}:` + inspect(error));
+        conn.on("error", function(error) {
+          logger.error(
+            `Error connection to AMQP_URL at ${actual_AMQP_URL}:` +
+              inspect(error)
+          );
           close_connection();
-        })
+        });
 
         return conn.createChannel();
       })
@@ -71,15 +78,13 @@ function create_channel(
         await channel.assertExchange(exchange_name, "topic", {
           durable: false
         });
-        channel.on('error', function(err) {
-
+        channel.on("error", function(err) {
           close_connection();
         });
         logger.info(`Successfully connected to AMQP_URL at ${url}`);
 
         //auto close connection after default period of time
         if (socketOptions.auto_close_connection === true) {
-
           setTimeout(
             close_connection.bind(cached_connection),
             AUTO_CONN_AFTER_TIME
@@ -101,7 +106,6 @@ function create_channel(
 
 function close_connection() {
   if (cached_connection) {
-
     cached_connection.close();
     logger.info(`Closed connection to AMQP_URL at ${actual_AMQP_URL}`);
 
@@ -133,13 +137,12 @@ function close_connection() {
  * @param {*} [options={}]
  */
 async function send_message(message, routing_key, channel, options = {}) {
-
   if (!channel) {
     channel = await create_channel({ auto_close_connection: true });
   }
 
   var message_standard = message;
-  if (typeof message === 'object') {
+  if (typeof message === "object") {
     message_standard = JSON.stringify(message);
   }
 
@@ -156,7 +159,9 @@ async function send_message(message, routing_key, channel, options = {}) {
     })
   );
 
-  debug(`Submitted message '${message_standard}' with routing key '${routing_key_with_env}'`);
+  debug(
+    `Submitted message '${message_standard}' with routing key '${routing_key_with_env}'`
+  );
 
   return result;
 }
@@ -168,7 +173,12 @@ async function send_message(message, routing_key, channel, options = {}) {
  * @param {string|array} routing_key a string or an array of routing keys
  * @param {*} callback
  */
-async function consume_message_topic(routing_key, callback, queue_name, channel) {
+async function consume_message_topic(
+  routing_key,
+  callback,
+  queue_name,
+  channel
+) {
   if (arguments.length < 2) {
     var err_msg = `consume_message_topic() requires at least first 2 arguments, but got ${
       arguments.length
@@ -177,7 +187,7 @@ async function consume_message_topic(routing_key, callback, queue_name, channel)
     throw new Error(err_msg);
   }
 
-  if (queue_name && typeof queue_name !== 'string') {
+  if (queue_name && typeof queue_name !== "string") {
     channel = queue_name;
     queue_name = undefined;
   }
@@ -190,16 +200,28 @@ async function consume_message_topic(routing_key, callback, queue_name, channel)
     routing_key = [routing_key];
   }
 
-  var queue_name_env = _generate_queue_or_routing_key(queue_name || process.env.SERVICE_NAME || DEFAULT_QUEUE_NAME);
+  var queue_name_env = _generate_queue_or_routing_key(
+    queue_name || process.env.SERVICE_NAME || DEFAULT_QUEUE_NAME
+  );
 
   channel.assertQueue(queue_name_env, { durable: true }, function(error, ok) {
 
-    Promise.all(routing_key.map((route_key_ele) => {
-
-      channel.bindQueue(ok.queue, EXCHANGE_NAME, _generate_queue_or_routing_key(route_key_ele));
-    })).then(() => {
-      channel.consume(ok.queue, callback, { noAck: true });
-    });
+    if (!error) {
+      Promise.all(
+        routing_key.map(route_key_ele => {
+          channel.bindQueue(
+            ok.queue,
+            EXCHANGE_NAME,
+            _generate_queue_or_routing_key(route_key_ele)
+          );
+        })
+      ).then(() => {
+        channel.consume(ok.queue, callback, { noAck: true });
+      });
+    } else {
+      logger.error(error);
+    }
+    
   });
 }
 /**
@@ -208,9 +230,8 @@ async function consume_message_topic(routing_key, callback, queue_name, channel)
  * @param {string} queue_or_routing_key queue name or routing key
  */
 function _generate_queue_or_routing_key(queue_or_routing_key) {
-
-  if(!queue_or_routing_key) {
-    throw new Error('Undefined queue name or routing key');
+  if (!queue_or_routing_key) {
+    throw new Error("Undefined queue name or routing key");
   }
 
   var node_env = process.env.NODE_ENV || DEFAULT_NODE_ENV;
@@ -218,7 +239,12 @@ function _generate_queue_or_routing_key(queue_or_routing_key) {
   return `${process.env.NODE_ENV}.${queue_or_routing_key}`;
 }
 
-async function consume_message_direct(routing_key, callback, queue_name, channel) {
+async function consume_message_direct(
+  routing_key,
+  callback,
+  queue_name,
+  channel
+) {
   if (arguments.length < 2) {
     var err_msg = `consume_message_direct() requires at least first 2 arguments, but got ${
       arguments.length
@@ -227,24 +253,34 @@ async function consume_message_direct(routing_key, callback, queue_name, channel
     throw new Error(err_msg);
   }
 
-  if (typeof routing_key != "string") {
-    var err_msg = `consume_message_direct() requires 'routing_key' argument is a string, but got ${typeof routing_key}`;
-    logger.error(err_msg);
-    throw new Error(err_msg);
+  try {
+    if (typeof routing_key != "string") {
+      var err_msg = `consume_message_direct() requires 'routing_key' argument is a string, but got ${typeof routing_key}`;
+      logger.error(err_msg);
+      throw new Error(err_msg);
+    }
+
+    if (queue_name && typeof queue_name !== "string") {
+      channel = queue_name;
+      queue_name = undefined;
+    }
+
+    if (!channel) {
+      channel = await create_channel();
+    }
+
+    var queue_name_env = _generate_queue_or_routing_key(
+      queue_name || process.env.SERVICE_NAME
+    );
+
+    var ok = await channel.assertQueue(queue_name_env, { durable: true });
+    await channel.bindQueue(
+      ok.queue,
+      EXCHANGE_NAME,
+      _generate_queue_or_routing_key(routing_key)
+    );
+    channel.consume(ok.queue, callback, { noAck: true });
+  } catch (consume_error) {
+    logger.warn(consume_error);
   }
-
-  if (queue_name && typeof queue_name !== 'string') {
-    channel = queue_name;
-    queue_name = undefined;
-  }
-
-  if (!channel) {
-    channel = await create_channel()
-  }
-
-  var queue_name_env = _generate_queue_or_routing_key(queue_name || process.env.SERVICE_NAME);
-
-  var ok = await channel.assertQueue(queue_name_env, { durable: true });
-  await channel.bindQueue(ok.queue, EXCHANGE_NAME, _generate_queue_or_routing_key(routing_key));
-  channel.consume(ok.queue, callback, { noAck: true });
 }

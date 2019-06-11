@@ -5,6 +5,7 @@ const Joi = require("joi");
 const debug = require("debug")(__filename);
 const axios = require("axios");
 const {baseJoiOptions} = require('../utils/validators');
+const {logger} = require('@cc_server/logger');
 
 
 program
@@ -48,6 +49,12 @@ process.env.HOME_ROOT = __dirname;
 const dotenv = require("dotenv").config({
   path: path.resolve(__dirname, `.env.${process.env.NODE_ENV || 'development'}`)
 });
+
+process.on('uncaughtException', function(e) {
+  logger.error(`An error has occured in service '${process.env.SERVICE_NAME}'`);
+  console.log("Process will restart now.");
+  process.exit(1);
+})
 
 
 require(`./${app_args_joi_result.value.service}`);

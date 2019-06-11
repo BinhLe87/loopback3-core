@@ -10,25 +10,27 @@ const { logger } = require("@cc_server/logger");
 const { inspect } = require("@cc_server/utils/lib/printHelper");
 const api_util = require("../api_util");
 const URI = require("urijs");
-const {promisify} = require('util');
-const qs = require('qs');
+const { promisify } = require("util");
+const qs = require("qs");
 
 module.exports = exports = {};
 exports.__convert_to_page_positions_format = __convert_to_page_positions_format;
 
-
 var routing_key = "move_position";
-const requestAsync = promisify(axios.request).bind(axios);
 
 axios.interceptors.request.use(request => {
   logger.info(`Starting send request: ${inspect(request)}`);
-  return request
-})
+  return request;
+});
 
-axios.interceptors.response.use(response => {
-  console.log('Response:', response)
-  return response
-})
+axios.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => {
+    logger.warn(error);
+  }
+);
 
 const channel = create_channel()
   .then(channel => {
@@ -67,11 +69,7 @@ async function move_position_handler(tree_view_client) {
     _.forOwn(positions_need_update, async (value, key) => {
       try {
         let where_filter = {
-          and: [
-            {
-              [value.to_model_field]: value.to_model_value
-            }
-          ]
+          [value.to_model_field]: value.to_model_value
         };
 
         var { data, status } = await _update_position(
@@ -223,38 +221,58 @@ function __convert_to_page_positions_format(
  * @param {*} update_fields update object in update statement
  * @returns
  */
-async function _update_position(
+function _update_position(
   position_table_name,
   where_filter,
   update_fields
 ) {
 
-  var update_position_result = await requestAsync({
-    url: `/${position_table_name}/update`,
-    method: "post",
-    baseURL: process.env.API_URL,
-    params: {
-      access_token: process.env.API_ACCESS_TOKEN
-    },
-    params: {
-      where: where_filter
-    },
-    data: {
-      ...update_fields
-    },
-    validateStatus: (status) => {
-      return true;
-    },
-    paramsSerializer: (params) => {
+  return new Promise((resolve, reject) => {
 
-      return qs.stringify(params)
-  },
-  transformResponse: [function (data) {
-    // Do whatever you want to transform the data
-
-    return data;
-  }],
+    axios.post(`/${position_table_name}/update`, qs.stringify(update_fields), {
+      baseURL: process.env.API_URL,
+      params: {
+        where: where_filter,
+        access_token: process.env.API_ACCESS_TOKEN
+      },
+      paramsSerializer: params => {
+        return qs.stringify(params);
+      }
+    }).then(response => {
+      debug(response);
+      resolve(response);
+    }).catch(error => {
+      reject(error);
+    });
   });
 
-  return update_position_result;
+  
+
+  // var update_position_result = await requestAsync({
+  //   url: `/${position_table_name}/update`,
+  //   method: "post",
+  //   baseURL: process.env.API_URL,
+  //   params: {
+  //     access_token: process.env.API_ACCESS_TOKEN
+  //   },
+  //   params: {
+  //     where: where_filter
+  //   },
+  //   data: {
+  //     ...update_fields
+  //   },
+  //   validateStatus: status => {
+  //     return true;
+  //   },
+  //   paramsSerializer: params => {
+  //     return JSON.stringify(params);
+  //   },
+  //   transformResponse: [
+  //     function(data) {
+  //       // Do whatever you want to transform the data
+
+  //       return data;
+  //     }
+  //   ]
+  // });
 }
