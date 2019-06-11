@@ -46,12 +46,8 @@ process.env.NODE_ENV = env_variables_joi_result.value.NODE_ENV;
 process.env.HOME_ROOT = __dirname;
 
 const dotenv = require("dotenv").config({
-  path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`)
+  path: path.resolve(__dirname, `.env.${process.env.NODE_ENV || 'development'}`)
 });
-
- const {logger} = require('@cc_server/logger');
-
- logger.info(`Running at NODE_ENV is ${process.env.NODE_ENV}`);
 
 
 require(`./${app_args_joi_result.value.service}`);

@@ -156,10 +156,10 @@ function add_message_json_and_format_message(info) {
   info.request_id = request_id;
   info.level = info.level;
   info.message_json = message_json;
-  
 
   var message_string = '';
   Object.getOwnPropertyNames(message_json).forEach(function (key, idx, array) {
+
     message_string += ' ' + message_json[key];
   }) 
 

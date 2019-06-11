@@ -160,8 +160,7 @@ exports.apply_hot_fix = async function apply_hot_fix() {
     return changes;
   } catch (error) {
     logger.error(
-      `apply_hot_fix(): Unable to apply hot fix code for issue 'Unsupport hasMany invert polymorphic relation'`,
-      __filename
+      `apply_hot_fix(): Unable to apply hot fix code for issue 'Unsupport hasMany invert polymorphic relation'`
     );
     throw error;
   }

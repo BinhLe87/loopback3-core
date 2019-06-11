@@ -41,7 +41,7 @@ module.exports = function() {
     }
 
     //log
-    logger.error(error_response);
+    logger.error(error_response, req);
 
     // Respond using the appropriate custom response
     res.status(error_response.statusCode);

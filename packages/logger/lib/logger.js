@@ -3,6 +3,7 @@ var winston = require('./winston');
 var path = require('path');
 var _ = require('lodash');
 var util = require('util');
+const {IncomingMessage} = require('http');
 
 var errorLoggerInstance; //singleton instance
 
@@ -138,11 +139,21 @@ generateErrorMessage(error_level = 'info', error = {}, req, options = {}) {
       error_message = tracingMethodsCalled.bind(this, error_message, options.omit_tracing_from_func)();
     }
 
-    if(req) {
+    if(req && req instanceof IncomingMessage) {
 
-      //extract X-Request-ID from req
+      //extract some properties from req, such as 'X-Request-ID'...
       var request_id = req.headers && req.headers['X-Request-ID'];
       meta.request_id = request_id;
+      meta.request = {
+        url: decodeURI(req.originalUrl),
+        method: req.method,
+        headers: req.headers,
+        remote_addr: req.ip,
+        remote_user_id: _.get(req, 'cc_options.user_id'),
+        request_body: _.toPlainObject(req.body),
+        request_query: _.toPlainObject(req.query)
+      }
+
     }
 
     return {

@@ -21,7 +21,7 @@ var routing_key = "move_position";
 const requestAsync = promisify(axios.request).bind(axios);
 
 axios.interceptors.request.use(request => {
-  console.log('Starting Request', request)
+  logger.info(`Starting send request: ${inspect(request)}`);
   return request
 })
 
@@ -36,7 +36,7 @@ const channel = create_channel()
       routing_key,
       async function(msg) {
         var message = msg.content.toString();
-        logger.info("=> received", message);
+        logger.info(`=> received: ${message}`);
         const { correlationId, replyTo } = msg.properties;
 
         await move_position_handler(JSON.parse(message));
