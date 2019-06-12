@@ -175,7 +175,7 @@
       }
     }
   },
-  "automation_subscribe": {
+  "workbook_delivery": {
     "dataSource": "cc_mysql",
     "public": true
   }
