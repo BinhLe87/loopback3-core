@@ -33,9 +33,9 @@
       "foreignKey": "versionId",
       "through": "workbook_version"
     },
-    "automation_subscribes": {
+    "workbook_delivery": {
       "type": "hasMany",
-      "model": "automation_subscribe",
+      "model": "workbook_delivery",
       "foreignKey": "version_id"
     }
   },

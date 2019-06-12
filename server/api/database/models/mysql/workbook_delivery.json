@@ -1,6 +1,6 @@
 {
-  "name": "automation_subscribe",
-  "plural": "automation_subscribes",
+  "name": "workbook_delivery",
+  "plural": "workbook_delivery",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -26,8 +26,11 @@
       "required": false,
       "default": "workbook"
     },
-    "deliver_state": {
-      "type": "object"
+    "state": {
+      "type": "object",
+      "mysql": {
+        "dataType": "longtext"
+      }
     }
   },
   "indexes": {
