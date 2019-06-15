@@ -63,7 +63,7 @@ module.exports = async function(WorkbookDelivery) {
   });
 
   WorkbookDelivery.observe('loaded', async function(ctx, next) {
-    if (_.get(ctx, 'options.req.params.id')) {
+    if (_.get(ctx, 'options.req.params.id') && _.get(ctx, 'data.version_id')) {
       var version = await ctx.Model.relations.version.modelTo.findById(ctx.data.version_id);
 
       if (version) {
