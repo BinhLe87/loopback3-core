@@ -93,14 +93,16 @@ module.exports = function(Item) {
         }
       }
 
-      //current user input value always take precedences over default value
-      var item_attributes_has_default_style_attributes = _.unionWith(
+      var item_attributes_has_default_style_attributes =  _.chain(_.unionWith(
         item_attributes,
         default_style_attributes,
         (default_arr, item_arr) => {
           return default_arr.id === item_arr.id;
         }
-      );
+      )).map(value => {
+        //current user input value always take precedences over default value
+          return _.assign(_.find(default_style_attributes, {id: value.id}), value);
+      }).value();
 
       ctx.data.item_attributes = JSON.stringify(
         item_attributes_has_default_style_attributes

@@ -17,9 +17,7 @@ module.exports = {
       },
       env_aws: {
         NODE_ENV: 'aws'
-      },
-      instances: 2,
-      exec_mode: 'cluster'
+      }
     },
     {
       name: 'service-rabbitmq',

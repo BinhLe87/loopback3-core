@@ -27,12 +27,10 @@
             "stopOnEntry": false,
             "args": [
                 "--service",
-                "rabbitmq",
-                "--env",
-                "development"
+                "rabbitmq",//"scheduled_executor"
             ],
             "env": {"NODE_ENV": "development"},
-            //"envFile": "${workspaceFolder}/packages/utils/.env.development"     
+            "envFile": "${workspaceFolder}/packages/utils/.env.development"     
         },
         {
             "type": "node",

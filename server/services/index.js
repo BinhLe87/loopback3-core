@@ -52,7 +52,7 @@ const dotenv = require("dotenv").config({
 
 process.on('uncaughtException', function(e) {
   logger.error(`An error has occured in service '${process.env.SERVICE_NAME}'`);
-  console.log("Process will restart now.");
+  console.log("Process will restart now");
   process.exit(1);
 })
 

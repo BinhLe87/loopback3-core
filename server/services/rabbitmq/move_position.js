@@ -72,18 +72,20 @@ async function move_position_handler(tree_view_client) {
           [value.to_model_field]: value.to_model_value
         };
 
+        var req_body = {
+          display_index: value.display_index,
+          [value.from_model_field]: value.from_model_value
+        };
+
         var { data, status } = await _update_position(
           value.relation_model_name,
           where_filter,
-          {
-            display_index: value.display_index,
-            [value.from_model_field]: value.from_model_value
-          }
+          req_body
         );
         if (status === 200) {
           logger.info(
             `Done updating position at path ${key} with new value is:` +
-              inspect(data)
+              inspect(req_body)
           );
         }
       } catch (error) {
@@ -245,34 +247,4 @@ function _update_position(
       reject(error);
     });
   });
-
-  
-
-  // var update_position_result = await requestAsync({
-  //   url: `/${position_table_name}/update`,
-  //   method: "post",
-  //   baseURL: process.env.API_URL,
-  //   params: {
-  //     access_token: process.env.API_ACCESS_TOKEN
-  //   },
-  //   params: {
-  //     where: where_filter
-  //   },
-  //   data: {
-  //     ...update_fields
-  //   },
-  //   validateStatus: status => {
-  //     return true;
-  //   },
-  //   paramsSerializer: params => {
-  //     return JSON.stringify(params);
-  //   },
-  //   transformResponse: [
-  //     function(data) {
-  //       // Do whatever you want to transform the data
-
-  //       return data;
-  //     }
-  //   ]
-  // });
 }
