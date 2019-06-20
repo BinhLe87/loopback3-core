@@ -18,19 +18,6 @@ module.exports = {
       env_aws: {
         NODE_ENV: 'aws'
       }
-    },
-    {
-      name: 'service-rabbitmq',
-      script: 'server/services/index.js',
-      args: ["--service=rabbitmq"],
-      out_file: 'logs/service-rabbitmq.log',
-      autorestart: false,
-      env: {
-        NODE_ENV: 'staging'
-      },
-      env_development: {
-        NODE_ENV: 'development'
-      },
     }
   ]
 };
