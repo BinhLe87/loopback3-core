@@ -1,6 +1,6 @@
 export namespace logger {
 
-    export declare function log(level: String = 'info', error: Object | String, req?: any, options?: Object): void;
+    export declare function log(level?: String, error: Object, req?: any, options?: Object): void;
     export declare function silly(error: Object | String, req?: any, options?: Object): void;
     export declare function debug(error: Object | String, req?: any, options?: Object): void;
     export declare function verbose(error: Object | String, req?: any, options?: Object): void;

@@ -75,7 +75,8 @@ var logger = winston.createLogger({
     new DailyRotateFile({
       dirname: envVars.LOGS_DIR,
       filename: "error.%DATE%.log",
-      level: "error"
+      level: "error",
+      handleExceptions: true
     }),
     new DailyRotateFile({
       dirname: envVars.LOGS_DIR,
@@ -85,17 +86,20 @@ var logger = winston.createLogger({
     new DailyRotateFile({
       dirname: envVars.LOGS_DIR,
       filename: "combined.%DATE%.log",
-      level: envVars.LOGGER_LEVEL
+      level: envVars.LOGGER_LEVEL,
+      handleExceptions: true
     }),
     new winston.transports.File({
       filename: path.join(envVars.LOGS_DIR, "combined.log"),
-      level: envVars.LOGGER_LEVEL
+      level: envVars.LOGGER_LEVEL,
+      handleExceptions: true
     }),
     new Loggly({
       token: process.env.LOGGLY_TOKEN,
       subdomain: process.env.LOGGLY_SUBDOMAIN,
       tags: ["Winston-NodeJS"],
-      json: true
+      json: true,
+      handleExceptions: true
     })
   ],
   exceptionHandlers: [

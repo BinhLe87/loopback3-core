@@ -1,5 +1,6 @@
 const redis_utils = require('./index');
 const {logger} = require('@cc_server/logger');
+const _ = require('lodash');
 
 module.exports = exports = {};
 
@@ -30,7 +31,8 @@ async function schedule_job(job_data = '', will_exec_in_seconds, callback = (key
         callback(key, value);
     });
 
-    redis_utils.generate_client_duplicate().multi().set(SCHEDULE_JOB, job_data).set(SCHEDULE_JOB_REMINDER, 1).expire(SCHEDULE_JOB_REMINDER, will_exec_in_seconds).exec((err, replies) => {
+    var job_data_string = _.isPlainObject(job_data) ? JSON.stringify(job_data) : job_data;
+    redis_utils.generate_client_duplicate().multi().set(SCHEDULE_JOB, job_data_string).set(SCHEDULE_JOB_REMINDER, 1).expire(SCHEDULE_JOB_REMINDER, will_exec_in_seconds).exec((err, replies) => {
 
         if (err) {
 
@@ -38,7 +40,5 @@ async function schedule_job(job_data = '', will_exec_in_seconds, callback = (key
             logger.error(err);
         }
     });
-
-    console.log(SCHEDULE_JOB);
 }
 

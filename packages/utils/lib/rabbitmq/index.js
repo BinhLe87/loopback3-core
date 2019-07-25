@@ -5,6 +5,7 @@ const { logger } = require("@cc_server/logger");
 const { inspect } = require("../printHelper");
 const Promise = require("bluebird");
 const uuid = require("uuid");
+const _ = require('lodash');
 
 const REPLY_QUEUE = "amq.rabbitmq.reply-to";
 
@@ -134,6 +135,11 @@ function close_connection() {
  * @param {*} [options={}]
  */
 async function send_message(message, routing_key, channel, options = {}) {
+
+  if (_.isEmpty(message) || _.isEmpty(routing_key)) {
+    throw new Error(`the function send_message() requires 'message' and 'routing_key' must be passed.`);
+  }
+
   if (!channel) {
     channel = await create_channel({ auto_close_connection: true });
   }
@@ -147,9 +153,11 @@ async function send_message(message, routing_key, channel, options = {}) {
     options.request_id || options.correlationId || uuid.v4(); //aliases of request_id
   delete options.request_id;
 
+  var routing_key_with_env = _generate_queue_or_routing_key(routing_key)
+
   var result = channel.publish(
     EXCHANGE_NAME,
-    _generate_queue_or_routing_key(routing_key),
+    routing_key_with_env,
     Buffer.from(message_standard),
     Object.assign({}, options, {
       correlationId: _correlationId
