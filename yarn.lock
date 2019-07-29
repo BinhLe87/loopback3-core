@@ -1360,7 +1360,7 @@ bluebird@^3.1.1, bluebird@^3.4.6, bluebird@^3.5.1, bluebird@^3.5.2, bluebird@^3.
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.5.tgz#a8d0afd73251effbbd5fe384a77d73003c17a71f"
   integrity sha512-5am6HnnfN+urzt4yfg7IgTbotDjIT/u8AJpEt0sIU9FtXfVeezXAPKswrG+xKUCOYAINpSdgZVDU6QFh+cuH3w==
 
-body-parser@1.19.0, body-parser@^1.12.0, body-parser@^1.12.4, body-parser@^1.18.3:
+body-parser@1.19.0, body-parser@^1.12.0, body-parser@^1.12.4, body-parser@^1.18.3, body-parser@^1.19.0:
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.19.0.tgz#96b2709e57c9c4e09a6fd66a8fd979844f69f08a"
   integrity sha512-dhEPs72UPbDnAQJ9ZKMNTP6ptJaionhP5cBb541nXPlW60Jepo9RV/a4fX4XWW9CuFNK22krhrj1+rgzifNCsw==
@@ -2967,6 +2967,11 @@ express@4.x, express@^4.14.0:
     type-is "~1.6.18"
     utils-merge "1.0.1"
     vary "~1.1.2"
+
+expressjs@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/expressjs/-/expressjs-1.0.1.tgz#220328469a18df5ad615e2b7a0ce995f17fbaeef"
+  integrity sha1-IgMoRpoY31rWFeK3oM6ZXxf7ru8=
 
 extend-shallow@^2.0.1:
   version "2.0.1"

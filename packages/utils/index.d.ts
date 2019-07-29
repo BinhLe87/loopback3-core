@@ -25,3 +25,7 @@ export declare namespace mixed_utils {
     export declare function inspect(object_message:object):string;
 }
 
+export declare namespace expressjs {
+    export declare function server(port: number);
+}
+
