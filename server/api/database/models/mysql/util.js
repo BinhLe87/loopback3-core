@@ -7,7 +7,7 @@ const {
 const validation_utils = require('../../../helpers/validators/joiValidator');
 
 const { create_channel, send_message } = require('@cc_server/utils').rabbitmq;
-const routing_key = 'move_position';
+const routing_key = 'move_position_workbook_outline';
 const Joi = require('joi');
 const { baseJoiOptions } = require('../../../helpers/validators/joiValidator');
 const app = require('../../../server');

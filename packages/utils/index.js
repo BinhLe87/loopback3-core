@@ -15,3 +15,4 @@ utils.validators = require('./lib/validators/joiValidator');
 utils.redis = {...require('./lib/redis'), ...require('./lib/redis/redis.controller')};
 utils.mixed_utils = {...require('./lib/printHelper')};
 utils.expressjs = {...require('./lib/expressjs')};
+utils.file_utils = {...require('./lib/fileUtil')};

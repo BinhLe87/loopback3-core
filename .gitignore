@@ -51,3 +51,6 @@ server/vendors
 
 #aws
 /**/*aws*
+
+#yarn.lock
+yarn.lock

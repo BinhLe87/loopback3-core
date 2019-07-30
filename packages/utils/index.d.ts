@@ -29,3 +29,7 @@ export declare namespace expressjs {
     export declare function server(port: number);
 }
 
+export declare namespace file_utils {
+    export declare function override_process_env(env_file_path:string):object;
+}
+
