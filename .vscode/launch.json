@@ -37,8 +37,9 @@
             "request": "attach",
             "name": "Nodemon APC",
             "stopOnEntry": false,
+            "protocol": "inspector",
             "restart": true,
-            "protocol": "inspector"
+            "port": 9229
         },
     ]
 }
