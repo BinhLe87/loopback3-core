@@ -14,7 +14,7 @@ pipeline {
                         //Build the image from github source code
                         sh 'COMMIT=`git rev-parse --short HEAD`;sudo docker build --no-cache -t cc/automated-push-content:dev-apc-master-$BUILD_NUMBER-$COMMIT -f Dockerfile.apc-master .'
                         //Push the new build IMG to dockerhub                
-                        sh 'COMMIT=`git rev-parse --short HEAD`;id=`sudo docker images cc/automated-push-content:dev-apc-master-$BUILD_NUMBER-$COMMIT -q`; sudo docker tag $id coachingcloud/automated-push-content:dev-apc-master-$BUILD_NUMBER-$COMMIT; sudo docker push coachingcloud/automated-push-content'
+                        sh 'COMMIT=`git rev-parse --short HEAD`;id=`sudo docker images cc/automated-push-content:dev-apc-master-$BUILD_NUMBER-$COMMIT -q`; sudo docker tag $id coachingcloud/automated-push-content:dev-apc-master-$BUILD_NUMBER-$COMMIT; sudo docker tag $id coachingcloud/automated-push-content:dev-apc-master-latest; sudo docker push coachingcloud/automated-push-content'
                         // Clean up the build to release space disk
                         sh 'COMMIT=`git rev-parse --short HEAD`;id=`sudo docker images cc/automated-push-content:dev-apc-master-$BUILD_NUMBER-$COMMIT -q`; sudo docker rmi -f $id'
                     } catch (all) {
