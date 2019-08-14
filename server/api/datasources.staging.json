@@ -6,11 +6,11 @@
   "cc_mysql": {
     "connector": "mysql",
     "name": "cc_mysql",
-    "host": "dev01.cc.cloud",
+    "host": "${APC_DB_HOST}",
     "port": "3306",
-    "username": "docker",
-    "password": "0l0vKmcJYUrEtU5V",
-    "database": "${DATABASE_NAME}",
+    "username": "${APC_DB_USER}",
+    "password": "${APC_DB_USER_PASSWORD}",
+    "database": "${APC_DB_NAME}",
     "charset": "utf8mb4",
     "collation": "utf8mb4_general_ci",
     "normalizeUndefinedInQuery": "nullify"
