@@ -11,7 +11,8 @@
     "ActiveStatusDb": true,
     "BelongsToIntegrityCheck": false,
     "SortDisplayIndex": true,
-    "AddRelationModel": true
+    "AddRelationModel": true,
+    "UseRedisCache": true
   },
   "properties": {
     "title": {

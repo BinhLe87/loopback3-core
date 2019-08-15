@@ -3,7 +3,7 @@
 const { apply_hot_fix } = require('../helpers/loopbackUtil');
 
 module.exports = async function(server) {
-  apply_hot_fix();
+  //apply_hot_fix();
 
   customize_mysql_connector_buildOrderBy(server);
 };

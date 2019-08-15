@@ -17,7 +17,7 @@
   },
   "mixins": {
     "TimeStamp": true,
-    "BelongsToIntegrityCheck": false
+    "BelongsToIntegrityCheck": false    
   },
   "properties": {},
   "validations": [],
