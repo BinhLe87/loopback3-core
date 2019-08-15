@@ -3,7 +3,11 @@
 const path = require('path');
 const {file_utils} = require('@cc_server/utils');
 
-file_utils.override_process_env(path.resolve(__dirname, `.env.${process.env.NODE_ENV || 'development'}`));
+//file_utils.override_process_env(path.resolve(__dirname, `.env.${process.env.NODE_ENV || 'development'}`));
+
+const dotenv = require('dotenv').config({
+  path: path.resolve(__dirname, `.env.${process.env.NODE_ENV || 'development'}`)
+});
 
 //ensure mandatory parameters must be defined before lauching app
 require('./helpers/validators/preStartServiceValidator');

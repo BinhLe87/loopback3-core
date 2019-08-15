@@ -18,8 +18,7 @@ var envVarsSchema = joi
     ROOT_UPLOAD_DIR: joi
       .string()
       .default(path.resolve(__dirname, '../../upload')),
-    SERVER_ID: joi.string().default('s01'),
-    DATABASE_NAME: joi.string().required()
+    SERVER_ID: joi.string().default('s01')
   })
   .unknown()
   .required();
