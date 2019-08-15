@@ -45,6 +45,10 @@ ITEM_TYPES.set('multiple_choice_question', {
   id: aNumberCounter.increaseByOne(),
   label: 'multiple_choice_question'
 });
+ITEM_TYPES.set('page_title', {
+  id: aNumberCounter.increaseByOne(),
+  label: 'page_title'
+});
 
 var ATTRIBUTES = new Map();
 ATTRIBUTES.set('title', {

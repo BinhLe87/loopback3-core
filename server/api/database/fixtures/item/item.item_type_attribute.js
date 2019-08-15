@@ -11,6 +11,7 @@ module.exports.generate_item_type_attribute = async function() {
   await _generate_attributes_for_video();
   await _generate_attributes_for_text_question();
   await _generate_attributes_for_multiple_choice_question();
+  await _generate_attributes_for_page_title();
 };
 
 async function _generate_attributes_for_paragraph() {
@@ -92,6 +93,18 @@ async function _generate_attributes_for_multiple_choice_question() {
     item_typeId: ITEM_TYPES.get(item_type).id, //multiple_choice_question
     attributeId: ATTRIBUTES.get('multiple_choices').id, //multiple_choices
     display_index: aNumberCounter.increaseByOne()
+  });
+
+  await __add_common_style_attributes(item_type);
+}
+
+async function _generate_attributes_for_page_title() {
+  const item_type = 'page_title';
+
+  await require('../model.fixtures')(1, 'item_attribute_template', {
+    item_typeId: ITEM_TYPES.get(item_type).id, //page_title
+    attributeId: ATTRIBUTES.get('title').id, //title
+    display_index: aNumberCounter.resetIndex().increaseByOne()
   });
 
   await __add_common_style_attributes(item_type);
