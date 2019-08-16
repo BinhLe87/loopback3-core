@@ -23,22 +23,25 @@ cc_mysql_connector.all = function find(model, filter, options, cb) {
 
   var query_object = cc_mysql_connector.buildSelect(model, filter, options);
 
+  var promise_array = [];
+  const req_method = _.get(options,'req.method');
+  if(!(/DELETE/i).test(req_method) && redis_key && should_use_cache) { //if it's DELETE request method, ignore reading from redis cache because it may be expired thus not found
+    promise_array.push(readFromRedisCache(redis_key))
+  }
+
 
   if (should_use_cache && redis_key) {
-    Promise.any([
-      readFromRedisCache(redis_key),
-      cc_mysql_connector_execute_promise(
-        query_object.sql,
-        query_object.params,
-        options
-      )
-    ])
+    Promise.any([...promise_array, cc_mysql_connector_execute_promise(
+      query_object.sql,
+      query_object.params,
+      options
+    )])
       .then(data => {
         var is_data_from_redis =
           _.get(data, 'source_data') === 'redis' ? true : false;
         var objs;
         if (!is_data_from_redis) {
-          //data from mysql
+          //MARK: read data from mysql
 
           objs = data.map(obj => {
             return this.fromRow(model, obj);
@@ -49,9 +52,13 @@ cc_mysql_connector.all = function find(model, filter, options, cb) {
             redis.set(redis_key, JSON.stringify(objs), REDIS_EXPIRE_TIME);
           }
         } else {
-          //data from redis
+          //MARK: read data from redis
           objs = _.get(data, 'data');
-          objs = objs ? JSON.parse(objs) : {};
+          objs = objs ? _.castArray(JSON.parse(objs)) : [];
+
+          //mark `x-cache` flag in response header
+          var ctx_res = _.get(options,'res', {});
+         
         }
 
         if (filter && filter.include) {
@@ -106,11 +113,14 @@ module.exports = function(Model, options) {
 
 
       //for use in operation hooks
-      _.set(ctx, 'hookState.should_use_cache', true);
+      const req_method = _.get(ctx, 'options.req.method');
+      const should_use_cache = !(/DELETE/i).test(req_method); //not cache if this's DELETE request
+
+      _.set(ctx, 'hookState.should_use_cache', should_use_cache);
       _.set(ctx, 'hookState.redis_key', redis_key); 
       _.set(ctx, 'hookState.query_string_hash', query_string_hash); 
       //for use in model hooks
-      _.set(ctx, 'options.should_use_cache', true);
+      _.set(ctx, 'options.should_use_cache', should_use_cache);
       _.set(ctx, 'options.redis_key', redis_key); 
       _.set(ctx, 'options.query_string_hash', query_string_hash); 
 
@@ -148,6 +158,13 @@ module.exports = function(Model, options) {
       delRedisCache(redis_key);
     }
   });
+
+  Model.createOptionsFromRemotingContext = function(ctx) {
+   return {
+     req: ctx.req,
+     res: ctx.res
+   }
+  };
 };
 
 

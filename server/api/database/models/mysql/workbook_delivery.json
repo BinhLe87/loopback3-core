@@ -10,8 +10,7 @@
     "TimeStamp": true,
     "ActiveStatusDb": true,
     "BelongsToIntegrityCheck": false,
-    "AddRelationModel": true,
-    "UseRedisCache": true
+    "AddRelationModel": true
   },
   "properties": {
     "user_id": {
