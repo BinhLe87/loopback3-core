@@ -122,34 +122,30 @@ module.exports = function(Model, options) {
 
   Model.observe('after save', async function(ctx) {
     var instance = ctx.instance;
-    var instance_data = _.get(instance, 'data');
+    var instance_data = _.get(instance, '__data');
     var instance_id = _.get(instance, 'id');
     var model_name = ctx.Model.modelName;
 
     if(shouldCache(ctx)) {
 
       var redis_key = generateRedisCache(model_name, instance_id);
-      var should_use_cache = _.get(ctx, 'hookState.should_use_cache', false);
     
-      if (should_use_cache && redis_key && instance_data) {
+      if (redis_key && instance_data) {
     
         setRedisCache(redis_key, instance_data);
       }
     }
-
-
-   
   });
 
   Model.observe('after delete', async function(ctx) {
     var instance = ctx.instance;
-    var instance_data = _.get(instance, 'data');
-    var redis_key = _.get(ctx, 'hookState.redis_key');
-    var should_use_cache = _.get(ctx, 'hookState.should_use_cache', false);
+    var instance_id = _.get(instance, 'id');
+    var model_name = ctx.Model.modelName;
   
-    if (should_use_cache && redis_key && instance_data) {
+    if (instance_id) {
   
-      setRedisCache(redis_key, instance_data);
+      var redis_key = generateRedisCache(model_name, instance_id);
+      delRedisCache(redis_key);
     }
   });
 };
@@ -170,6 +166,11 @@ async function readFromRedisCache(key) {
 async function setRedisCache(key, value, expire_time=REDIS_EXPIRE_TIME) {
 
   redis.set(key, value, expire_time);
+}
+
+async function delRedisCache(key) {
+
+  redis.del(key);
 }
 /**
  *

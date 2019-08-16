@@ -24,18 +24,27 @@ module.exports = function(Model, options) {
     var updateAttributePromise = Promise.promisify(
       found_model_item.updateAttribute
     ).bind(found_model_item);
-    var updated_model_item = await updateAttributePromise('is_active', false);
+    var deleted_model_item = await updateAttributePromise('is_active', false);
 
-    if (!updated_model_item) {
+    if (!deleted_model_item) {
       throw Boom.badRequest(`Failed to delete record has id '${id}'`);
     }
 
-    updated_model_item.cc_hook_options = {
+    deleted_model_item.cc_hook_options = {
       resultType: Model.modelName
     };
     //add resultType in order to parse later in jsonApiFormatter.js
 
-    callback(null, updated_model_item);
+    const context = {
+      Model: Model,
+      hookState: {},
+      options: {},
+      instance: deleted_model_item
+    };
+    Model.notifyObserversOf('after delete', context, function(err) {
+
+      callback(null, deleted_model_item);
+    });
   };
 
   Model.observe('access', async function(ctx) {
