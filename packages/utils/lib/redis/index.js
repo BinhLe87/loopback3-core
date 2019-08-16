@@ -50,10 +50,15 @@ function create_redis_client(
 ) {
   if (should_use_client_cache && client) return client;
 
-  client = redis.createClient({
+  var redis_options = {
     host: connection_options.redis_host || process.env.REDIS_HOST,
-    port: connection_options.redis_port || process.env.REDIS_PORT
-  });
+    port: connection_options.redis_port || process.env.REDIS_PORT,    
+  };
+  if (process.env.REDIS_PASSWORD) {
+    redis_options.password = process.env.REDIS_PASSWORD;
+  }
+
+  client = redis.createClient(redis_options);
 
   client.select(default_database_id, (err, res) => {
     if (err) {

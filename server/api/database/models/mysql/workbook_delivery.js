@@ -84,6 +84,12 @@ module.exports = async function(WorkbookDelivery) {
   });
 
   WorkbookDelivery.observe('loaded', async function(ctx, next) {
+
+    var hookState = ctx.hookState;
+    if (hookState.is_cached_data === true) {
+      return ctx.data;
+    }
+
     if (_.get(ctx, 'options.req.params.id') && _.get(ctx, 'data.version_id')) {
 
       performance.mark('workbook_chapter' + '-start');
