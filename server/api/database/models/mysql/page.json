@@ -17,6 +17,10 @@
     "title": {
       "type": "string",
       "required": true
+    },
+    "visible_page_title": {
+      "type": "boolean",
+      "default": true
     }
   },
   "validations": [],
