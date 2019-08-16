@@ -83,7 +83,7 @@ module.exports = async function(WorkbookDelivery) {
     instance.user_id = _.get(ctx, 'options.current_user_id');
   });
 
-  WorkbookDelivery.observe('loaded', async function(ctx, next) {
+  WorkbookDelivery.observe('loaded', async function(ctx) {
 
     var hookState = ctx.hookState;
     if (hookState.is_cached_data === true) {

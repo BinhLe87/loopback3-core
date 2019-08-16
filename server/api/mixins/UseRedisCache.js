@@ -12,7 +12,7 @@ var cc_mysql_connector = app.dataSources.cc_mysql.connector;
 const REDIS_EXPIRE_TIME = process.env.REDIS_EXPIRE_TIME || 1 * 60 * 60; //in seconds
 
 const cc_mysql_connector_all_origin = cc_mysql_connector.all; //save origin call() for restore later
-cc_mysql_connector.all = async function find(model, filter, options, cb) {
+cc_mysql_connector.all = function find(model, filter, options, cb) {
   var should_use_cache = _.get(options, 'should_use_cache', false);
   var redis_key = _.get(options, 'redis_key');
   var model_name = model;
@@ -74,13 +74,13 @@ cc_mysql_connector.all = async function find(model, filter, options, cb) {
 };
 
 module.exports = function(Model, options) {
-  Model.observe('access', async function(ctx) {
+  Model.observe('access', function(ctx, next) {
     try {      
 
       var model_name = ctx.Model.modelName;
       var ctx_query = ctx.query;
 
-      if(shouldCache(ctx)) return;
+      if(!shouldCache(ctx)) return;
 
       //MARK: generate redis_key from sql query string
       var query_object = cc_mysql_connector.buildSelect(
@@ -113,6 +113,8 @@ module.exports = function(Model, options) {
       _.set(ctx, 'options.should_use_cache', true);
       _.set(ctx, 'options.redis_key', redis_key); 
       _.set(ctx, 'options.query_string_hash', query_string_hash); 
+
+      next();
     } catch (error) {
       logger.warn(error);
     }
