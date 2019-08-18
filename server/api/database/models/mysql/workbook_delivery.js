@@ -80,7 +80,9 @@ function getDeliveryContent(versionContent, state) {
 module.exports = async function(WorkbookDelivery) {
   WorkbookDelivery.observe('before save', async function(ctx, next) {
     var instance = ctx.instance || ctx.currentInstance;
-    instance.user_id = _.get(ctx, 'options.current_user_id');
+    if (!instance.user_id) {
+      instance.user_id = _.get(ctx, 'options.current_user_id');
+    }
   });
 
   WorkbookDelivery.observe('loaded', async function(ctx) {
