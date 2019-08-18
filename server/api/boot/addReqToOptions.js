@@ -5,12 +5,10 @@ module.exports = function(app) {
     .remotes()
     .phases.addBefore('invoke', 'add-request-to-options')
     .use(function(ctx, next) {
-
       var current_user_id = _.get(ctx, 'args.options.accessToken.userId');
 
       _.set(ctx, 'args.options.req', ctx.req);
       if (current_user_id) {
-
         _.set(ctx, 'args.options.current_user_id', current_user_id);
       }
 

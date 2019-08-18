@@ -41,12 +41,9 @@ module.exports = function(Pageitem) {
           action: 'move'
         };
 
-        var { new_position_index } = await moveItemPosition(
-          url_params,
-          {
-            is_create_activity: true
-          }
-        );
+        var { new_position_index } = await moveItemPosition(url_params, {
+          is_create_activity: true
+        });
         new_position = new_position_index;
       }
 

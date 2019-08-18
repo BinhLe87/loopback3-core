@@ -24,18 +24,21 @@ cc_mysql_connector.all = function find(model, filter, options, cb) {
   var query_object = cc_mysql_connector.buildSelect(model, filter, options);
 
   var promise_array = [];
-  const req_method = _.get(options,'req.method');
-  if(!(/DELETE/i).test(req_method) && redis_key && should_use_cache) { //if it's DELETE request method, ignore reading from redis cache because it may be expired thus not found
-    promise_array.push(readFromRedisCache(redis_key))
+  const req_method = _.get(options, 'req.method');
+  if (!/DELETE/i.test(req_method) && redis_key && should_use_cache) {
+    //if it's DELETE request method, ignore reading from redis cache because it may be expired thus not found
+    promise_array.push(readFromRedisCache(redis_key));
   }
 
-
   if (should_use_cache && redis_key) {
-    Promise.any([...promise_array, cc_mysql_connector_execute_promise(
-      query_object.sql,
-      query_object.params,
-      options
-    )])
+    Promise.any([
+      ...promise_array,
+      cc_mysql_connector_execute_promise(
+        query_object.sql,
+        query_object.params,
+        options
+      )
+    ])
       .then(data => {
         var is_data_from_redis =
           _.get(data, 'source_data') === 'redis' ? true : false;
@@ -57,8 +60,7 @@ cc_mysql_connector.all = function find(model, filter, options, cb) {
           objs = objs ? _.castArray(JSON.parse(objs)) : [];
 
           //mark `x-cache` flag in response header
-          var ctx_res = _.get(options,'res', {});
-         
+          var ctx_res = _.get(options, 'res', {});
         }
 
         if (filter && filter.include) {
@@ -82,12 +84,11 @@ cc_mysql_connector.all = function find(model, filter, options, cb) {
 
 module.exports = function(Model, options) {
   Model.observe('access', function(ctx, next) {
-    try {      
-
+    try {
       var model_name = ctx.Model.modelName;
       var ctx_query = ctx.query;
 
-      if(!shouldCache(ctx)) return;
+      if (!shouldCache(ctx)) return;
 
       //MARK: generate redis_key from sql query string
       var query_object = cc_mysql_connector.buildSelect(
@@ -107,22 +108,24 @@ module.exports = function(Model, options) {
       );
 
       //MARK: hash query string
-      var query_string_hash = crypto.createHash('sha1').update(query_string).digest('base64');
+      var query_string_hash = crypto
+        .createHash('sha1')
+        .update(query_string)
+        .digest('base64');
       var instance_id = _.get(ctx, 'query.where.id');
       var redis_key = generateRedisCache(model_name, instance_id);
 
-
       //for use in operation hooks
       const req_method = _.get(ctx, 'options.req.method');
-      const should_use_cache = !(/DELETE/i).test(req_method); //not cache if this's DELETE request
+      const should_use_cache = !/DELETE/i.test(req_method); //not cache if this's DELETE request
 
       _.set(ctx, 'hookState.should_use_cache', should_use_cache);
-      _.set(ctx, 'hookState.redis_key', redis_key); 
-      _.set(ctx, 'hookState.query_string_hash', query_string_hash); 
+      _.set(ctx, 'hookState.redis_key', redis_key);
+      _.set(ctx, 'hookState.query_string_hash', query_string_hash);
       //for use in model hooks
       _.set(ctx, 'options.should_use_cache', should_use_cache);
-      _.set(ctx, 'options.redis_key', redis_key); 
-      _.set(ctx, 'options.query_string_hash', query_string_hash); 
+      _.set(ctx, 'options.redis_key', redis_key);
+      _.set(ctx, 'options.query_string_hash', query_string_hash);
 
       next();
     } catch (error) {
@@ -136,12 +139,10 @@ module.exports = function(Model, options) {
     var instance_id = _.get(instance, 'id');
     var model_name = ctx.Model.modelName;
 
-    if(shouldCache(ctx)) {
-
+    if (shouldCache(ctx)) {
       var redis_key = generateRedisCache(model_name, instance_id);
-    
+
       if (redis_key && instance_data) {
-    
         setRedisCache(redis_key, instance_data);
       }
     }
@@ -151,23 +152,20 @@ module.exports = function(Model, options) {
     var instance = ctx.instance;
     var instance_id = _.get(instance, 'id');
     var model_name = ctx.Model.modelName;
-  
+
     if (instance_id) {
-  
       var redis_key = generateRedisCache(model_name, instance_id);
       delRedisCache(redis_key);
     }
   });
 
   Model.createOptionsFromRemotingContext = function(ctx) {
-   return {
-     req: ctx.req,
-     res: ctx.res
-   }
+    return {
+      req: ctx.req,
+      res: ctx.res
+    };
   };
 };
-
-
 
 async function readFromRedisCache(key) {
   var value = await redis.get(key);
@@ -180,13 +178,11 @@ async function readFromRedisCache(key) {
   };
 }
 
-async function setRedisCache(key, value, expire_time=REDIS_EXPIRE_TIME) {
-
+async function setRedisCache(key, value, expire_time = REDIS_EXPIRE_TIME) {
   redis.set(key, value, expire_time);
 }
 
 async function delRedisCache(key) {
-
   redis.del(key);
 }
 /**
@@ -198,29 +194,30 @@ async function delRedisCache(key) {
  * @returns
  */
 function generateRedisCache(model_name, model_id, ...other_key_params) {
-
   if (_.isEmpty(other_key_params)) {
-
     return `${model_name}:${model_id}`;
   } else {
-
-    var other_key_string = _.reduce(other_key_params, (accu, value) => {
+    var other_key_string = _.reduce(
+      other_key_params,
+      (accu, value) => {
         if (_.isPlainObject(value)) {
           _.forOwn(value, (obj_value, obj_key) => {
-
             accu += (_.isEmpty(accu) ? '' : ':') + `${obj_key}:${obj_value}`;
           });
         }
 
         return accu;
-    }, '');
+      },
+      ''
+    );
 
-    return `${model_name}:${model_id}${_.isEmpty(other_key_string) ? '' : (':' + other_key_string)}`;
+    return `${model_name}:${model_id}${
+      _.isEmpty(other_key_string) ? '' : ':' + other_key_string
+    }`;
   }
 }
 
 function shouldCache(ctx) {
-
   var instance_id = _.get(ctx, 'query.where.id') || _.get(ctx, 'instance.id');
   var should_cache = !!instance_id;
 

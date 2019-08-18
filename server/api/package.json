@@ -1,6 +1,6 @@
 {
   "name": "apc_api",
-  "version": "1.7.0",
+  "version": "1.8.0-alpha.0",
   "main": "server.js",
   "engines": {
     "node": ">=4"
@@ -47,10 +47,11 @@
   },
   "dependencies": {
     "@cc_server/logger": "^1.6.2",
-    "@cc_server/utils": "^1.8.0",
+    "@cc_server/utils": "^1.12.0-alpha.0",
     "@sindresorhus/slugify": "^0.3.0",
     "amqplib": "^0.5.3",
     "bluebird": "^3.5.1",
+    "blueimp-md5": "^2.11.1",
     "body-parser": "^1.18.3",
     "boom": "^7.2.0",
     "compression": "^1.0.3",
