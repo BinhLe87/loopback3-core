@@ -1,6 +1,6 @@
 {
   "name": "@cc_server/utils",
-  "version": "1.11.0",
+  "version": "1.12.0-alpha.0",
   "description": "> TODO: description",
   "author": "Binh Le <vanbinh87@gmail.com>",
   "homepage": "https://github.com/CoachingCloud/automated-push-content/tree/master/packages/utils#readme",
@@ -39,6 +39,5 @@
     "shelljs": "^0.8.3",
     "uuid": "^3.3.2"
   },
-  "gitHead": "9e1c2cada50eb369d8aafa865e2cb5bf957fb15f",
-  "devDependencies": {}
+  "gitHead": "9e1c2cada50eb369d8aafa865e2cb5bf957fb15f"
 }
