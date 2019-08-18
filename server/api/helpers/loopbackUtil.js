@@ -55,7 +55,7 @@ exports.buildAbsoluteURLFromReqAndRelativePath = function buildAbsoluteURLFromRe
 /**
  * Attempt to convert transformed file name like `workbook-1_s01_api_20180928_b8c752_299_168.jpeg`
  * to file url like `http:/localhost:8080/upload/api/2018/09/28/workbook-1_s01_api_20180928_b8c752_299_168.jpeg`
- * Notice: 
+ * Notice:
  * - It may replace domain name in origin url based on transformed file name
  * - If failed, it returns original file name that was passed as an argument
  * @param {*} req http request
@@ -170,5 +170,3 @@ exports.isImageFileExt = function(file_name) {
   var IMAGE_EXT_REGX = /.(jpg|jpeg|png|gif)$/i;
   return IMAGE_EXT_REGX.test(file_name);
 };
-
-

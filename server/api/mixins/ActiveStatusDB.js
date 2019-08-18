@@ -18,11 +18,14 @@ module.exports = function(Model, options) {
     var found_model_item = await findByIdPromise(id, filter);
 
     if (!found_model_item) {
-
-      Model.notifyObserversOf('after delete', {
-        instance: {id: id},
-        Model: Model //attempt delete in redis to avoid inconsistence between DB and Redis somehow
-      }, function(err) {});
+      Model.notifyObserversOf(
+        'after delete',
+        {
+          instance: { id: id },
+          Model: Model //attempt delete in redis to avoid inconsistence between DB and Redis somehow
+        },
+        function(err) {}
+      );
 
       throw Boom.notFound(`Not found any record has id '${id}'`);
     }
@@ -48,7 +51,6 @@ module.exports = function(Model, options) {
       instance: deleted_model_item
     };
     Model.notifyObserversOf('after delete', context, function(err) {
-
       callback(null, deleted_model_item);
     });
   };

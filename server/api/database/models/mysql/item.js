@@ -93,16 +93,23 @@ module.exports = function(Item) {
         }
       }
 
-      var item_attributes_has_default_style_attributes =  _.chain(_.unionWith(
-        item_attributes,
-        default_style_attributes,
-        (default_arr, item_arr) => {
-          return default_arr.id === item_arr.id;
-        }
-      )).map(value => {
-        //current user input value always take precedences over default value
-          return _.assign(_.find(default_style_attributes, {id: value.id}), value);
-      }).value();
+      var item_attributes_has_default_style_attributes = _.chain(
+        _.unionWith(
+          item_attributes,
+          default_style_attributes,
+          (default_arr, item_arr) => {
+            return default_arr.id === item_arr.id;
+          }
+        )
+      )
+        .map(value => {
+          //current user input value always take precedences over default value
+          return _.assign(
+            _.find(default_style_attributes, { id: value.id }),
+            value
+          );
+        })
+        .value();
 
       ctx.data.item_attributes = JSON.stringify(
         item_attributes_has_default_style_attributes
@@ -312,7 +319,7 @@ module.exports = function(Item) {
 function _transformImageFileNameToImageURL(req, field_name, field_value) {
   if (
     ['high_url', 'medium_url', 'low_url'].includes(field_name) ||
-    (loopback_util.isImageFileExt(field_value))
+    loopback_util.isImageFileExt(field_value)
   ) {
     var transformed_file_name = field_value;
     var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(

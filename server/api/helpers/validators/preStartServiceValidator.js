@@ -7,9 +7,7 @@ var _ = require('lodash');
 
 var envVarsSchema = joi
   .object({
-    SERVICE_NAME: joi
-      .string()
-      .required(),
+    SERVICE_NAME: joi.string().required(),
     NODE_ENV: joi
       .string()
       .required()

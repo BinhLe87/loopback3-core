@@ -838,17 +838,17 @@ function transformFileNameInDBToFileURL(ctx) {
           var image_url = value;
 
           if (!_.isUndefined(image_url)) {
-              //ensure only transform once
-              var transformed_file_name = image_url;
-              var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
-                ctx.req,
-                transformed_file_name
-              );
+            //ensure only transform once
+            var transformed_file_name = image_url;
+            var transformed_file_url = loopback_util.convertTransformedFileNameToFileURL(
+              ctx.req,
+              transformed_file_name
+            );
 
-              //update new image url back to ctx.result
-              transformed_value = transformed_file_url;
+            //update new image url back to ctx.result
+            transformed_value = transformed_file_url;
 
-              accumulator[key] = transformed_value;            
+            accumulator[key] = transformed_value;
           }
         }
       },
