@@ -1,3 +1,4 @@
+const mkdirp = require('mkdirp');
 const fs = require('fs');
 const md5 = require('blueimp-md5');
 const WorkbookVersion = require('./workbook-version');
@@ -8,7 +9,8 @@ module.exports = function(Version) {
     const Workbook = this.app.models.workbook;
     let workbook = await Workbook.findById(workbookId);
     let workbookUuid = `workbook-${md5(workbookId)}`;
-    let workbookContentFile = __dirname + '/../../../data/' + workbookUuid;
+    let workbookDataPath = __dirname + '/../../../data/';
+    let workbookContentFile = workbookDataPath + workbookUuid;
 
     let content;
     try {
@@ -24,6 +26,7 @@ module.exports = function(Version) {
         workbookId,
         this.app
       );
+      await mkdirp(workbookDataPath);
       fs.writeFileSync(workbookContentFile, JSON.stringify(content));
     }
 
