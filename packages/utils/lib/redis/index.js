@@ -3,6 +3,8 @@ var { logger } = require("@cc_server/logger");
 var { inspect } = require("../printHelper");
 var { promisify } = require("util");
 const uuidv4 = require("uuid/v4");
+const _ = require("lodash");
+const Promise = require("bluebird");
 
 var client = client ? client : create_redis_client();
 var client_duplicate;
@@ -25,6 +27,7 @@ module.exports = exports = {};
 exports.redis_client = client;
 exports.set = set;
 exports.get = get;
+exports.getMultipleKeys = getMultipleKeys;
 exports.del = del;
 exports.subcribe_notify_keyspace_event = subcribe_notify_keyspace_event;
 exports.EXPIRED_EVENT_NAME = EXPIRED_EVENT_NAME;
@@ -52,7 +55,7 @@ function create_redis_client(
 
   var redis_options = {
     host: connection_options.redis_host || process.env.REDIS_HOST,
-    port: connection_options.redis_port || process.env.REDIS_PORT,    
+    port: connection_options.redis_port || process.env.REDIS_PORT
   };
   if (process.env.REDIS_PASSWORD) {
     redis_options.password = process.env.REDIS_PASSWORD;
@@ -110,8 +113,32 @@ async function get(key_name) {
   var target_client =
     client.pub_sub_mode > 0 ? generate_client_duplicate() : client;
 
-  var key_value = await getAsync(target_client)(key_name);
-  return key_value;
+  return getAsync(target_client)(key_name);
+}
+
+/**
+ * get multiple redis keys at once
+ *
+ * @param {array|string} keys array of keys
+ * @returns {array} array of corresponding values
+ */
+async function getMultipleKeys(keys) {
+  //client is being in subcribe, so you must create another client instance in order to be able to fetch key
+  var target_client =
+    client.pub_sub_mode > 0 ? generate_client_duplicate() : client;
+
+  if (Array.isArray(keys)) {
+    var keys_promise_array = keys.map(key => {
+      return getAsync(target_client)(key);
+    });
+
+    return Promise.all(keys_promise_array);
+  } else if (_.isString(keys)) {
+    var result = await get(keys);
+    return _.castArray(result);
+  } else {
+    return null;
+  }
 }
 
 function del(key_name) {

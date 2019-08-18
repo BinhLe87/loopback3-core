@@ -8,6 +8,7 @@ module.exports = function(app) {
       var current_user_id = _.get(ctx, 'args.options.accessToken.userId');
 
       _.set(ctx, 'args.options.req', ctx.req);
+      _.set(ctx, 'args.options.res', ctx.res);
       if (current_user_id) {
         _.set(ctx, 'args.options.current_user_id', current_user_id);
       }

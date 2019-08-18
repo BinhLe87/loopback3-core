@@ -52,15 +52,16 @@ cc_mysql_connector.all = function find(model, filter, options, cb) {
 
           //MARK: save into redis cache for use later
           if (!_.isEmpty(objs) && redis_key) {
-            redis.set(redis_key, JSON.stringify(objs), REDIS_EXPIRE_TIME);
+            setRedisCacheForKeyArray(redis_key,objs);
           }
         } else {
           //MARK: read data from redis
           objs = _.get(data, 'data');
-          objs = objs ? _.castArray(JSON.parse(objs)) : [];
+          objs = _.isEmpty(objs) ? [] : objs.map((value) => {return JSON.parse(value)});
 
           //mark `x-cache` flag in response header
           var ctx_res = _.get(options, 'res', {});
+          ctx_res && ctx_res.set('CC-Cache', 'cached');
         }
 
         if (filter && filter.include) {
@@ -113,7 +114,8 @@ module.exports = function(Model, options) {
         .update(query_string)
         .digest('base64');
       var instance_id = _.get(ctx, 'query.where.id');
-      var redis_key = generateRedisCache(model_name, instance_id);
+      instance_id = _.get(instance_id, 'inq') ? _.get(instance_id, 'inq') : instance_id;
+      var redis_key = generateRedisKeys(model_name, instance_id);
 
       //for use in operation hooks
       const req_method = _.get(ctx, 'options.req.method');
@@ -140,10 +142,10 @@ module.exports = function(Model, options) {
     var model_name = ctx.Model.modelName;
 
     if (shouldCache(ctx)) {
-      var redis_key = generateRedisCache(model_name, instance_id);
+      var redis_key = generateRedisKeys(model_name, instance_id);
 
       if (redis_key && instance_data) {
-        setRedisCache(redis_key, instance_data);
+        setRedisCacheForKeyArray(redis_key, instance_data);
       }
     }
   });
@@ -154,7 +156,7 @@ module.exports = function(Model, options) {
     var model_name = ctx.Model.modelName;
 
     if (instance_id) {
-      var redis_key = generateRedisCache(model_name, instance_id);
+      var redis_key = generateRedisKeys(model_name, instance_id);
       delRedisCache(redis_key);
     }
   });
@@ -167,35 +169,121 @@ module.exports = function(Model, options) {
   };
 };
 
-async function readFromRedisCache(key) {
-  var value = await redis.get(key);
+/**
+ * read one or many redis keys at once
+ * 
+ * @param {string|array} keys 
+ * @returns {array} array of key values. Reject if at least one key not found
+ */
+async function readFromRedisCache(keys) {
 
-  if (!value) throw new Error(`Not found value with redis key '${key}'`);
+  return new Promise((resolve, reject) => {
 
-  return {
-    source_data: 'redis',
-    data: value
-  };
+    redis.getMultipleKeys(keys).then(function (results) {
+
+      var not_found_values_count = results.filter(result => _.isNil(result)).length;
+
+      if (not_found_values_count === 0) {
+        resolve({
+          source_data: 'redis',
+          data: results
+        });
+      } else {
+        reject();
+      }
+    }).catch(error => {
+
+      logger.warn(`Something wrong when reading redis caches with keys ${keys}`);
+      logger.warn(error);
+      reject(error);
+    });
+  })
 }
 
-async function setRedisCache(key, value, expire_time = REDIS_EXPIRE_TIME) {
-  redis.set(key, value, expire_time);
+/**
+ * Set redis value for one or many keys at once
+ *
+ * @param {array} key array of keys
+ * @param {array} value array of corresponding values. Only set cache for key has value is found.
+ * @param {*} [expire_time=REDIS_EXPIRE_TIME]
+ */
+async function setRedisCacheForKeyArray(key, value, expire_time = REDIS_EXPIRE_TIME) {
+  if (Array.isArray(key)) {
+    _.forEach(key, key_ele => {
+      //parse id from key string
+      var parsed_id_result = (/id:([^:]*)/gi).exec(key_ele);
+
+      if (!_.isNull(parsed_id_result)) {
+
+        var parsed_id = parsed_id_result[1];
+        var found_value = _.find(value, (value_ele) => {
+
+          if (!_.isNil(_.get(value_ele, 'id'))) {
+            var converted_parsed_id = _.isNumber(value_ele.id) ? parseInt(parsed_id, 10) : parsed_id;
+            return value_ele.id === converted_parsed_id;
+          }
+          return false;
+        });
+  
+        if (found_value) {
+
+          _setRedisCache(key_ele, found_value, expire_time);
+        }
+      }
+
+     
+    });
+  } else if (_.isString(key) && !_.isEmpty(value)) {
+    _setRedisCache(key, value, expire_time);
+  } else {
+    logger.warn(`Redis key ${key} has invalid type ${typeof key} or value is ${value}`);
+  }
 }
 
+async function _setRedisCache(key, value, expire_time = REDIS_EXPIRE_TIME) {
+
+  if(!_.isNil(value)) {
+
+    redis.set(key, JSON.stringify(value), expire_time);
+  }
+}
+
+/**
+ * delete one or many keys at once
+ *
+ * @param {array|string} key
+ */
 async function delRedisCache(key) {
+
+  if (Array.isArray(key)) {
+    _.forEach(key, key_ele => {
+      return delRedisCache(key_ele);
+    })
+  }
+
   redis.del(key);
 }
 /**
- *
+ * generate array of one or many redis keys
  *
  * @param {*} model_name
- * @param {*} model_id
+ * @param {string|array} model_id may be string or array type
  * @param {object,any} other_key_params object or series of object
- * @returns
+ * @returns {array} array of keys. The array may has one element if model_id is string
  */
-function generateRedisCache(model_name, model_id, ...other_key_params) {
+function generateRedisKeys(model_name, model_id, result_keys_param = [], ...other_key_params) {
+
+  if (Array.isArray(model_id)) {
+    _.forEach(model_id, model_id_ele => {
+
+      generateRedisKeys(model_name, model_id_ele, result_keys_param, ...other_key_params);
+    });
+
+    return result_keys_param;
+  }
+
   if (_.isEmpty(other_key_params)) {
-    return `${model_name}:${model_id}`;
+    result_keys_param.push(`${model_name}:id:${model_id}`);
   } else {
     var other_key_string = _.reduce(
       other_key_params,
@@ -211,12 +299,13 @@ function generateRedisCache(model_name, model_id, ...other_key_params) {
       ''
     );
 
-    return `${model_name}:${model_id}${
+    result_keys_param.push(`${model_name}:${model_id}${
       _.isEmpty(other_key_string) ? '' : ':' + other_key_string
-    }`;
+    }`);
   }
-}
 
+  return result_keys_param;
+}
 function shouldCache(ctx) {
   var instance_id = _.get(ctx, 'query.where.id') || _.get(ctx, 'instance.id');
   var should_cache = !!instance_id;

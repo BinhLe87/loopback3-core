@@ -95,7 +95,7 @@ module.exports = async function(WorkbookDelivery) {
       performance.mark('workbook_chapter' + '-start');
 
       var version = await ctx.Model.relations.version.modelTo.findById(
-        ctx.data.version_id
+        ctx.data.version_id, {}, ctx.options
       );
       performance.mark('workbook_chapter' + '-end');
       performance.measure(
