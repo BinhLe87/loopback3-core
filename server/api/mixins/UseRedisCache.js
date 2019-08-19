@@ -17,35 +17,32 @@ cc_mysql_connector.all = function find(model, filter, options, cb) {
   var redis_key = _.get(options, 'redis_key');
   var model_name = model;
 
-  const queryMySQL = Promise.promisify(
-    cc_mysql_connector.execute
-  ).bind(cc_mysql_connector);
+  const queryMySQL = Promise.promisify(cc_mysql_connector.execute).bind(
+    cc_mysql_connector
+  );
 
   var query_object = cc_mysql_connector.buildSelect(model, filter, options);
 
   var promise_array = [];
   const req_method = _.get(options, 'req.method');
-  if (!/DELETE/i.test(req_method) && redis_key && should_use_cache) {
+  if (!_.isEmpty(redis_key) && should_use_cache) {
     //if it's DELETE request method, ignore reading from redis cache because it may be expired thus not found
     promise_array.push(readFromRedisCache(redis_key));
   }
 
-  if (should_use_cache && redis_key) {
+  if (should_use_cache) {
     Promise.any([
       ...promise_array,
-      queryMySQL(
-        query_object.sql,
-        query_object.params,
-        options
-      ).then(data => {
-
+      queryMySQL(query_object.sql, query_object.params, options).then(data => {
         let objs = data.map(obj => {
           return this.fromRow(model, obj);
         });
 
+        redis_key = generateRedisKeys(model_name, objs.map(ele => ele.id));
+
         //MARK: save into redis cache for use later
         if (!_.isEmpty(objs) && redis_key) {
-          setRedisCacheForKeyArray(redis_key,objs);
+          setRedisCacheForKeyArray(redis_key, objs);
         }
 
         return objs;
@@ -54,13 +51,17 @@ cc_mysql_connector.all = function find(model, filter, options, cb) {
       .then(data => {
         var is_data_from_redis =
           _.get(data, 'source_data') === 'redis' ? true : false;
-        var objs;
+        var objs = data;
 
         //MARK: read data from redis
+        //convert data
         if (is_data_from_redis) {
-
           objs = _.get(data, 'data');
-          objs = _.isEmpty(objs) ? [] : objs.map((value) => {return JSON.parse(value)});
+          objs = _.isEmpty(objs)
+            ? []
+            : objs.map(value => {
+                return JSON.parse(value);
+              });
 
           //mark `x-cache` flag in response header
           var ctx_res = _.get(options, 'res', {});
@@ -92,8 +93,6 @@ module.exports = function(Model, options) {
       var model_name = ctx.Model.modelName;
       var ctx_query = ctx.query;
 
-      if (!shouldCache(ctx)) return;
-
       //MARK: generate redis_key from sql query string
       var query_object = cc_mysql_connector.buildSelect(
         model_name,
@@ -116,8 +115,7 @@ module.exports = function(Model, options) {
         .createHash('sha1')
         .update(query_string)
         .digest('base64');
-      var instance_id = _.get(ctx, 'query.where.id');
-      instance_id = _.get(instance_id, 'inq') ? _.get(instance_id, 'inq') : instance_id;
+      var instance_id = extractInstanceID(ctx);
       var redis_key = generateRedisKeys(model_name, instance_id);
 
       //for use in operation hooks
@@ -141,27 +139,22 @@ module.exports = function(Model, options) {
   Model.observe('after save', async function(ctx) {
     var instance = ctx.instance;
     var instance_data = _.get(instance, '__data');
-    var instance_id = _.get(instance, 'id');
+    var instance_id = extractInstanceID(ctx);
     var model_name = ctx.Model.modelName;
 
-    if (shouldCache(ctx)) {
-      var redis_key = generateRedisKeys(model_name, instance_id);
+    var redis_key = generateRedisKeys(model_name, instance_id);
 
-      if (redis_key && instance_data) {
-        setRedisCacheForKeyArray(redis_key, instance_data);
-      }
+    if (redis_key && instance_data) {
+      setRedisCacheForKeyArray(redis_key, instance_data);
     }
   });
 
   Model.observe('after delete', async function(ctx) {
-    var instance = ctx.instance;
-    var instance_id = _.get(instance, 'id');
+    var instance_id = extractInstanceID(ctx);
     var model_name = ctx.Model.modelName;
 
-    if (instance_id) {
-      var redis_key = generateRedisKeys(model_name, instance_id);
-      delRedisCache(redis_key);
-    }
+    var redis_key = generateRedisKeys(model_name, instance_id);
+    delRedisCache(redis_key);
   });
 
   Model.createOptionsFromRemotingContext = function(ctx) {
@@ -174,33 +167,35 @@ module.exports = function(Model, options) {
 
 /**
  * read one or many redis keys at once
- * 
- * @param {string|array} keys 
+ *
+ * @param {string|array} keys
  * @returns {array} array of key values. Reject if at least one key not found
  */
 async function readFromRedisCache(keys) {
-
   return new Promise((resolve, reject) => {
+    redis
+      .getMultipleKeys(keys)
+      .then(function(results) {
+        var not_found_values_count = results.filter(result => _.isNil(result))
+          .length;
 
-    redis.getMultipleKeys(keys).then(function (results) {
-
-      var not_found_values_count = results.filter(result => _.isNil(result)).length;
-
-      if (not_found_values_count === 0) {
-        resolve({
-          source_data: 'redis',
-          data: results
-        });
-      } else {
-        reject();
-      }
-    }).catch(error => {
-
-      logger.warn(`Something wrong when reading redis caches with keys ${keys}`);
-      logger.warn(error);
-      reject(error);
-    });
-  })
+        if (not_found_values_count === 0) {
+          resolve({
+            source_data: 'redis',
+            data: results
+          });
+        } else {
+          reject();
+        }
+      })
+      .catch(error => {
+        logger.warn(
+          `Something wrong when reading redis caches with keys ${keys}`
+        );
+        logger.warn(error);
+        reject(error);
+      });
+  });
 }
 
 /**
@@ -210,43 +205,45 @@ async function readFromRedisCache(keys) {
  * @param {array} value array of corresponding values. Only set cache for key has value is found.
  * @param {*} [expire_time=REDIS_EXPIRE_TIME]
  */
-async function setRedisCacheForKeyArray(key, value, expire_time = REDIS_EXPIRE_TIME) {
+async function setRedisCacheForKeyArray(
+  key,
+  value,
+  expire_time = REDIS_EXPIRE_TIME
+) {
   if (Array.isArray(key)) {
     _.forEach(key, key_ele => {
       //parse id from key string
-      var parsed_id_result = (/id:([^:]*)/gi).exec(key_ele);
+      var parsed_id_result = /id:([^:]*)/gi.exec(key_ele);
 
       if (!_.isNull(parsed_id_result)) {
-
         var parsed_id = parsed_id_result[1];
-        var found_value = _.find(value, (value_ele) => {
+        var found_value =
+          _.find(value, value_ele => {
+            if (!_.isNil(_.get(value_ele, 'id'))) {
+              var converted_parsed_id = _.isNumber(value_ele.id)
+                ? parseInt(parsed_id, 10)
+                : parsed_id;
+              return value_ele.id === converted_parsed_id;
+            }
+            return false;
+          }) || value;
 
-          if (!_.isNil(_.get(value_ele, 'id'))) {
-            var converted_parsed_id = _.isNumber(value_ele.id) ? parseInt(parsed_id, 10) : parsed_id;
-            return value_ele.id === converted_parsed_id;
-          }
-          return false;
-        });
-  
         if (found_value) {
-
           _setRedisCache(key_ele, found_value, expire_time);
         }
       }
-
-     
     });
   } else if (_.isString(key) && !_.isEmpty(value)) {
     _setRedisCache(key, value, expire_time);
   } else {
-    logger.warn(`Redis key ${key} has invalid type ${typeof key} or value is ${value}`);
+    logger.warn(
+      `Redis key ${key} has invalid type ${typeof key} or value is ${value}`
+    );
   }
 }
 
 async function _setRedisCache(key, value, expire_time = REDIS_EXPIRE_TIME) {
-
-  if(!_.isNil(value)) {
-
+  if (!_.isNil(value)) {
     redis.set(key, JSON.stringify(value), expire_time);
   }
 }
@@ -257,11 +254,10 @@ async function _setRedisCache(key, value, expire_time = REDIS_EXPIRE_TIME) {
  * @param {array|string} key
  */
 async function delRedisCache(key) {
-
   if (Array.isArray(key)) {
     _.forEach(key, key_ele => {
       return delRedisCache(key_ele);
-    })
+    });
   }
 
   redis.del(key);
@@ -274,12 +270,22 @@ async function delRedisCache(key) {
  * @param {object,any} other_key_params object or series of object
  * @returns {array} array of keys. The array may has one element if model_id is string
  */
-function generateRedisKeys(model_name, model_id, result_keys_param = [], ...other_key_params) {
+function generateRedisKeys(
+  model_name,
+  model_id,
+  result_keys_param = [],
+  ...other_key_params
+) {
+  if (_.isNil(model_id)) return undefined;
 
   if (Array.isArray(model_id)) {
     _.forEach(model_id, model_id_ele => {
-
-      generateRedisKeys(model_name, model_id_ele, result_keys_param, ...other_key_params);
+      generateRedisKeys(
+        model_name,
+        model_id_ele,
+        result_keys_param,
+        ...other_key_params
+      );
     });
 
     return result_keys_param;
@@ -302,16 +308,27 @@ function generateRedisKeys(model_name, model_id, result_keys_param = [], ...othe
       ''
     );
 
-    result_keys_param.push(`${model_name}:${model_id}${
-      _.isEmpty(other_key_string) ? '' : ':' + other_key_string
-    }`);
+    result_keys_param.push(
+      `${model_name}:${model_id}${
+        _.isEmpty(other_key_string) ? '' : ':' + other_key_string
+      }`
+    );
   }
 
   return result_keys_param;
 }
-function shouldCache(ctx) {
+/**
+ * extract instance_id(s) from ctx instance
+ *
+ * @param {*} ctx
+ * @returns {array} return array of instance_ids
+ */
+function extractInstanceID(ctx) {
   var instance_id = _.get(ctx, 'query.where.id') || _.get(ctx, 'instance.id');
-  var should_cache = !!instance_id;
 
-  return should_cache;
+  if (_.isNil(instance_id)) return undefined;
+
+  return _.get(instance_id, 'inq')
+    ? _.get(instance_id, 'inq')
+    : _.castArray(instance_id);
 }

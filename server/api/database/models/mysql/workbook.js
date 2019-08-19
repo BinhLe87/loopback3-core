@@ -21,18 +21,22 @@ module.exports = function(Workbook) {
   });
 
   //Delete this workbook from any place has relation to, may be from libary or program, etc.
-  Workbook.observe('after delete', async function(ctx) {
-    var deleted_workbook_id = ctx.where.id;
+  Workbook.observe('after delete', async function(ctx, next) {
+    var deleted_workbook_id = _.get(ctx, 'where.id');
 
-    //find relations in workbook_owner table
-    const LibraryWorkbookModel = app.models.workbook_owner;
-    let findLibraryWorkbookPromise = Promise.promisify(
-      LibraryWorkbookModel.find
-    ).bind(LibraryWorkbookModel);
+    if (deleted_workbook_id) {
+      //find relations in workbook_owner table
+      const LibraryWorkbookModel = app.models.workbook_owner;
+      let findLibraryWorkbookPromise = Promise.promisify(
+        LibraryWorkbookModel.find
+      ).bind(LibraryWorkbookModel);
 
-    var workbook_owner = await findLibraryWorkbookPromise({
-      where: { workbookId: deleted_workbook_id }
-    });
+      var workbook_owner = await findLibraryWorkbookPromise({
+        where: { workbookId: deleted_workbook_id }
+      });
+    }
+
+    next();
   });
 
   Workbook.observe('persist', function(ctx, next) {
