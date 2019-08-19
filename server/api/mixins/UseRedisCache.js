@@ -17,7 +17,7 @@ cc_mysql_connector.all = function find(model, filter, options, cb) {
   var redis_key = _.get(options, 'redis_key');
   var model_name = model;
 
-  const cc_mysql_connector_execute_promise = Promise.promisify(
+  const queryMySQL = Promise.promisify(
     cc_mysql_connector.execute
   ).bind(cc_mysql_connector);
 
@@ -33,29 +33,32 @@ cc_mysql_connector.all = function find(model, filter, options, cb) {
   if (should_use_cache && redis_key) {
     Promise.any([
       ...promise_array,
-      cc_mysql_connector_execute_promise(
+      queryMySQL(
         query_object.sql,
         query_object.params,
         options
-      )
+      ).then(data => {
+
+        let objs = data.map(obj => {
+          return this.fromRow(model, obj);
+        });
+
+        //MARK: save into redis cache for use later
+        if (!_.isEmpty(objs) && redis_key) {
+          setRedisCacheForKeyArray(redis_key,objs);
+        }
+
+        return objs;
+      })
     ])
       .then(data => {
         var is_data_from_redis =
           _.get(data, 'source_data') === 'redis' ? true : false;
         var objs;
-        if (!is_data_from_redis) {
-          //MARK: read data from mysql
 
-          objs = data.map(obj => {
-            return this.fromRow(model, obj);
-          });
+        //MARK: read data from redis
+        if (is_data_from_redis) {
 
-          //MARK: save into redis cache for use later
-          if (!_.isEmpty(objs) && redis_key) {
-            setRedisCacheForKeyArray(redis_key,objs);
-          }
-        } else {
-          //MARK: read data from redis
           objs = _.get(data, 'data');
           objs = _.isEmpty(objs) ? [] : objs.map((value) => {return JSON.parse(value)});
 
