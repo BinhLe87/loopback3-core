@@ -13,6 +13,7 @@
     "database": "${APC_DB_NAME}",
     "charset": "utf8mb4",
     "collation": "utf8mb4_general_ci",
-    "normalizeUndefinedInQuery": "nullify"
+    "normalizeUndefinedInQuery": "nullify",
+    "debug": false
   }
 }

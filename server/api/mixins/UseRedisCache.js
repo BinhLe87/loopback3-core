@@ -64,7 +64,7 @@ cc_mysql_connector.all = function find(model, filter, options, cb) {
               });
 
           //mark `x-cache` flag in response header
-          var ctx_res = _.get(options, 'res', {});
+          var ctx_res = _.get(options, 'res');
           ctx_res && ctx_res.set('CC-Cache', 'cached');
         }
 

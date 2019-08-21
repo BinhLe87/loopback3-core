@@ -2,10 +2,16 @@
 
 const { apply_hot_fix } = require('../helpers/loopbackUtil');
 
+
+
 module.exports = async function(server) {
   //apply_hot_fix();
 
   customize_mysql_connector_buildOrderBy(server);
+
+  //disable mysql prints protocol details to stdout
+  var cc_mysql_connector = server.dataSources.cc_mysql.connector;
+  cc_mysql_connector.settings.debug = false;
 };
 
 function customize_mysql_connector_buildOrderBy(server) {
