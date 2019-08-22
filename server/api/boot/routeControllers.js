@@ -38,7 +38,7 @@ module.exports = function(server) {
     `${restApiRoot}/workbooks`,
     workbook_published
   );
-  
+
 
   server.use(router);
 };

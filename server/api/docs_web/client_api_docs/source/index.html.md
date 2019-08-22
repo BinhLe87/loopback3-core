@@ -20,6 +20,7 @@ includes:
   - api/user/user_workbook
   - api/user/user_note
   - api/user/user_share_workbook
+  - api/user/user_settings
 
   - api/library/library_index
   - api/library/library_workbook
