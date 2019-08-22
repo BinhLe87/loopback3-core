@@ -1,7 +1,7 @@
 'use strict';
 var {
   moveItemPosition
-} = require('../../../controllers/moveItemPositionController');
+} = require('../../../controllers/workbook/moveItemPositionController');
 
 module.exports = function(Chapterpage) {
   Chapterpage.observe('before save', async function(ctx, next) {

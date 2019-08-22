@@ -3,7 +3,8 @@ const loginController = require('../controllers/authen/login');
 const resiseImageOnFlyController = require('../controllers/item/resizeImageOnFly');
 const {
   moveItemPositionController
-} = require('../controllers/moveItemPositionController');
+} = require('../controllers/workbook/moveItemPositionController');
+const {workbook_published} = require('../controllers/workbook/workbook_publish_status');
 
 module.exports = function(server) {
   // Install a `/` route that returns server status
@@ -31,6 +32,13 @@ module.exports = function(server) {
     `${restApiRoot}/:scope_model/:scope_model_id/move_from/:from_parent_model_id/move_to/:to_parent_model_id/at_position/:to_model_id?`,
     moveItemPositionController
   );
+
+  //workbook was published
+  router.get(
+    `${restApiRoot}/workbooks`,
+    workbook_published
+  );
+  
 
   server.use(router);
 };

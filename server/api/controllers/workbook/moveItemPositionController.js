@@ -1,5 +1,5 @@
 'use strict';
-const app = require('../server');
+const app = require('../../server');
 const Promise = require('bluebird');
 const debug = require('debug')('workbook-chapter.util.js');
 const Joi = require('joi');

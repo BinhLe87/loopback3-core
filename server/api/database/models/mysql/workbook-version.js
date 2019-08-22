@@ -5,7 +5,7 @@ var md5 = require('blueimp-md5');
 const app = require('../../../server');
 var {
   moveItemPosition
-} = require('../../../controllers/moveItemPositionController');
+} = require('../../../controllers/workbook/moveItemPositionController');
 
 function formatResourceData(value, type, included) {
   if (value.id) {

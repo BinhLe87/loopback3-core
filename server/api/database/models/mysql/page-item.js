@@ -3,7 +3,7 @@ var Promise = require('bluebird');
 var app = require('../../../server');
 var {
   moveItemPosition
-} = require('../../../controllers/moveItemPositionController');
+} = require('../../../controllers/workbook/moveItemPositionController');
 
 module.exports = function(Pageitem) {
   Pageitem.validatesPresenceOf('pageId', 'itemId');
