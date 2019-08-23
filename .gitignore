@@ -37,8 +37,8 @@ logs
 client
 
 #config files only for local environments
-**/datasources.development.json
-.env.development
+#**/datasources.development.json
+#.env.development
 
 #uploads dir
 server/api/upload/api
