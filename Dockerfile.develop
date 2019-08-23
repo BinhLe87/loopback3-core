@@ -1,0 +1,42 @@
+FROM node:11.13.0-alpine
+ENV container_dir="/usr/src/app/"
+ENV server_dir=${container_dir}/server
+ENV tools_dir=${server_dir}/tools
+
+##Install packages/libs dependencies
+RUN apk --no-cache add --virtual build-dependencies make gcc g++ python
+RUN apk --no-cache add yarn
+RUN yarn global add lerna
+RUN lerna -v; exit 0
+
+
+WORKDIR ${container_dir}
+## Bundle app source
+COPY . ${container_dir}
+
+#Install npm packages
+WORKDIR ${container_dir}
+RUN lerna bootstrap
+
+#Install some stuff scripts
+WORKDIR ${container_dir}
+RUN node script/install_npm_modules.js
+
+#------Clean up all that no longer used (installation files, packages/libs dependencies, apk cache, etc.)
+##Remove tools after done installing
+WORKDIR ${tools_dir}
+RUN rm -r *; exit 0
+
+##Remove packages/libs dependencies
+RUN apk del build-dependencies
+
+##Remove apk cache
+RUN rm -rf /var/cache/apk/*
+
+## Start api server
+WORKDIR ${container_dir}
+RUN npm install -g pm2
+ENTRYPOINT pm2 start ecosystem.config.js --env development\
+    && pm2 status \
+    && tail -f /dev/null
+EXPOSE 8080
