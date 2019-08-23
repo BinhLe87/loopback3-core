@@ -1,5 +1,5 @@
 ## User settings
-Create/Get/Update user settings
+Create/Get/Update user settings.
 
 ###1. Get user settings
 
@@ -13,7 +13,7 @@ Create/Get/Update user settings
 
 | Parameter       | Data type | Required? | Default | Description |
 | --------------- | --------- | --------- | ------- | ----------- |
-| code | string | Required | | New setting code will be created.|
+| code | string | Required | | New setting code will be created|
 |value | any | Required | | New setting value will be created|
 
 
@@ -24,12 +24,12 @@ Create/Get/Update user settings
 ### Request params
 | Parameter       | Data type | Required? | Default | Description |
 | --------------- | --------- | --------- | ------- | ----------- |
-| code | string | Required | | Setting code need to be updated.
+| code | string | Required | | Setting code need to be updated|
 
 ### Request body
 
 | Parameter       | Data type | Required? | Default | Description |
 | --------------- | --------- | --------- | ------- | ----------- |
-|value | any | Required | | New setting value will be updated|
+|value | any | Required | | New setting value will be updated.|
 
 
