@@ -10,8 +10,8 @@ var envVarsSchema = joi
     SERVICE_NAME: joi.string().required(),
     NODE_ENV: joi
       .string()
-      .required()
-      .allow('development, staging, production'),
+      .allow('development, staging, production')
+      .default('development'),
     API_RESIZE_IMAGE_ROOT_URL: joi.string().default('/api/image/resize'),
     ROOT_UPLOAD_DIR: joi
       .string()

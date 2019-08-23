@@ -10,7 +10,7 @@
     "clean": "rimraf build",
     "prebuild": "yarn run clean",
     "build": "webpack --mode production --config webpack.config.js",
-    "start": "eslint && DEBUG=workbook_delivery.js,-nodemon:watch*,-loopback:mixins:time-stamp nodemon .",
+    "start": "NODE_ENV=development eslint && DEBUG=workbook_delivery.js,-nodemon:watch*,-loopback:mixins:time-stamp nodemon .",
     "start-no-watch": "eslint && NODE_ENV=development node .",
     "start-staging": "DEBUG=* NODE_ENV=staging node .",
     "debug": "eslint && DEBUG=*,-nodemon:watch*,-loopback:mixins:time-stamp nodemon --nolazy --inspect-brk=9229 .",
