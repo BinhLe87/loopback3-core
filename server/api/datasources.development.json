@@ -1,0 +1,19 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "cc_mysql": {
+    "connector": "mysql",
+    "name": "cc_mysql",
+    "host": "cc-beta-apc-db",
+    "port": "3306",
+    "username": "mysql_user",
+    "password": "change_mysql_user_pass_pls",
+    "database": "apc",
+    "charset": "utf8mb4",
+    "collation": "utf8mb4_general_ci",
+    "normalizeUndefinedInQuery": "nullify",
+    "debug": false
+  }
+}
