@@ -264,6 +264,9 @@
                   <li>
                     <a href="#share-workbook" class="toc-h2 toc-link" data-title="Share workbook">Share workbook</a>
                   </li>
+                  <li>
+                    <a href="#user-settings" class="toc-h2 toc-link" data-title="User settings">User settings</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -883,6 +886,75 @@ Return the items has <code>id</code> field greater than 20</p>
 <p>The attendee share workbooks with their hosts.</p>
 
 <p><img src="http://dev01.cc.cloud:49173/public/assets/images/user_share_workbook.jpg" alt="share workbook workflow" /></p>
+<h2 id='user-settings'>User settings</h2>
+<p>Create/Get/Update user settings</p>
+<h3 id='1-get-user-settings'>1. Get user settings</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/users/me/settings?access_token={access_token}</code></p>
+<h3 id='2-create-a-user-setting'>2. Create a user setting</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/users/me/settings?access_token={access_token}</code></p>
+<h3 id='request-body'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>code</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>New setting code will be created.</td>
+</tr>
+<tr>
+<td>value</td>
+<td>any</td>
+<td>Required</td>
+<td></td>
+<td>New setting value will be created</td>
+</tr>
+</tbody></table>
+<h3 id='3-update-a-user-setting'>3. Update a user setting</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/user_settings/update?where={&quot;code&quot;: &quot;{code}&quot;}&amp;access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>code</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>Setting code need to be updated.</td>
+</tr>
+</tbody></table>
+<h3 id='request-body-2'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>value</td>
+<td>any</td>
+<td>Required</td>
+<td></td>
+<td>New setting value will be updated</td>
+</tr>
+</tbody></table>
 <h1 id='library'>Library</h1><h2 id='list-workbooks-of-a-library'>List workbooks of a library</h2>
 <p>Return list of workbooks of a library.</p>
 
