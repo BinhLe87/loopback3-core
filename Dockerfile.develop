@@ -36,7 +36,7 @@ RUN rm -rf /var/cache/apk/*
 ## Start api server
 WORKDIR ${container_dir}
 RUN npm install -g pm2
-ENTRYPOINT sleep 30 && pm2 start ecosystem.config.js --env development\
+ENTRYPOINT sleep 90 && pm2 start ecosystem.config.js --env development\
     && pm2 status \
     && tail -f /dev/null
 EXPOSE 8080
