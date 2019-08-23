@@ -5,7 +5,6 @@ const {
   moveItemPositionController
 } = require('../controllers/workbook/moveItemPositionController');
 const {workbook_published} = require('../controllers/workbook/workbook_publish_status');
-const {update_user_setting} = require('../controllers/user/userSetting');
 
 module.exports = function(server) {
   // Install a `/` route that returns server status
