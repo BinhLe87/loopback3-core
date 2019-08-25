@@ -19,9 +19,7 @@
     "prettier": "prettier --ignore-path .eslintignore --write '**/*.js'",
     "eslint": "./node_modules/.bin/eslint --fix --quiet .",
     "client-api-docs": "cd $PWD/docs_web/client_api_docs && middleman build --build-dir ../../public/client_api_docs",
-    "server-api-docs": "cd $PWD/docs_web/server_api_docs && middleman build --build-dir ../../public/server_api_docs",
-    "publish": "lerna publish from-package --no-git-tag-version --no-push --yes preminor",
-    "publish_all": "lerna publish --no-git-tag-version --no-push --yes preminor"
+    "server-api-docs": "cd $PWD/docs_web/server_api_docs && middleman build --build-dir ../../public/server_api_docs"
   },
   "private": true,
   "husky": {
@@ -50,7 +48,7 @@
     "debug_api": "aaa"
   },
   "dependencies": {
-    "@cc_server/logger": "^1.6.2",
+    "@cc_server/logger": "^1.9.0",
     "@cc_server/utils": "^1.12.0-alpha.0",
     "@sindresorhus/slugify": "^0.3.0",
     "amqplib": "^0.5.3",

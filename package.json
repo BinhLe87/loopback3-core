@@ -19,10 +19,7 @@
     ]
   },
   "private": true,
-  "scripts": {
-    "publish": "lerna publish from-package --no-git-tag-version --no-push --yes preminor",
-    "publish_all": "lerna publish --no-git-tag-version --no-push --yes preminor"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://whisky87@github.com/CoachingCloud/automated-push-content.git"
@@ -35,7 +32,7 @@
   },
   "homepage": "https://github.com/CoachingCloud/automated-push-content#readme",
   "dependencies": {
-    "@cc_server/logger": "^1.6.0",
+    "@cc_server/logger": "^1.9.0",
     "@cc_server/utils": "^1.12.0-alpha.0",
     "amqplib": "^0.5.3",
     "fs-extra": "^8.0.1",

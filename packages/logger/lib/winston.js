@@ -93,13 +93,6 @@ var logger = winston.createLogger({
       filename: path.join(envVars.LOGS_DIR, "combined.log"),
       level: envVars.LOGGER_LEVEL,
       handleExceptions: true
-    }),
-    new Loggly({
-      token: process.env.LOGGLY_TOKEN,
-      subdomain: process.env.LOGGLY_SUBDOMAIN,
-      tags: ["Winston-NodeJS"],
-      json: true,
-      handleExceptions: true
     })
   ],
   exceptionHandlers: [
@@ -110,6 +103,18 @@ var logger = winston.createLogger({
   ],
   exitOnError: false
 });
+
+if (process.env.LOGGLY_TOKEN && process.env.LOGGLY_SUBDOMAIN) {
+  logger.add(
+    new Loggly({
+      token: process.env.LOGGLY_TOKEN,
+      subdomain: process.env.LOGGLY_SUBDOMAIN,
+      tags: ["Winston-NodeJS"],
+      json: true,
+      handleExceptions: true
+    })
+  );
+}
 
 winston.addColors({
   error: "red",
@@ -138,7 +143,6 @@ logger.stream = {
 };
 
 function add_message_json_and_format_message(info) {
-
   const ts = info.timestamp.slice(0, 19).replace("T", " ");
   const request_id = info.request_id || "<unknown_request_id>";
   const env = process.env.NODE_ENV || "development";
@@ -152,7 +156,7 @@ function add_message_json_and_format_message(info) {
     request_id,
     level: info.level,
     message: info.message
-  }
+  };
 
   //add more properties into `info` object at root level
   info.env = env;
@@ -161,11 +165,10 @@ function add_message_json_and_format_message(info) {
   info.level = info.level;
   info.message_json = message_json;
 
-  var message_string = '';
-  Object.getOwnPropertyNames(message_json).forEach(function (key, idx, array) {
-
-    message_string += ' ' + message_json[key];
-  }) 
+  var message_string = "";
+  Object.getOwnPropertyNames(message_json).forEach(function(key, idx, array) {
+    message_string += " " + message_json[key];
+  });
 
   return `${message_string}${EOL}`;
 }

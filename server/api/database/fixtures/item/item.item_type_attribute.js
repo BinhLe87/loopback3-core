@@ -130,10 +130,4 @@ async function __add_common_style_attributes(item_type) {
     attributeId: ATTRIBUTES.get('style_text_colour').id, //style_text_colour
     display_index: aNumberCounter.increaseByOne()
   });
-
-  await require('../model.fixtures')(1, 'item_attribute_template', {
-    item_typeId: ITEM_TYPES.get(item_type).id,
-    attributeId: ATTRIBUTES.get('style_max_width').id, //style_max_width
-    display_index: aNumberCounter.increaseByOne()
-  });
 }

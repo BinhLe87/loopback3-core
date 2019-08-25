@@ -124,12 +124,6 @@ ATTRIBUTES.set('style_padding', {
   data_type: 'array',
   op_default: [10, 10, 10, 10]
 });
-ATTRIBUTES.set('style_max_width', {
-  id: aNumberCounter.increaseByOne(),
-  label: 'Style Max Width',
-  data_type: 'number',
-  op_default: 2000
-});
 ATTRIBUTES.set('style_background_colour', {
   id: aNumberCounter.increaseByOne(),
   label: 'Style Background Colour',
@@ -148,10 +142,6 @@ const COMMON_STYLE_ATTRIBUTES = [
   {
     id: ATTRIBUTES.get('style_padding').id, //style_padding
     value: [10, 10, 10, 10]
-  },
-  {
-    id: ATTRIBUTES.get('style_max_width').id, //style_max_width
-    value: 2000
   },
   {
     id: ATTRIBUTES.get('style_background_colour').id, //style_background_colour
