@@ -59,36 +59,38 @@ module.exports = function(Item) {
           ItemAttributeTemplateModel.find
         ).bind(ItemAttributeTemplateModel);
 
-        let active_item_attributes = await findItemAttributeTemplatePromise({
+        let item_type_with_attributes = await findItemAttributeTemplatePromise({
           where: { is_active: 1, item_typeId: item_type_id },
           include: {
             relation: 'attribute',
-            scope: {
-              where: { is_active: 1 }
-            }
           }
         });
 
-        for (let active_item_attribute of active_item_attributes) {
-          let attribute = _.get(active_item_attribute, '__data.attribute');
+        for (let item_type_with_attribute of item_type_with_attributes) {
+          let attribute = _.get(item_type_with_attribute, '__data.attribute');
 
-          if (attribute) {
-            const StyleAttributeRegx = /style_.*/gi; //style attribute always has prefix is 'style_' in its code
-            var attr_id = _.get(attribute, 'id');
-            var attr_code = _.get(attribute, 'code');
-            var attr_default_value = _.get(attribute, 'op_default');
+          if (attribute && attribute.is_active == 1) {
 
-            if (StyleAttributeRegx.test(attr_code)) {
-              //this is style attribute
-
-              default_style_attributes.push({
-                id: attr_id,
-                code: attr_code,
-                label: attribute.label,
-                data_type: attribute.data_type,
-                value: attr_default_value
-              });
-            }
+              const StyleAttributeRegx = /style_.*/gi; //style attribute always has prefix is 'style_' in its code
+              var attr_id = _.get(attribute, 'id');
+              var attr_code = _.get(attribute, 'code');
+              var attr_default_value = _.get(attribute, 'op_default');
+  
+              if (StyleAttributeRegx.test(attr_code)) {
+                //this is style attribute
+  
+                default_style_attributes.push({
+                  id: attr_id,
+                  code: attr_code,
+                  label: attribute.label,
+                  data_type: attribute.data_type,
+                  value: attr_default_value
+                });
+              }
+          } else { //this attribute is inactive state => delete in `item_attributes` array
+            _.remove(item_attributes, function(ele) {
+              return ele.id === attribute.id;
+            })
           }
         }
       }
