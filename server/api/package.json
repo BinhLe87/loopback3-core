@@ -37,11 +37,7 @@
       "**/client_api_docs/**/*.md": [
         "yarn run client-api-docs",
         "git add server/api/public/client_api_docs/*"
-      ],
-      "**/server_api_docs/**/*.md": [
-        "yarn run server-api-docs",
-        "git add server/api/public/server_api_docs/*"
-      ]
+      ]      
     }
   },
   "config": {

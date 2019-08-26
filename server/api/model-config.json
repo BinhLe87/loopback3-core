@@ -39,115 +39,7 @@
     "dataSource": "cc_mysql",
     "public": false
   },
-  "library": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "program": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "workbook": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "library_program": {
-    "dataSource": "cc_mysql",
-    "public": false
-  },
-  "workbook_owner": {
-    "dataSource": "cc_mysql",
-    "public": false
-  },
-  "chapter": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "competency": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "workbook_chapter": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "workbook_share": {
-    "dataSource": "cc_mysql",
-    "public": false
-  },
-  "workbook_version": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "version": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "page": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "chapter_page": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "item": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "page_item": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
   "user": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "user_program": {
-    "dataSource": "cc_mysql",
-    "public": false
-  },
-  "attribute": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "item_attribute_template": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "item_type": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "style_attribute": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "style_theme": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "style_theme_attribute": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "style_theme_owner": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "user_setting": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "user_note": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "comment": {
-    "dataSource": "cc_mysql",
-    "public": true
-  },
-  "comment_reply": {
     "dataSource": "cc_mysql",
     "public": true
   },
@@ -174,9 +66,5 @@
         }
       }
     }
-  },
-  "workbook_delivery": {
-    "dataSource": "cc_mysql",
-    "public": true
   }
 }

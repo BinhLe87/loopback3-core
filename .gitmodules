@@ -1,7 +1,3 @@
 [submodule "server/vendors/node-formidable"]
 	path = server/vendors/node-formidable
 	url = https://BinhVanLe@github.com/BinhVanLe/node-formidable.git
-[submodule "demo/cc_apc_react"]
-	path = demo/cc_apc_react
-	url = /Users/steven_lee/Documents/Ca nhan/Du an ca nhan/Javascript/cc_pwa
-	branch = master

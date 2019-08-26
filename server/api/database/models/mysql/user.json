@@ -22,36 +22,6 @@
   "properties": {},
   "validations": [],
   "relations": {
-    "settings": {
-      "type": "hasMany",
-      "model": "user_setting",
-      "foreignKey": "userId"
-    },
-    "notes": {
-      "type": "hasMany",
-      "model": "user_note",
-      "foreignKey": "userId"
-    },
-    "workbook_shares": {
-      "type": "hasMany",
-      "model": "workbook",
-      "foreignKey": "userId",
-      "through": "workbook_share"
-    },
-    "libraries": {
-      "type": "hasMany",
-      "model": "library",
-      "foreignKey": "userId"
-    },
-    "workbooks": {
-      "type": "hasMany",
-      "model": "workbook",
-      "through": "workbook_owner",
-      "polymorphic": {
-        "foreignKey": "workbook_owner_id",
-        "discriminator": "workbook_owner_type"
-      }
-    }
   },
   "acls": [
     {
@@ -66,31 +36,5 @@
     }
   ],
   "methods": {
-    "prototype.share_workbook": {
-      "accepts": [
-        {
-          "arg": "workbook_id",
-          "type": "number",
-          "description": "the workbook id would be shared",
-          "required": true
-        },
-        {
-          "arg": "sharingProperties",
-          "type": "object",
-          "description": "sharing settings",
-          "required": true
-        },
-        {
-          "arg": "options",
-          "type": "object",
-          "http": "optionsFromRequest"
-        }
-      ],
-      "returns": {},
-      "http": {
-        "verb": "post",
-        "path": "/share_workbook"
-      }
-    }
   }
 }

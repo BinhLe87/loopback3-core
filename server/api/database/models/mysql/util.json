@@ -47,55 +47,6 @@
         "verb": "post",
         "path": "/upload"
       }
-    },
-    "move_position": {
-      "accepts": [
-        {
-          "arg": "tree_view",
-          "type": "object",
-          "description": "tree view",
-          "required": true
-        },
-        {
-          "arg": "ctx",
-          "type": "object",
-          "http": {
-            "source": "context"
-          }
-        },
-        {
-          "arg": "options",
-          "type": "object",
-          "http": "optionsFromRequest"
-        }
-      ],
-      "returns": {
-        "arg": "message",
-        "type": "string"        
-      },
-      "http": {
-        "verb": "patch",
-        "path": "/move_position"
-      }
-    },
-    "search": {
-      "accepts": [             
-        {
-          "arg": "ctx",
-          "type": "object",
-          "http": {
-            "source": "context"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": "object"        
-      },
-      "http": {
-        "verb": "get",
-        "path": "/search"
-      }
     }
   }
 }

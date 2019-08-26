@@ -1,6 +1,0 @@
-FROM rabbitmq:3.7-management
-
-ENTRYPOINT [ \
-"/bin/bash", \
-"-c", \
-"rabbitmq-plugins enable rabbitmq_management;RABBITMQ_NODENAME=rabbit rabbitmq-server start -detached;sleep 30;rabbitmqctl --node rabbit add_user admin admin;rabbitmqctl --node rabbit set_user_tags admin administrator;rabbitmqctl --node rabbit set_permissions -p / admin \".*\" \".*\" \".*\";tail -f /dev/null"] 
