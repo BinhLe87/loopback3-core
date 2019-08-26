@@ -1,0 +1,55 @@
+{
+  "name": "workbook_chapter",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "indexes": {
+    "chapter_idx": {
+      "keys": {
+        "chapterId": 1
+      },
+      "options": {
+        "unique": true
+      }
+    },
+    "unique_display_in_workbook": {
+      "keys": {
+        "workbookId": 1,
+        "display_index": 1
+      },
+      "options": {
+        "unique": false
+      }
+    }
+  },
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true,
+    "BelongsToIntegrityCheck": false,
+    "SortDisplayIndex": true,
+    "AddRelationModel": true
+  },
+  "properties": {
+    "display_index": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    }
+  },
+  "validations": [],
+  "relations": {
+    "workbook": {
+      "type": "belongsTo",
+      "model": "workbook",
+      "foreignKey": "workbookId"
+    },
+    "chapter": {
+      "type": "belongsTo",
+      "model": "chapter",
+      "foreignKey": "chapterId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

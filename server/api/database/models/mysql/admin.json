@@ -1,0 +1,82 @@
+{
+    "name": "admin",
+    "plural": "admin",
+    "base": "PersistedModel",
+    "idInjection": true,
+    "options": {
+        "validateUpsert": true
+    },
+    "properties": {},
+    "indexes": {},
+    "validations": [],
+    "relations": {},
+    "acls": [
+        {
+            "permission": "DENY",
+            "principalType": "ROLE",
+            "principalId": "$everyone"
+        },
+        {
+            "permission": "ALLOW",
+            "principalType": "ROLE",
+            "principalId": "admin"
+        },
+        {
+            "permission": "ALLOW",
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "property": "create_admin_account"
+        }
+    ],
+    "methods": {
+        "generate_dummy_data": {
+            "accepts": [
+                {
+                    "arg": "number_records",
+                    "type": "number",
+                    "description": "the number of records needs to generate dummy data"
+                },
+                {
+                    "arg": "include_builtin_models",
+                    "type": "boolean",
+                    "description": "if true, all built-in models also will be reset"
+                },
+                {
+                    "arg": "only_erase_database",
+                    "type": "boolean",
+                    "description": "if true, only erase database, not generating dummy data"
+                },
+                {
+                    "arg": "options",
+                    "type": "object",
+                    "http": "optionsFromRequest"
+                }
+            ],
+            "returns": {
+                "arg": "message",
+                "type": "string"
+            },
+            "http": {
+                "verb": "get",
+                "path": "/generate_dummy_data"
+            }
+        },
+        "create_admin_account": {
+            "accepts": [
+                {
+                    "arg": "secret_key",
+                    "type": "string",
+                    "required": true
+                }
+            ],
+            "returns": {
+                "arg": "message",
+                "type": "string"
+            },
+            "http": {
+                "verb": "post",
+                "path": "/create_admin_account"
+            }
+        }
+    }
+}

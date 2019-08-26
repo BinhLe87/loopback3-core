@@ -1,0 +1,35 @@
+<h1 id='item-type'>Item type</h1><h2 id='list-item-types'>List item types</h2>
+<p>Return a list of item types.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET --header <span class="s1">'Accept: application/json'</span> <span class="s1">'http://localhost:8080/api/item_types'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/item_types</code></p>
+<h3 id='header-parameters'>Header parameters</h3><h3 id='request-body'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains <code>data</code> property is an array of item types.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+</tbody></table>

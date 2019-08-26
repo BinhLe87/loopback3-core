@@ -1,0 +1,110 @@
+{
+  "name": "apc_api",
+  "version": "1.8.0-alpha.0",
+  "main": "server.js",
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "clean": "rimraf build",
+    "prebuild": "yarn run clean",
+    "build": "webpack --mode production --config webpack.config.js",
+    "start": "NODE_ENV=development eslint && DEBUG=workbook_delivery.js,-nodemon:watch*,-loopback:mixins:time-stamp.-strong-globalize nodemon .",
+    "start-no-watch": "eslint && NODE_ENV=development node .",
+    "start-staging": "DEBUG=* NODE_ENV=staging node .",
+    "debug": "eslint && DEBUG=*,-nodemon:watch*,-loopback:mixins:time-stamp,-strong-globalize nodemon --nolazy --inspect-brk=9229 .",
+    "posttest": "yarn run lint > logs/eslint_log.txt && nsp check",
+    "prepush": "yarn publish_all",
+    "prettier": "prettier --ignore-path .eslintignore --write '**/*.js'",
+    "eslint": "./node_modules/.bin/eslint --fix --quiet .",
+    "client-api-docs": "cd $PWD/docs_web/client_api_docs && middleman build --build-dir ../../public/client_api_docs",
+    "server-api-docs": "cd $PWD/docs_web/server_api_docs && middleman build --build-dir ../../public/server_api_docs"
+  },
+  "private": true,
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "linters": {
+      "*.js": [
+        "yarn run prettier",
+        "yarn run eslint",
+        "git add"
+      ],
+      "**/client_api_docs/**/*.md": [
+        "yarn run client-api-docs",
+        "git add server/api/public/client_api_docs/*"
+      ],
+      "**/server_api_docs/**/*.md": [
+        "yarn run server-api-docs",
+        "git add server/api/public/server_api_docs/*"
+      ]
+    }
+  },
+  "config": {
+    "debug_api": "aaa"
+  },
+  "dependencies": {
+    "@cc_server/logger": "^1.9.0",
+    "@cc_server/utils": "^1.12.0-alpha.0",
+    "@sindresorhus/slugify": "^0.3.0",
+    "amqplib": "^0.5.3",
+    "bluebird": "^3.5.1",
+    "blueimp-md5": "^2.11.1",
+    "body-parser": "^1.18.3",
+    "boom": "^7.2.0",
+    "compression": "^1.0.3",
+    "cors": "^2.5.2",
+    "cross-env": "^5.2.0",
+    "cuid": "^2.1.6",
+    "debug": "^3.1.0",
+    "dotenv": "^6.0.0",
+    "fs-extra": "^8.0.1",
+    "helmet": "^3.10.0",
+    "http-errors": "^1.6.3",
+    "image-size": "^0.6.3",
+    "include-all": "^4.0.3",
+    "joi": "^13.4.0",
+    "lerna": "^3.13.4",
+    "lodash": "^4.17.11",
+    "loopback": "3.23.0",
+    "loopback-boot": "2.27.1",
+    "loopback-component-explorer": "6.0.0",
+    "loopback-component-visualizer": "1.2.1",
+    "loopback-connector-mysql": "5.3.1",
+    "loopback-datasource-juggler": "4.0.0",
+    "loopback-ds-timestamp-mixin": "^3.4.1",
+    "moment": "^2.22.2",
+    "multer": "^1.3.1",
+    "replace-in-file": "^4.1.0",
+    "request": "^2.88.0",
+    "semver": "^5.5.0",
+    "serve-favicon": "^2.0.1",
+    "sharp": "^0.22.1",
+    "strong-error-handler": "^2.0.0",
+    "urijs": "^1.19.1",
+    "winston-daily-rotate-file": "^3.3.2"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^4.5.3",
+    "eslint": "^3.17.1",
+    "eslint-config-loopback": "^8.0.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-prettier": "^2.6.2",
+    "faker": "^4.1.0",
+    "husky": "^3.0.4",
+    "lint-staged": "^9.2.3",
+    "nsp": "^2.1.0",
+    "prettier": "^1.14.0"
+  },
+  "repository": {
+    "type": "",
+    "url": ""
+  },
+  "license": "UNLICENSED",
+  "description": "cc-automated-push-content",
+  "gitHead": "9e1c2cada50eb369d8aafa865e2cb5bf957fb15f"
+}

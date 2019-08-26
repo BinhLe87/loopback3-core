@@ -1,0 +1,36 @@
+*.csv
+*.dat
+*.iml
+*.log
+*.out
+*.pid
+*.seed
+*.sublime-*
+*.swo
+*.swp
+*.tgz
+*.xml
+.DS_Store
+.idea
+.project
+.strong-pm
+coverage
+node_modules
+
+#logs files
+logs
+
+#uploads dir
+./upload
+
+#vendors third-parties that was customized
+../vendors
+
+#documentation website
+docs_web/client_api_docs
+docs_web/server_api_docs
+public/client_api_docs
+public/server_api_docs
+
+#Just for local environment
+../../client

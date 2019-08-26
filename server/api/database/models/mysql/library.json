@@ -1,0 +1,66 @@
+{
+  "name": "library",
+  "plural": "libraries",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true,
+    "ActiveStatusDb": true,
+    "BelongsToIntegrityCheck": false
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "index": {
+        "unique": true
+      }
+    },
+    "createdBy": {
+      "type": "string",
+      "description": "To distinguish who created this library, ex: system or user"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "programs": {
+      "type": "hasMany",
+      "model": "program",
+      "foreignKey": "libraryId",
+      "through": "library_program"
+    },
+    "workbooks": {
+      "type": "hasMany",
+      "model": "workbook",
+      "through": "workbook_owner",
+      "polymorphic": {
+        "foreignKey": "workbook_owner_id",
+        "discriminator": "workbook_owner_type"
+      }
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "user"
+    }
+  },
+  "acls": [
+    {
+      "permission": "DENY",
+      "principalType": "ROLE",
+      "principalId": "$everyone"
+    },
+    {
+      "permission": "ALLOW",
+      "principalType": "ROLE",
+      "principalId": "$authenticated"
+    }
+  ],
+  "methods": {},
+  "scope": {
+    "where": {
+      "createdBy": "user"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "page_item",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "indexes": {
+    "item_idx": {
+      "keys": {
+        "itemId": 1
+      },
+      "options": {
+        "unique": true
+      }
+    },
+    "unique_display_in_page": {
+      "keys": {
+        "pageId": 1,
+        "display_index": 1
+      },
+      "options": {
+        "unique": false
+      }
+    }
+  },
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true,
+    "BelongsToIntegrityCheck": false,
+    "SortDisplayIndex": true,
+    "AddRelationModel": true
+  },
+  "properties": {
+    "display_index": {
+      "type": "number",
+      "required": true,
+      "default" : 0
+    }
+  },
+  "validations": [],
+  "relations": {
+    "page": {
+      "type": "belongsTo",
+      "model": "page",
+      "foreignKey": "pageId"
+    },
+    "item": {
+      "type": "belongsTo",
+      "model": "item",
+      "foreignKey": "itemId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

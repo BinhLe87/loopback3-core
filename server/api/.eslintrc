@@ -1,0 +1,38 @@
+{
+  "plugins": [
+    "prettier"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "globals": {
+    "logger": true,
+    "helper": true,
+    "_": true,
+    "Boom": true,
+    "boom": true,
+    "STATIC_FILE_DIR": true,
+    "__i18n": true
+  },
+  "rules": {
+    "no-undef": "error",
+    "no-unused-vars": "warn",
+    "no-unused-labels": "off",
+    "no-console": "error",
+    "prettier/prettier": "off",
+    "complexity": "off",
+    "no-empty": ["error", {"allowEmptyCatch": true}]
+  }
+}

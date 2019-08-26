@@ -1,0 +1,10 @@
+{
+    "ignore": [
+        "**/docs_web",
+        "**/client_api_docs",
+        "**/server_api_docs"
+    ],
+    "execMap": {
+        "js": "node ."
+    }
+}

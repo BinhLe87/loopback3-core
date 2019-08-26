@@ -1,0 +1,2278 @@
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>APC - API Reference</title>
+
+    <style>
+      .highlight table td { padding: 5px; }
+.highlight table pre { margin: 0; }
+.highlight .gh {
+  color: #999999;
+}
+.highlight .sr {
+  color: #f6aa11;
+}
+.highlight .go {
+  color: #888888;
+}
+.highlight .gp {
+  color: #555555;
+}
+.highlight .gs {
+}
+.highlight .gu {
+  color: #aaaaaa;
+}
+.highlight .nb {
+  color: #f6aa11;
+}
+.highlight .cm {
+  color: #75715e;
+}
+.highlight .cp {
+  color: #75715e;
+}
+.highlight .c1 {
+  color: #75715e;
+}
+.highlight .cs {
+  color: #75715e;
+}
+.highlight .c, .highlight .cd {
+  color: #75715e;
+}
+.highlight .err {
+  color: #960050;
+}
+.highlight .gr {
+  color: #960050;
+}
+.highlight .gt {
+  color: #960050;
+}
+.highlight .gd {
+  color: #49483e;
+}
+.highlight .gi {
+  color: #49483e;
+}
+.highlight .ge {
+  color: #49483e;
+}
+.highlight .kc {
+  color: #66d9ef;
+}
+.highlight .kd {
+  color: #66d9ef;
+}
+.highlight .kr {
+  color: #66d9ef;
+}
+.highlight .no {
+  color: #66d9ef;
+}
+.highlight .kt {
+  color: #66d9ef;
+}
+.highlight .mf {
+  color: #ae81ff;
+}
+.highlight .mh {
+  color: #ae81ff;
+}
+.highlight .il {
+  color: #ae81ff;
+}
+.highlight .mi {
+  color: #ae81ff;
+}
+.highlight .mo {
+  color: #ae81ff;
+}
+.highlight .m, .highlight .mb, .highlight .mx {
+  color: #ae81ff;
+}
+.highlight .sc {
+  color: #ae81ff;
+}
+.highlight .se {
+  color: #ae81ff;
+}
+.highlight .ss {
+  color: #ae81ff;
+}
+.highlight .sd {
+  color: #e6db74;
+}
+.highlight .s2 {
+  color: #e6db74;
+}
+.highlight .sb {
+  color: #e6db74;
+}
+.highlight .sh {
+  color: #e6db74;
+}
+.highlight .si {
+  color: #e6db74;
+}
+.highlight .sx {
+  color: #e6db74;
+}
+.highlight .s1 {
+  color: #e6db74;
+}
+.highlight .s {
+  color: #e6db74;
+}
+.highlight .na {
+  color: #a6e22e;
+}
+.highlight .nc {
+  color: #a6e22e;
+}
+.highlight .nd {
+  color: #a6e22e;
+}
+.highlight .ne {
+  color: #a6e22e;
+}
+.highlight .nf {
+  color: #a6e22e;
+}
+.highlight .vc {
+  color: #ffffff;
+}
+.highlight .nn {
+  color: #ffffff;
+}
+.highlight .nl {
+  color: #ffffff;
+}
+.highlight .ni {
+  color: #ffffff;
+}
+.highlight .bp {
+  color: #ffffff;
+}
+.highlight .vg {
+  color: #ffffff;
+}
+.highlight .vi {
+  color: #ffffff;
+}
+.highlight .nv {
+  color: #ffffff;
+}
+.highlight .w {
+  color: #ffffff;
+}
+.highlight {
+  color: #ffffff;
+}
+.highlight .n, .highlight .py, .highlight .nx {
+  color: #ffffff;
+}
+.highlight .ow {
+  color: #f92672;
+}
+.highlight .nt {
+  color: #f92672;
+}
+.highlight .k, .highlight .kv {
+  color: #f92672;
+}
+.highlight .kn {
+  color: #f92672;
+}
+.highlight .kp {
+  color: #f92672;
+}
+.highlight .o {
+  color: #f92672;
+}
+    </style>
+    <link href="stylesheets/screen.css" rel="stylesheet" media="screen" />
+    <link href="stylesheets/print.css" rel="stylesheet" media="print" />
+      <script src="javascripts/all.js"></script>
+  </head>
+
+  <body class="index" data-languages="[&quot;json&quot;]">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="images/navbar.png" alt="Navbar" />
+      </span>
+    </a>
+    <div class="toc-wrapper">
+      <img src="images/logo.png" class="logo" alt="Logo" />
+        <div class="lang-selector">
+              <a href="#" data-language-name="json">json</a>
+        </div>
+        <div class="search">
+          <input type="text" class="search" id="input-search" placeholder="Search">
+        </div>
+        <ul class="search-results"></ul>
+      <ul id="toc" class="toc-list-h1">
+          <li>
+            <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#get-an-access-token" class="toc-h2 toc-link" data-title="Get an access token">Get an access token</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#introduction" class="toc-h1 toc-link" data-title="Introduction">Introduction</a>
+          </li>
+          <li>
+            <a href="#filter-search-result" class="toc-h1 toc-link" data-title="Filter search result">Filter search result</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#fields-filter" class="toc-h2 toc-link" data-title="Fields filter">Fields filter</a>
+                  </li>
+                  <li>
+                    <a href="#limit-filter" class="toc-h2 toc-link" data-title="Limit filter">Limit filter</a>
+                  </li>
+                  <li>
+                    <a href="#skip-filter" class="toc-h2 toc-link" data-title="Skip filter">Skip filter</a>
+                  </li>
+                  <li>
+                    <a href="#where-filter" class="toc-h2 toc-link" data-title="Where filter">Where filter</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#api-reference" class="toc-h1 toc-link" data-title="API Reference">API Reference</a>
+          </li>
+          <li>
+            <a href="#user" class="toc-h1 toc-link" data-title="User">User</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#list-user-libraries" class="toc-h2 toc-link" data-title="List user libraries">List user libraries</a>
+                  </li>
+                  <li>
+                    <a href="#list-user-workbooks" class="toc-h2 toc-link" data-title="List user workbooks">List user workbooks</a>
+                  </li>
+                  <li>
+                    <a href="#list-user-notes" class="toc-h2 toc-link" data-title="List user notes">List user notes</a>
+                  </li>
+                  <li>
+                    <a href="#share-workbook" class="toc-h2 toc-link" data-title="Share workbook">Share workbook</a>
+                  </li>
+                  <li>
+                    <a href="#user-settings" class="toc-h2 toc-link" data-title="User settings">User settings</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#library" class="toc-h1 toc-link" data-title="Library">Library</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#list-workbooks-of-a-library" class="toc-h2 toc-link" data-title="List workbooks of a library">List workbooks of a library</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#workbook" class="toc-h1 toc-link" data-title="Workbook">Workbook</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#list-workbooks" class="toc-h2 toc-link" data-title="List workbooks">List workbooks</a>
+                  </li>
+                  <li>
+                    <a href="#get-tree-list-workbook-gt-chapters-gt-pages" class="toc-h2 toc-link" data-title="Get tree list workbook =&gt; chapters =&gt; pages">Get tree list workbook =&gt; chapters =&gt; pages</a>
+                  </li>
+                  <li>
+                    <a href="#add-a-chapter-into-a-workbook" class="toc-h2 toc-link" data-title="Add a chapter into a workbook">Add a chapter into a workbook</a>
+                  </li>
+                  <li>
+                    <a href="#move-position-of-a-chapter-within-a-workbook" class="toc-h2 toc-link" data-title="Move position of a chapter within a workbook">Move position of a chapter within a workbook</a>
+                  </li>
+                  <li>
+                    <a href="#upload-image-for-an-workbook" class="toc-h2 toc-link" data-title="Upload image for an workbook">Upload image for an workbook</a>
+                  </li>
+                  <li>
+                    <a href="#list-of-workbook-themes" class="toc-h2 toc-link" data-title="List of workbook themes">List of workbook themes</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#chapter" class="toc-h1 toc-link" data-title="Chapter">Chapter</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#list-pages-of-a-chapter" class="toc-h2 toc-link" data-title="List pages of a chapter">List pages of a chapter</a>
+                  </li>
+                  <li>
+                    <a href="#add-a-page-into-a-chapter" class="toc-h2 toc-link" data-title="Add a page into a chapter">Add a page into a chapter</a>
+                  </li>
+                  <li>
+                    <a href="#move-position-of-a-page-within-a-chapter" class="toc-h2 toc-link" data-title="Move position of a page within a chapter">Move position of a page within a chapter</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#page" class="toc-h1 toc-link" data-title="Page">Page</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#list-items-of-a-page" class="toc-h2 toc-link" data-title="List items of a page">List items of a page</a>
+                  </li>
+                  <li>
+                    <a href="#move-position-of-an-item-in-a-page" class="toc-h2 toc-link" data-title="Move position of an item in a page">Move position of an item in a page</a>
+                  </li>
+                  <li>
+                    <a href="#create-item-at-specific-position-in-page" class="toc-h2 toc-link" data-title="Create item at specific position in page">Create item at specific position in page</a>
+                  </li>
+                  <li>
+                    <a href="#duplicate-an-item-in-a-page" class="toc-h2 toc-link" data-title="Duplicate an item in a page">Duplicate an item in a page</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#item-type" class="toc-h1 toc-link" data-title="Item type">Item type</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#list-item-types" class="toc-h2 toc-link" data-title="List item types">List item types</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#comment" class="toc-h1 toc-link" data-title="Comment">Comment</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#list-comments" class="toc-h2 toc-link" data-title="List comments">List comments</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#util" class="toc-h1 toc-link" data-title="Util">Util</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#upload-file-s" class="toc-h2 toc-link" data-title="Upload file(s)">Upload file(s)</a>
+                  </li>
+                  <li>
+                    <a href="#update-tree-position-levels" class="toc-h2 toc-link" data-title="Update tree position levels">Update tree position levels</a>
+                  </li>
+                  <li>
+                    <a href="#search-text" class="toc-h2 toc-link" data-title="Search text">Search text</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
+          </li>
+      </ul>
+        <ul class="toc-footer">
+            <li><a href='http://dev01.cc.cloud:49173'>Try it out using Swagger</a></li>
+        </ul>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id='authentication'>Authentication</h1>
+<p><img src="http://dev01.cc.cloud:49173/public/assets/images/authen_workflow_apc.jpg" alt="authentication workflow" /></p>
+<h2 id='get-an-access-token'>Get an access token</h2>
+<ul>
+<li>An access token enables you to complete actions on behalf and with the approval of the resource owner. Most of API call require an access token in request message.</li>
+<li>To get an access token, you pass your credentials in a get access token call.</li>
+</ul>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X POST <span class="se">\</span>
+  http://localhost:8080/api/login <span class="se">\</span>
+  -H <span class="s1">'cache-control: no-cache'</span> <span class="se">\</span>
+  -H <span class="s1">'content-type: application/x-www-form-urlencoded'</span> <span class="se">\</span>
+  -d <span class="s1">'email=admin@coachingcloud.com&amp;password=admin@123'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"admin@coachingcloud.com"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"access_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PprPFhmmdyMmgPDfZ1BgOZvgTIOfGEUjyyCPktomh4ENeYMK8UYEx1v93bPhDLvQ"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">180</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/login</code></p>
+<h3 id='header-parameters'>Header parameters</h3>
+<p>specify <code>Content-Type: application/x-www-form-urlencoded</code></p>
+<h3 id='request-body'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>email</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>client email</td>
+</tr>
+<tr>
+<td>password</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>client password</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains access token info</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>access token issued to client</td>
+</tr>
+<tr>
+<td>expires_in</td>
+<td>integer</td>
+<td>The number of seconds after which the token expires. Request another token when this one expires. Notice that: For convenience while developing, access token timeout might set <code>-1</code> which means infinite lifetime.</td>
+</tr>
+</tbody></table>
+
+<aside class="notice">
+For development, please pass following credentials to login with admin role: <br>
+- email=admin@coachingcloud.com <br>
+- password=admin@123 <br>
+</aside>
+<h1 id='introduction'>Introduction</h1><h1 id='filter-search-result'>Filter search result</h1>
+<p>APC API supports a variety of <code>filters</code>. <code>Filters</code> specify criteria for the returned data set</p>
+
+<p><strong>REST API syntax: specify filters in the HTTP query string</strong></p>
+
+<p>Formular: <code>?filter_filterType_=_spec_&amp;_filterType_=_spec_....</code>
+Sample: <a href="http://dev01.cc.cloud:49173/api/libraries?filter[where][id]=2">http://dev01.cc.cloud:49173/api/libraries?filter[where][id]=2</a></p>
+
+<p><strong>APC API supports the following kinds of filters:</strong></p>
+
+<ul>
+<li><code>Fields</code> filter</li>
+<li><code>Limit</code> filter</li>
+<li><code>Order</code> filter</li>
+<li><code>Skip</code> filter</li>
+<li><code>Where</code> filter</li>
+<li><code>Include</code> filter</li>
+</ul>
+
+<p>The following table describes Loopback&#39;s filter types:</p>
+
+<table><thead>
+<tr>
+<th>Filter type</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>fields</td>
+<td>Object, Array, or String</td>
+<td>Specify fields to include in or exclude from the response. (x)</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>Number</td>
+<td>Limit the number of instances to return. (x)</td>
+</tr>
+<tr>
+<td>order</td>
+<td>String</td>
+<td>Specify sort order: ascending or descending.</td>
+</tr>
+<tr>
+<td>skip (offset)</td>
+<td>Number</td>
+<td>Skip the specified number of instances. (x)</td>
+</tr>
+<tr>
+<td>where</td>
+<td>Object</td>
+<td>Specify search criteria; similar to a WHERE clause in SQL.</td>
+</tr>
+<tr>
+<td>include</td>
+<td>String, Object, or Array</td>
+<td>Include results from related models, for relations such asbelongsToandhasMany.</td>
+</tr>
+</tbody></table>
+<h2 id='fields-filter'>Fields filter</h2>
+<blockquote>
+<p>Sample response:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"createdBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"createdBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+<p>Specify fields to include in or exclude from the response.</p>
+
+<p><strong>REST API</strong></p>
+
+<p><code>filter[fields][propertyName]=&lt;true|false&gt;&amp;filter[fields][propertyName]=&lt;true|false&gt;...</code></p>
+
+<p><a href="http://dev01.cc.cloud:49173/api/libraries?filter[fields][id]=true&amp;filter[fields][createdBy]=true">http://dev01.cc.cloud:49173/api/libraries?filter[fields][id]=true&amp;filter[fields][createdBy]=true</a></p>
+<h2 id='limit-filter'>Limit filter</h2>
+<blockquote>
+<p>Sample response:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"placeat officiis sint non id ipsum et"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"createdBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"owner"</span><span class="p">:</span><span class="w"> </span><span class="s2">"20"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-07-04T03:46:24.000Z"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"updatedAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-07-04T03:46:24.000Z"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"et temporibus aut nulla tempora quod nisi"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"createdBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"owner"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-07-04T03:46:24.000Z"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"updatedAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-07-04T03:46:24.000Z"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+<p>Limits the number of records returned to the specified number (or less).</p>
+
+<p><strong>REST API</strong></p>
+
+<p><code>filter[limit]=n</code></p>
+
+<p><a href="http://dev01.cc.cloud:49173/api/libraries?filter[limit]=2">http://dev01.cc.cloud:49173/api/libraries?filter[limit]=2</a></p>
+<h2 id='skip-filter'>Skip filter</h2>
+<blockquote>
+<p>Sample response:
+Return the third page has 2 items</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"repudiandae praesentium mollitia quaerat expedita sed asperiores"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"createdBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"owner"</span><span class="p">:</span><span class="w"> </span><span class="s2">"19"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-07-04T03:46:24.000Z"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"updatedAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-07-04T03:46:24.000Z"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"facere quaerat fuga repellat natus cumque nihil"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"createdBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"owner"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-07-04T03:46:24.000Z"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"updatedAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-07-04T03:46:24.000Z"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+<p>Omits the specified number of returned records. This is useful, for example, to paginate responses.</p>
+
+<p><strong>REST API</strong></p>
+
+<p><code>?filter[skip]=n</code></p>
+
+<p><a href="http://dev01.cc.cloud:49173/api/libraries?filter[limit]=2&amp;filter[skip]=4">http://dev01.cc.cloud:49173/api/libraries?filter[limit]=2&amp;filter[skip]=4</a></p>
+<h2 id='where-filter'>Where filter</h2>
+<blockquote>
+<p>Sample response:
+Return the items has <code>id</code> field greater than 20</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nostrum quam iure ea temporibus in ut"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"createdBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"owner"</span><span class="p">:</span><span class="w"> </span><span class="s2">"11"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">21</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-07-04T03:46:24.000Z"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"updatedAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-07-04T03:46:24.000Z"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"qui non illum quia est nesciunt rerum"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"createdBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"owner"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-07-04T03:46:24.000Z"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"updatedAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-07-04T03:46:24.000Z"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+<p>Specifies a set of logical conditions to match, similar to a WHERE clause in a SQL query.</p>
+
+<p><strong>REST API</strong></p>
+
+<p><code>filter[where][property]=value</code> or
+<code>filter[where][property][op]=value</code> with <code>op</code> is comparison operator. See operators availabes in the table <em>Operators</em> below.</p>
+
+<p><a href="http://dev01.cc.cloud:49173/api/libraries?filter[where][createdBy]=system">http://dev01.cc.cloud:49173/api/libraries?filter[where][createdBy]=system</a> returns items has <code>createdBy</code> equals &#39;system&#39;</p>
+
+<p><a href="http://dev01.cc.cloud:49173/api/libraries?filter[where][id][gt]=20">http://dev01.cc.cloud:49173/api/libraries?filter[where][id][gt]=20</a> returns items has <code>id</code> greater than 20</p>
+
+<p><strong>OPERATORS</strong></p>
+
+<p>This table describes the operators available in “where” filters.</p>
+
+<table><thead>
+<tr>
+<th>Operator</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>=</td>
+<td>Equivalence.</td>
+</tr>
+<tr>
+<td>and</td>
+<td>Logical AND operator.</td>
+</tr>
+<tr>
+<td>or</td>
+<td>Logical OR operator.</td>
+</tr>
+<tr>
+<td>gt, gte</td>
+<td>Numerical greater than (&gt;); greater than or equal (&gt;=). Valid only for numerical and date values.</td>
+</tr>
+<tr>
+<td>lt, lte</td>
+<td>Numerical less than (&lt;); less than or equal (&lt;=). Valid only for numerical and date values.</td>
+</tr>
+<tr>
+<td>between</td>
+<td>True if the value is between the two specified values: greater than or equal to first value and</td>
+</tr>
+<tr>
+<td>inq, nin</td>
+<td>In / not in an array of values.</td>
+</tr>
+<tr>
+<td>neq</td>
+<td>Not equal (!=)</td>
+</tr>
+<tr>
+<td>like, nlike</td>
+<td>LIKE / NOT LIKE operators for use with regular expressions. The regular expression format depends</td>
+</tr>
+<tr>
+<td>regexp</td>
+<td>Regular expression. See examples below.</td>
+</tr>
+</tbody></table>
+<h1 id='api-reference'>API Reference</h1><h1 id='user'>User</h1><h2 id='list-user-libraries'>List user libraries</h2>
+<p>Get list of libraries of current user</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/users/me/libraries?access_token=1Q0P2HEc6fULYT3a7DmviI5jJt1Rtv2k9ApEqZ0Imzvj4hjHKu6E6cBN1ojRcZMM'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/users/me/libraries?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return list of libraries of current user</p>
+<h2 id='list-user-workbooks'>List user workbooks</h2>
+<p>Get list of workbooks owned by the current user</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/users/me/workbooks?access_token=1Q0P2HEc6fULYT3a7DmviI5jJt1Rtv2k9ApEqZ0Imzvj4hjHKu6E6cBN1ojRcZMM'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/users/me/workbooks?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return list of workbooks owned by the current user</p>
+<h2 id='list-user-notes'>List user notes</h2>
+<p>Return a list notes belong to a specific user.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/users/1/notes?access_token=Dz3EuG3lAHG4yina2jPhdknjFfxfebeow6g88ekzrLpCrMGaNG9e3HjMBrgWGBKf'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/users/1/notes?access_token=Dz3EuG3lAHG4yina2jPhdknjFfxfebeow6g88ekzrLpCrMGaNG9e3HjMBrgWGBKf"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"total-pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"limit"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"skip"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user_note"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user note 1"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"userId"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"noteableId"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"noteableType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"page"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="s2">"relationships"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                        </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/1?filter[include][user]"</span><span class="p">,</span><span class="w">
+                        </span><span class="s2">"related"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/1/user"</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="s2">"noteable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                        </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/1?filter[include][noteable]"</span><span class="p">,</span><span class="w">
+                        </span><span class="s2">"related"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/1/noteable"</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">        
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user_note"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"note 3 - workbook"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"userId"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"noteableId"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"noteableType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"workbook"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="s2">"relationships"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                        </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/3?filter[include][user]"</span><span class="p">,</span><span class="w">
+                        </span><span class="s2">"related"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/3/user"</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="s2">"noteable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                        </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/3?filter[include][noteable]"</span><span class="p">,</span><span class="w">
+                        </span><span class="s2">"related"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/user_notes/3/noteable"</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="s2">"schema"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"content"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"required"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"generated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"updateOnly"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"userId"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+        </span><span class="s2">"noteableId"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+        </span><span class="s2">"noteableType"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"index"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/clients/{client_id}/notes</code></p>
+<h3 id='header-parameters'>Header parameters</h3><h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>required</td>
+<td></td>
+<td>the access_token. To get an access token, you can make an access token API call, read <a href="http://dev01.cc.cloud:49173/docs/#access_token">here</a></td>
+</tr>
+<tr>
+<td>filter[include]=noteable</td>
+<td>string</td>
+<td>optional</td>
+<td></td>
+<td>To get response data that contains source place info where the note was noted on - it may be a page/a workbook or somewhere like that. You can use this info for navigating to source place on purpose.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains <code>data</code> property is an array of notes belong to a specific user.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>In case you input <code>filter[include]=noteable</code> in request query string, in <code>data</code> response, the <code>type</code> property of each element in <code>included</code> array indicate type of source place, it can be a <code>page</code>/<code>workbook</code>...</td>
+</tr>
+</tbody></table>
+<h2 id='share-workbook'>Share workbook</h2>
+<p>The attendee share workbooks with their hosts.</p>
+
+<p><img src="http://dev01.cc.cloud:49173/public/assets/images/user_share_workbook.jpg" alt="share workbook workflow" /></p>
+<h2 id='user-settings'>User settings</h2>
+<p>Create/Get/Update user settings</p>
+<h3 id='1-get-user-settings'>1. Get user settings</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/users/me/settings?access_token={access_token}</code></p>
+<h3 id='2-create-a-user-setting'>2. Create a user setting</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/users/me/settings?access_token={access_token}</code></p>
+<h3 id='request-body'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>code</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>New setting code will be created.</td>
+</tr>
+<tr>
+<td>value</td>
+<td>any</td>
+<td>Required</td>
+<td></td>
+<td>New setting value will be created</td>
+</tr>
+</tbody></table>
+<h3 id='3-update-a-user-setting'>3. Update a user setting</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/user_settings/update?where={&quot;code&quot;: &quot;{code}&quot;}&amp;access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>code</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>Setting code need to be updated.</td>
+</tr>
+</tbody></table>
+<h3 id='request-body-2'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>value</td>
+<td>any</td>
+<td>Required</td>
+<td></td>
+<td>New setting value will be updated</td>
+</tr>
+</tbody></table>
+<h1 id='library'>Library</h1><h2 id='list-workbooks-of-a-library'>List workbooks of a library</h2>
+<p>Return list of workbooks of a library.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="s1">'http://localhost:8080/api/libraries/1/workbooks'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/libraries/{library_id}/workbooks</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>library_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The ID of the library will retrieve list of workbooks belongs to.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains list of workbooks belongs to this specified library.</p>
+<h1 id='workbook'>Workbook</h1><h2 id='list-workbooks'>List workbooks</h2>
+<p>Return a list of workbooks</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/workbooks?access_token=HAEnFp0XcppOw1tJmN2cateKqn2blRwlkjoN0xm3qDuOjeAuKHB95k8JiutJ6fDy'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/workbooks?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>[filter][include]=user</td>
+<td>string</td>
+<td>Optional</td>
+<td></td>
+<td>including user owner in each of workbook returns</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains <code>data</code> property is an array of workbooks.</p>
+<h2 id='get-tree-list-workbook-gt-chapters-gt-pages'>Get tree list workbook =&gt; chapters =&gt; pages</h2>
+<p>Return tree list workbook =&gt; chapters =&gt; pages</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/workbooks/{workbook_id}?access_token={access_token}&amp;filter={"include": {"chapters": "pages"}}'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"workbook"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Entrepreneurship Fundamentals: Business Startup Strategies"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Amet ipsam voluptas repudiandae est et eius. Minima quod neque. Quasi ut delectus voluptas culpa perspiciatis. Excepturi quo error voluptatum deserunt mollitia cum."</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"price"</span><span class="p">:</span><span class="w"> </span><span class="mi">75</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"image_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://localhost:8080/upload/jenny-hill-205881-unsplash.jpg"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"is_active"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"included"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chapters"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Team Formation and Organization"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-02-19T03:03:05.000Z"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"updatedAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-02-19T03:03:05.000Z"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"is_active"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"pages"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lean Culture Principles &amp; Practices"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-02-19T03:03:07.000Z"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"updatedAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-02-19T03:03:07.000Z"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"is_active"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Why Lean Culture and Leadership"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-02-19T03:03:07.000Z"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"updatedAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-02-19T03:03:07.000Z"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"is_active"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+            </span><span class="p">}]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/workbooks/{workbook_id}?access_token={access_token}&amp;filter={&quot;include&quot;: {&quot;chapters&quot;: &quot;pages&quot;}}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>workbook_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The ID of the workbook will retrieve list of chapters belongs to.</td>
+</tr>
+<tr>
+<td>filter</td>
+<td>string</td>
+<td>Optional</td>
+<td><code>{&quot;include&quot;: {&quot;chapters&quot;: &quot;pages&quot;}}</code></td>
+<td>Include chapters/pages of the workbook as tree list in response value.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains tree list workbook =&gt; chapters =&gt; pages.</p>
+<h2 id='add-a-chapter-into-a-workbook'>Add a chapter into a workbook</h2>
+<p>Add a chapter into a workbook</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X POST <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/workbooks/1/chapters?access_token=a628MYIXe9A697xFAcGEg9C9wfWE8Cg0XYzrF8JSrtUwVGhcHQ1peO82MrAPUziH'</span> <span class="se">\</span>
+  -H <span class="s1">'Content-Type: application/x-www-form-urlencoded'</span> <span class="se">\</span>
+  -d <span class="s1">'title=workbook_title&amp;insert_after_item_id=39'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/workbooks/{workbook_id}/chapters?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>workbook_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The ID of the workbook which the new chapter add into</td>
+</tr>
+</tbody></table>
+<h3 id='request-body'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>title</td>
+<td>string</td>
+<td>optional</td>
+<td></td>
+<td>chapter title</td>
+</tr>
+<tr>
+<td>insert_after_item_id</td>
+<td>number</td>
+<td>optional</td>
+<td></td>
+<td>If value is <code>0</code>, the new chapter will move to the top position in the workbook. If value is <code>null</code> or unspecified, the new chapter will move to the last position in the workbook. Otherwise, if value is specified, the new chapter will move to right below the <code>insert_after_item_id</code> chapter.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return a new chapter object</p>
+<h2 id='move-position-of-a-chapter-within-a-workbook'>Move position of a chapter within a workbook</h2>
+<p>Move position of a chapter within a workbook</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X PATCH <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/workbooks/9/chapters/15/move/29?access_token=sqlrd4F3Q9Xi5vXmS0dtRvFobcVaRTNGug2AGHauhlSo3hTbvHTbCtHFPDs7ZMqV'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="err">HTTP</span><span class="w"> </span><span class="err">Response</span><span class="w"> </span><span class="err">Status</span><span class="w"> </span><span class="err">code</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>PATCH</strong> <code>http://localhost:8080/api/workbooks/{workbook_id}/chapters/{from_chapter_id}/move/{to_chapter_id}?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>workbook_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>workbook identifier contains chapter will move position</td>
+</tr>
+<tr>
+<td>from_chapter_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>chapter identifier that moves from (called as <code>from_chapter</code>)</td>
+</tr>
+<tr>
+<td>to_chapter_id</td>
+<td>number</td>
+<td>Optional</td>
+<td></td>
+<td>chapter identifier that moves to (called as <code>to_chapter</code>). If value is <code>0</code>, the <code>from_chapter</code> will move to the top position in workbook. If value is <code>null</code> or unspecified, the <code>from_chapter</code> will move to the last position in workbook. Otherwise, if value is specified <code>to_chapter</code> identifier, the <code>from_chapter</code> will move to right below <code>to_chapter</code> and also move series of chapters down the list starting from the chapters was currently below <code>to_chapter</code>.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return http response status code 200.</p>
+
+<aside class="notice">
+In order to swap positions between two chapters, you can use API instead:<br>
+<code>curl -X PATCH
+  'http://localhost:8080/api/workbooks/{workbook_id}/chapters/{from_chapter_id}/swap/{to_chapter_id}?access_token={access_token}'</code>
+</aside>
+<h2 id='upload-image-for-an-workbook'>Upload image for an workbook</h2>
+<p>Upload image for an workbook</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X POST <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/util/upload?access_token=sqlrd4F3Q9Xi5vXmS0dtRvFobcVaRTNGug2AGHauhlSo3hTbvHTbCtHFPDs7ZMqV&amp;file_type=workbook_image&amp;workbook_id=3'</span> <span class="se">\</span>
+  -H <span class="s1">'Content-Type: application/x-www-form-urlencoded'</span> <span class="se">\</span>
+  -H <span class="s1">'cache-control: no-cache'</span> <span class="se">\</span>
+  -H <span class="s1">'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'</span> <span class="se">\</span>
+  -F <span class="nv">image</span><span class="o">=</span>@/Users/Documents/CoachingCloud/server/api/upload/rawpixel-574844-unsplash.jpg
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="err">HTTP</span><span class="w"> </span><span class="err">Response</span><span class="w"> </span><span class="err">Status</span><span class="w"> </span><span class="err">code</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/util/upload?access_token={access_token}&amp;file_type={file_type}&amp;workbook_id={workbook_id}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>file_type</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>fixed value is <code>workbook_image</code> for uploading image file of an workbook</td>
+</tr>
+<tr>
+<td>workbook_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>workbook identifier will store uploaded image file</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return http response status code 200.</p>
+
+<aside class="notice">
+You must provide both query parameters and a file as multipart form data. For reference, you can see Postman screenshot below.
+</aside>
+
+<p><img src="http://dev01.cc.cloud:49173/public/assets/images/upload_api_postman.jpg" alt="upload api capture postman" /></p>
+<h2 id='list-of-workbook-themes'>List of workbook themes</h2>
+<p>Return a list of workbook themes, including style attributes within each theme.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/workbooks/1/themes?access_token=a628MYIXe9A697xFAcGEg9C9wfWE8Cg0XYzrF8JSrtUwVGhcHQ1peO82MrAPUziH&amp;filter[include]=attributes'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://dev01.cc.cloud:49173/api/workbooks/{workbook_id}/themes?access_token={access_token}&amp;filter[include]=attributes</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>workbook_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The ID of the workbook that will receive a list of themes associated with</td>
+</tr>
+<tr>
+<td>filter[include]=attributes</td>
+<td>string</td>
+<td>Optional</td>
+<td></td>
+<td>enable including style attributes within each theme</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains <code>data</code> property is an array of themes of a specified workbook.</p>
+<h1 id='chapter'>Chapter</h1><h2 id='list-pages-of-a-chapter'>List pages of a chapter</h2>
+<p>Return list pages of a chapter.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/chapters/1/pages?access_token=1YgNIc7EFtjnjuf087mHMVwUmxOTQkaHSAaoIWsnjtlDP2tId4cHCZDmYZY54OtM'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/chapters/{chapter_id}/pages?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>chapter_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The ID of the chapter will retrieve list of pages belongs to.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains list of pages belongs to this specified chapter.</p>
+<h2 id='add-a-page-into-a-chapter'>Add a page into a chapter</h2>
+<p>Add a page into a chapter</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X POST <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/chapters/1/pages?access_token=a628MYIXe9A697xFAcGEg9C9wfWE8Cg0XYzrF8JSrtUwVGhcHQ1peO82MrAPUziH'</span> <span class="se">\</span>
+  -H <span class="s1">'Content-Type: application/x-www-form-urlencoded'</span> <span class="se">\</span>
+  -d <span class="s1">'title=page_title&amp;insert_after_item_id=39'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/chapters/{chapter_id}/pages?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>chapter_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The ID of the chapter which the new page add into</td>
+</tr>
+</tbody></table>
+<h3 id='request-body'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>title</td>
+<td>string</td>
+<td>optional</td>
+<td></td>
+<td>page title</td>
+</tr>
+<tr>
+<td>insert_after_item_id</td>
+<td>number</td>
+<td>optional</td>
+<td></td>
+<td>If value is <code>0</code>, the new page will move to the top position in the chapter. If value is <code>null</code> or unspecified, the new page will move to the last position in the chapter. Otherwise, if value is specified, the new page will move to right below the <code>insert_after_item_id</code> page.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return a new page object</p>
+<h2 id='move-position-of-a-page-within-a-chapter'>Move position of a page within a chapter</h2>
+<p>Move position of a page within a chapter</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X PATCH <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/chapters/9/pages/15/move/29?access_token=sqlrd4F3Q9Xi5vXmS0dtRvFobcVaRTNGug2AGHauhlSo3hTbvHTbCtHFPDs7ZMqV'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="err">HTTP</span><span class="w"> </span><span class="err">Response</span><span class="w"> </span><span class="err">Status</span><span class="w"> </span><span class="err">code</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>PATCH</strong> <code>http://localhost:8080/api/chapters/{chapter_id}/pages/{from_page_id}/move/{to_page_id}?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>chapter_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>chapter identifier contains page will move position</td>
+</tr>
+<tr>
+<td>from_page_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>page identifier that moves from (called as <code>from_page</code>)</td>
+</tr>
+<tr>
+<td>to_page_id</td>
+<td>number</td>
+<td>Optional</td>
+<td></td>
+<td>page identifier that moves to (called as <code>to_page</code>). If value is <code>0</code>, the <code>from_page</code> will move to the top position in chapter. If value is <code>null</code> or unspecified, the <code>from_page</code> will move to the last position in chapter. Otherwise, if value is specified <code>to_page</code> identifier, the <code>from_page</code> will move to right below <code>to_page</code> and also move series of pages down the list starting from the pages was currently below <code>to_page</code>.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return http response status code 200.</p>
+
+<aside class="notice">
+In order to swap positions between two pages, you can use API instead:<br>
+<code>curl -X PATCH
+  'http://localhost:8080/api/chapters/{chapter_id}/pages/{from_page_id}/swap/{to_page_id}?access_token={access_token}'</code>
+</aside>
+<h1 id='page'>Page</h1><h2 id='list-items-of-a-page'>List items of a page</h2>
+<p>Return list of items of a page.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/pages/1/items?access_token=1YgNIc7EFtjnjuf087mHMVwUmxOTQkaHSAaoIWsnjtlDP2tId4cHCZDmYZY54OtM'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/pages/{page_id}/items?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>page_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The ID of the page will retrieve list of items belongs to.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains list of items belongs to this specified page.</p>
+<h2 id='move-position-of-an-item-in-a-page'>Move position of an item in a page</h2>
+<p>Move position of an item in a page</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X PATCH <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/pages/9/items/15/move/29?access_token=sqlrd4F3Q9Xi5vXmS0dtRvFobcVaRTNGug2AGHauhlSo3hTbvHTbCtHFPDs7ZMqV'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="err">HTTP</span><span class="w"> </span><span class="err">Response</span><span class="w"> </span><span class="err">Status</span><span class="w"> </span><span class="err">code</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>PATCH</strong> <code>http://localhost:8080/api/pages/{page_id}/items/{from_item_id}/move/{to_item_id}?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>page_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>page identifier contains item will move position</td>
+</tr>
+<tr>
+<td>from_item_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>item identifier that moves from (called as <code>from_item</code>)</td>
+</tr>
+<tr>
+<td>to_item_id</td>
+<td>number</td>
+<td>Optional</td>
+<td></td>
+<td>item identifier that moves to (called as <code>to_item</code>). If value is <code>0</code>, the <code>from_item</code> will move to the top position in page. If value is <code>null</code> or unspecified, the <code>from_item</code> will move to the last position in page. Otherwise, if value is specified <code>to_item</code> identifier, the <code>from_item</code> will move to right below <code>to_item</code> and also move series of items down the list starting from the items was currently below <code>to_item</code>.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return http response status code 200.</p>
+
+<aside class="notice">
+In order to swap positions between two items, you can use API instead:<br>
+<code>curl -X PATCH
+  'http://localhost:8080/api/pages/{page_id}/items/{from_item_id}/swap/{to_item_id}?access_token={access_token}'</code>
+</aside>
+<h2 id='create-item-at-specific-position-in-page'>Create item at specific position in page</h2>
+<p>Create and add item at specific position in page relying on <code>insert_after_item_id</code> parameter in request body.</p>
+
+<ul>
+<li>Before calling this api, you must determine which <code>item_typeId</code> and <code>item_attributes</code> you&#39;d like to apply for new item. To achieve that, you can call these APIs in order as below:
+
+<ol>
+<li>To get list of item types: <code>GET</code> /api/item_types</li>
+<li>To get list attributes associated with a specific <code>item_typeId</code>: <code>GET</code> /api/item_types/{item_typeId}/attributes</li>
+<li>Then you will pass these <code>attribute_id</code> into an array <code>item_attributes</code> property in following <em>creating item</em> API.</li>
+</ol></li>
+</ul>
+
+<blockquote>
+<p>Sample Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X POST <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/pages/1/items?access_token=sqlrd4F3Q9Xi5vXmS0dtRvFobcVaRTNGug2AGHauhlSo3hTbvHTbCtHFPDs7ZMqV'</span> <span class="se">\</span>
+  -H <span class="s1">'Content-Type: application/json'</span> <span class="se">\</span>
+  -d <span class="s1">'{
+  "title": "item_text",
+  "item_attributes": [
+    {
+      "id": 1,
+       "value": "item_title"
+    },
+    {
+     "id": 2,
+      "value": "item_description"
+    }
+  ],
+  "item_typeId": 1,
+  "insert_after_item_id": 9
+}'</span>
+</code></pre>
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"item"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"item_text"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"item_attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"item_title"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"item_description"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="s2">"is_active"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"is_public"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"item_typeId"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"insert_after_item_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/pages/{page_id}/items?access_token={access_token}</code></p>
+<h3 id='header-parameters'>Header parameters</h3>
+<p>specify <code>Content-Type: application/json</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>page_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The page identifier will contain created item.</td>
+</tr>
+</tbody></table>
+<h3 id='request-body'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>title</td>
+<td>string</td>
+<td>optional</td>
+<td></td>
+<td>item title</td>
+</tr>
+<tr>
+<td>item_typeId</td>
+<td>number</td>
+<td>required</td>
+<td></td>
+<td>item type ID</td>
+</tr>
+<tr>
+<td>item_attributes</td>
+<td>array</td>
+<td>required</td>
+<td></td>
+<td>array of attribute objects. Each <code>item_attributes</code> object has <code>id</code> property as attribute id and <code>value</code> property is either an array type or primitive type  contain value(s) of this attribute. Note that: the <code>value</code> property will be validated depend on the data type of item_attribute.</td>
+</tr>
+<tr>
+<td>insert_after_item_id</td>
+<td>number</td>
+<td>optional</td>
+<td></td>
+<td>if value is 0, it will insert at the top position of the page; if value is specified item id, it will insert below that specified item; otherwise, if value is unspecified, it will insert at the last position of the page</td>
+</tr>
+<tr>
+<td>is_public</td>
+<td>boolean</td>
+<td>optional</td>
+<td>true</td>
+<td>if true, it would be publicly published after creating</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains created item ID along with attributes, relationship, e.g</p>
+<h2 id='duplicate-an-item-in-a-page'>Duplicate an item in a page</h2>
+<p>Duplicate an item in a page and place it at specific position relying on <code>insert_after_item_id</code> parameter in request body.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X PATCH <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/pages/1/items/15/move/29?access_token=sqlrd4F3Q9Xi5vXmS0dtRvFobcVaRTNGug2AGHauhlSo3hTbvHTbCtHFPDs7ZMqV'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="err">HTTP</span><span class="w"> </span><span class="err">Response</span><span class="w"> </span><span class="err">Status</span><span class="w"> </span><span class="err">code</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/pages/{page_id}/items?access_token={access_token}</code></p>
+<h3 id='header-parameters'>Header parameters</h3>
+<p>specify <code>Content-Type: application/json</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>page_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>The page identifier will contain created item.</td>
+</tr>
+</tbody></table>
+<h3 id='request-body'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>duplicate_from_item_id</td>
+<td>number</td>
+<td>Required</td>
+<td></td>
+<td>source item identifier will be copied from</td>
+</tr>
+<tr>
+<td>insert_after_item_id</td>
+<td>number</td>
+<td>optional</td>
+<td></td>
+<td>if value is 0, it will insert at the top position of the page; if value is specified item id, it will insert below that specified item; otherwise, if value is unspecified, it will insert at the last position of the page</td>
+</tr>
+<tr>
+<td>is_public</td>
+<td>boolean</td>
+<td>optional</td>
+<td>true</td>
+<td>if true, it would be publicly published after creating</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return an object contains created item ID along with attributes, relationship, e.g</p>
+
+<aside class="notice">
+In order to override any properties in source item, you can pass that property along with value-will-override in request body.
+</aside>
+<h1 id='item-type'>Item type</h1><h2 id='list-item-types'>List item types</h2>
+<p>Return a list of item types.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET --header <span class="s1">'Accept: application/json'</span> <span class="s1">'http://localhost:8080/api/item_types'</span>
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/item_types?filter[skip]=0&amp;filter[limit]=1"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"next"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://localhost:8080/api/item_types?filter[skip]=1&amp;filter[limit]=1"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"total-pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"skip"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"item_type"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"audio"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"question"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"is_active"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="s2">"relationships"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/item_types/1?filter[include][attributes]"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"related"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:/localhost:8080/api/item_types/1/attributes"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"schema"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"code"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"required"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"is_active"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"generated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"updateOnly"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/item_types</code></p>
+<h3 id='request-body'>Request body</h3><h3 id='response'>Response</h3>
+<p>If successful, return an object contains <code>data</code> property is an array of item types.</p>
+<h1 id='comment'>Comment</h1>
+<p><img src="http://dev01.cc.cloud:49173/public/assets/images/comment_data_flow_diagram.jpg" alt="Data flow diagram of comment feature" /></p>
+<h2 id='list-comments'>List comments</h2><h3 id='response'>Response</h3>
+<p>If successful, returns a object containts all information of a comment..</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>string</td>
+<td>The comment ID</td>
+</tr>
+<tr>
+<td>comment_owner</td>
+<td>integer</td>
+<td>The user ID that made this comment</td>
+</tr>
+<tr>
+<td>message</td>
+<td>string</td>
+<td>The comment text</td>
+</tr>
+<tr>
+<td>message_tags</td>
+<td>array</td>
+<td>An array of user ID tagged in message</td>
+</tr>
+<tr>
+<td>parent</td>
+<td>integer</td>
+<td>For comment replies, this is the comment ID that a reply to</td>
+</tr>
+<tr>
+<td>reply_count</td>
+<td>integer</td>
+<td>Number of replies to this comment</td>
+</tr>
+<tr>
+<td>vote_up_count</td>
+<td>integer</td>
+<td>Number of times this comment was voted up</td>
+</tr>
+<tr>
+<td>vote_down_count</td>
+<td>integer</td>
+<td>Number of times this comment was voted down</td>
+</tr>
+<tr>
+<td>status</td>
+<td>string</td>
+<td>state of the comment</td>
+</tr>
+</tbody></table>
+
+<aside class="notice">
+References: https://developers.facebook.com/docs/graph-api/reference/v3.1/comment
+</aside>
+<h1 id='util'>Util</h1><h2 id='upload-file-s'>Upload file(s)</h2>
+<p>Upload file(s). </p>
+
+<p><strong>Notice that</strong>: In order to upload an image that associates with specific object like an item/a workbook/etc., please read API guidelines in corresponding object section.</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X POST <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/util/upload?access_token=sqlrd4F3Q9Xi5vXmS0dtRvFobcVaRTNGug2AGHauhlSo3hTbvHTbCtHFPDs7ZMqV'</span> <span class="se">\</span>
+  -H <span class="s1">'Content-Type: application/x-www-form-urlencoded'</span> <span class="se">\</span>
+  -H <span class="s1">'cache-control: no-cache'</span> <span class="se">\</span>
+  -H <span class="s1">'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'</span> <span class="se">\</span>
+  -F <span class="nv">image</span><span class="o">=</span>@/Users/Documents/CoachingCloud/server/api/upload/rawpixel-574844-unsplash.jpg
+</code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"file_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://dev01.cc.cloud:49173/upload/api/2019/05/06/rawpixel-670711-unsplash_s01_api_20190506_0a716d.jpg"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"file_size_medium_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://dev01.cc.cloud:49173/upload/api/2019/05/06/rawpixel-670711-unsplash_s01_api_20190506_0a716d_900_600.jpg"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"file_size_low_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://dev01.cc.cloud:49173/upload/api/2019/05/06/rawpixel-670711-unsplash_s01_api_20190506_0a716d_562_375.jpg"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>POST</strong> <code>http://localhost:8080/api/util/upload?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return http response status code 200.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>data</td>
+<td>array</td>
+<td>An array of objects, each object contains <code>file_url</code> property is the url of an uploaded file. In addition, if uploaded file is <code>image</code> type, it will contains resized images with different resolutions for desktop device and mobile device in <code>file_size_medium_url</code> field and <code>file_size_low_url</code> field correspondingly.</td>
+</tr>
+</tbody></table>
+
+<aside class="notice">
+You must provide both query parameters and a file as multipart form data. For reference, you can see Postman screenshot below.
+</aside>
+
+<p><img src="http://dev01.cc.cloud:49173/public/assets/images/upload_api_postman.jpg" alt="upload api capture postman" /></p>
+<h2 id='update-tree-position-levels'>Update tree position levels</h2>
+<p>Update tree position levels that allow starting at any level in the tree - means support to update a part of tree level of workbook - chapter(s) - page(s) - item(s).</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X PATCH <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/util/move_position?access_token={access_token}'</span> <span class="se">\</span>
+  -H <span class="s1">'Content-Type: application/x-www-form-urlencoded'</span> <span class="se">\</span>
+  -d <span class="nv">tree_view</span><span class="o">={</span>tree_position_levels<span class="o">}</span>
+</code></pre><pre class="highlight json tab-json"><code><span class="err">This</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">sample</span><span class="w"> </span><span class="err">of</span><span class="w"> </span><span class="err">entire</span><span class="w"> </span><span class="err">tree_view</span><span class="w"> </span><span class="err">object</span><span class="w"> </span><span class="err">json</span><span class="p">,</span><span class="w"> </span><span class="err">however</span><span class="w"> </span><span class="err">you</span><span class="w"> </span><span class="err">can</span><span class="w"> </span><span class="err">update</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">part</span><span class="w"> </span><span class="err">of</span><span class="w"> </span><span class="err">tree</span><span class="w"> </span><span class="err">if</span><span class="w"> </span><span class="err">needed</span><span class="p">:</span><span class="w">
+
+</span><span class="p">{</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"workbook"</span><span class="p">,</span><span class="w"> 
+    </span><span class="s2">"elements"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> 
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chapter"</span><span class="p">,</span><span class="w">            
+            </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"elements"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">19</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"page"</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"elements"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                        </span><span class="p">{</span><span class="w">
+                            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+                            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"item"</span><span class="p">,</span><span class="w">            
+                            </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+                        </span><span class="p">}</span><span class="w">
+                    </span><span class="p">]</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"page"</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
+                </span><span class="p">}</span><span class="w">                  
+            </span><span class="p">]</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chapter"</span><span class="p">,</span><span class="w">            
+            </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"elements"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">33</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"page"</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"display"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+
+            </span><span class="p">]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">    
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OK"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>PATCH</strong> <code>http://localhost:8080/api/util/move_position?access_token={access_token}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+</tbody></table>
+<h3 id='request-body'>Request body</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>tree_view</td>
+<td>json</td>
+<td>Required</td>
+<td></td>
+<td>tree position levels that allow starting at any level in the tree - means support to update a part of tree level of workbook - chapter(s) - page(s) - item(s). See example <code>tree_view</code> json object in <em>Example Request</em> section above. #</td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return a response status code is 200.</p>
+<h2 id='search-text'>Search text</h2>
+<p>Search text</p>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET <span class="se">\</span>
+  <span class="s1">'http://localhost:8080/api/util/search?access_token=a628MYIXe9A697xFAcGEg9C9wfWE8Cg0XYzrF8JSrtUwVGhcHQ1peO82MrAPUziH&amp;query=proj&amp;scope=workbook&amp;collection=description'</span> <span class="se">\</span>
+</code></pre><h3 id='http-request'>HTTP Request</h3>
+<p><strong>GET</strong> <code>http://localhost:8080/api/util/search?access_token={access_token}&amp;query={query}&amp;scope={scope}&amp;collection={collection}</code></p>
+<h3 id='request-params'>Request params</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>access_token</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>access token. In order to <a href="http://dev01.cc.cloud:49173/public/client_api_docs/#get-an-access-token">get access token</a>, make an API call <code>/api/login</code>.</td>
+</tr>
+<tr>
+<td>query</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>Search query. Should be <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURI">URL-encoded</a></td>
+</tr>
+<tr>
+<td>scope</td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+<td>Scope query. Must be in <strong>one</strong> the following values: <code>workbook</code>, <code>competency</code></td>
+</tr>
+<tr>
+<td>collection</td>
+<td>string</td>
+<td>Optional</td>
+<td>For <code>workbook</code> scope, by default, it will search in a mix of <code>title</code> and <code>description</code></td>
+<td>Name of collection to search. For <code>workbook</code> scope, it should be in <strong>one</strong> the following values: <code>title</code>, <code>description</code>, <code>title,description</code></td>
+</tr>
+</tbody></table>
+<h3 id='response'>Response</h3>
+<p>If successful, return http response status code 200.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Data type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>data</td>
+<td>array</td>
+<td>An array of found results.</td>
+</tr>
+</tbody></table>
+<h1 id='errors'>Errors</h1>
+<p>The APC API uses the following error codes:</p>
+
+<table><thead>
+<tr>
+<th>Error Code</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>400</td>
+<td>Bad Request -- Your request is invalid.</td>
+</tr>
+<tr>
+<td>401</td>
+<td>Unauthorized -- Your API key is wrong.</td>
+</tr>
+<tr>
+<td>403</td>
+<td>Forbidden -- The kitten requested is hidden for administrators only.</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Not Found -- The specified kitten could not be found.</td>
+</tr>
+<tr>
+<td>405</td>
+<td>Method Not Allowed -- You tried to access a kitten with an invalid method.</td>
+</tr>
+<tr>
+<td>406</td>
+<td>Not Acceptable -- You requested a format that isn&#39;t json.</td>
+</tr>
+<tr>
+<td>410</td>
+<td>Gone -- The kitten requested has been removed from our servers.</td>
+</tr>
+<tr>
+<td>418</td>
+<td>I&#39;m a teapot.</td>
+</tr>
+<tr>
+<td>429</td>
+<td>Too Many Requests -- You&#39;re requesting too many kittens! Slow down!</td>
+</tr>
+<tr>
+<td>500</td>
+<td>Internal Server Error -- We had a problem with our server. Try again later.</td>
+</tr>
+<tr>
+<td>503</td>
+<td>Service Unavailable -- We&#39;re temporarily offline for maintenance. Please try again later.</td>
+</tr>
+</tbody></table>
+
+      </div>
+      <div class="dark-box">
+          <div class="lang-selector">
+                <a href="#" data-language-name="json">json</a>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

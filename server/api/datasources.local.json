@@ -1,0 +1,18 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "cc_mysql": {
+    "connector": "mysql",
+    "name": "cc_mysql",
+    "host": "host.docker.internal",
+    "port": "3306",
+    "username": "root",
+    "password": "admin",
+    "database": "${DATABASE_NAME}",
+    "charset": "utf8mb4",
+    "collation": "utf8mb4_general_ci",
+    "normalizeUndefinedInQuery": "nullify"
+  }
+}

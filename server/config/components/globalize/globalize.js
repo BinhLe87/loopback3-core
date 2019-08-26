@@ -1,23 +1,33 @@
-// Include the Globalize library
-var Globalize = require('globalize');
+var Globalize;
+var cldrData;
 
-// Include the CLDR data
-var cldrData = require('cldr-data');
+try {
+  // Include the Globalize library
+  Globalize = require('globalize');
 
-// Loads the supplemental data
-Globalize.load(cldrData.entireSupplemental());
+  // Include the CLDR data
+  cldrData = require('cldr-data');
 
-//Loads the data of the specified locales
-Globalize.load(cldrData.entireMainFor('en', 'en-GB'));
+  // Loads the supplemental data
+  Globalize.load(cldrData.entireSupplemental());
 
-//Set default locale
-Globalize.locale('en');
+  //Loads the data of the specified locales
+  Globalize.load(cldrData.entireMainFor('en', 'en-GB'));
 
-//Load locale messages from resource file `globalize.messages.js`
-Globalize.loadMessages(require('./globalize.json'));
+  //Set default locale
+  Globalize.locale('en');
+
+  //Load locale messages from resource file `globalize.messages.js`
+  Globalize.loadMessages(require('./globalize.json'));
+} catch (error) {
+  if (process.env.NODE_ENV != 'development') {
+    logger.error('Unable to load globalize modules at the moment');
+    logger.error(error);
+  }
+}
 
 /**
- * Localize message types 
+ * Localize message types
  *
  * @param {*} message
  * @param {string} [key=''] the path of message key
@@ -26,25 +36,28 @@ Globalize.loadMessages(require('./globalize.json'));
  * @param {object|array|any} [args] optional arguments passed to globalize method invoked correspondingly
  */
 function formatMessage(key = '', locale = 'en', type = 'message', ...args) {
+  if (_.isUndefined(Globalize) || _.isUndefined(cldrData)) {
+    //unable to load globalize modules
 
-    var locale_message;
-    try {
-        switch (type) {
+    return key; //return origin key as default in this situation
+  }
 
-            default: { 
-
-                locale_message = args ? Globalize(locale).formatMessage(key, args) : Globalize(locale).formatMessage(key);
-            }
-        }
-
-    } catch (ex) { //return key as default message
-
-        locale_message = (typeof key == 'string' ? key : '');        
+  var locale_message;
+  try {
+    switch (type) {
+      default: {
+        locale_message = args
+          ? Globalize(locale).formatMessage(key, args)
+          : Globalize(locale).formatMessage(key);
+      }
     }
+  } catch (ex) {
+    //return key as default message
 
-    return locale_message;
+    locale_message = typeof key == 'string' ? key : '';
+  }
+
+  return locale_message;
 }
 
 module.exports.formatMessage = formatMessage;
-
-

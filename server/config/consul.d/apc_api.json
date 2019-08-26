@@ -1,0 +1,20 @@
+{
+  "service": {
+    "id": "apc_api",
+    "name": "apc_api",
+    "tags": ["apc_api", "api"],
+    "address": "",
+    "meta": {
+      "meta": "for my service"
+    },
+    "port": 8080,
+    "connect": {
+      "native": false,
+      "sidecar_service": {},
+      "proxy": {
+        "command": [],
+        "config": {}
+      }
+    }
+  }
+}

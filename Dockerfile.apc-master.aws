@@ -1,0 +1,57 @@
+FROM node:11.13.0-alpine
+ENV container_dir="/usr/src/app/"
+ENV server_dir=${container_dir}/server/
+ENV tools_dir=${server_dir}/tools/
+ENV tool_redis_file="redis-4.0.11.tar.gz"
+ENV tool_redis_dir="redis-4.0.11"
+
+##Install tools for dev/debug purpose
+RUN apk --no-cache add vim
+RUN apk --no-cache add net-tools
+
+##Install packages/libs dependencies
+RUN apk --no-cache add --virtual build-dependencies make gcc g++ python
+RUN apk --no-cache add linux-headers
+
+WORKDIR ${container_dir}
+## Bundle app source
+COPY ./server/tools/. ${tools_dir}
+COPY ./script ${container_dir}
+
+##Install Redis server
+WORKDIR ${tools_dir}
+RUN tar xzf ${tool_redis_file}
+WORKDIR redis-4.0.11
+RUN make; exit 0
+
+#------Clean up all that no longer used (installation files, packages/libs dependencies, apk cache, etc.)
+##Remove tools after done installing
+WORKDIR ${tools_dir}
+RUN rm ${tool_redis_file}; exit 0
+
+##Install RabbitMQ
+# RUN wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+# RUN dpkg -i erlang-solutions_1.0_all.deb
+# RUN apt-get update
+# RUN apt-get --assume-yes install erlang
+# RUN echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | tee /etc/apt/sources.list.d/bintray.rabbitmq.list
+# RUN wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | apt-key add -
+# RUN apt-get update
+# RUN apt-get --assume-yes install rabbitmq-server
+
+##Remove packages/libs dependencies
+RUN apk del build-dependencies
+
+##Remove apk cache
+RUN rm -rf /var/cache/apk/*
+
+## Start pm2
+WORKDIR ${container_dir}
+RUN npm install -g pm2
+ADD ecosystem.config.aws.js .
+RUN mv ecosystem.config.aws.js ecosystem.config.js
+ADD script script/
+ENTRYPOINT pm2 start ecosystem.config.js --env aws --only redis-server\
+    && pm2 status \
+    && tail -f /dev/null
+EXPOSE 8080

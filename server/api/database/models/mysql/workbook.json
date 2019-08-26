@@ -1,0 +1,112 @@
+{
+  "name": "workbook",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true,
+    "ActiveStatusDb": true,
+    "BelongsToIntegrityCheck": false,
+    "UseRedisCache": true
+  },
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "image_url": {
+      "type": "string"
+    }
+  },
+  "indexes": {
+    "workbook_title_search_idx": {
+     "columns": "title",
+     "kind": "FULLTEXT"
+    },
+    "workbook_description_search_idx": {
+      "columns": "description",
+     "kind": "FULLTEXT"
+    },
+    "workbook_title_description_search_idx": {
+      "columns": "title,description",
+      "kind": "FULLTEXT"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "programs": {
+      "type": "hasMany",
+      "model": "program",
+      "foreignKey": "workbookId",
+      "through": "program_workbook"
+    },
+    "libraries": {
+      "type": "hasMany",
+      "model": "library",
+      "through": "workbook_owner",
+      "invert": true,
+      "polymorphic": "workbook_owner_link"
+    },
+    "workbook_chapters": {
+      "type": "hasMany",
+      "model": "workbook_chapter",
+      "foreignKey": "workbookId"
+    },
+    "chapters": {
+      "type": "hasMany",
+      "model": "chapter",
+      "foreignKey": "workbookId",
+      "through": "workbook_chapter"
+    },
+    "workbook_versions": {
+      "type": "hasMany",
+      "model": "workbook_version",
+      "foreignKey": "workbookId"
+    },
+    "versions": {
+      "type": "hasMany",
+      "model": "version",
+      "foreignKey": "workbookId",
+      "through": "workbook_version"
+    },
+    "user": {
+      "type": "hasMany",
+      "model": "user",
+      "through": "workbook_owner",
+      "invert": true,
+      "polymorphic": {
+        "foreignKey": "workbook_owner_id",
+        "discriminator": "workbook_owner_type"
+      }
+    },
+    "themes": {
+      "type": "hasMany",
+      "model": "style_theme",
+      "through": "style_theme_owner",
+      "polymorphic": {
+        "foreignKey": "theme_owner_id",
+        "discriminator": "theme_owner_type"
+      }
+    }
+  },
+  "acls": [
+    {
+      "permission": "DENY",
+      "principalType": "ROLE",
+      "principalId": "$everyone"
+    },
+    {
+      "permission": "ALLOW",
+      "principalType": "ROLE",
+      "principalId": "$authenticated"
+    }
+  ],
+  "methods": {}
+}

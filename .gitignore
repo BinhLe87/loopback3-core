@@ -20,15 +20,37 @@ npm-debug.log
 
 #documentation/reference files
 docs
+server/api/docs_web/*
+!server/api/docs_web/client_api_docs/
+server/api/docs_web/client_api_docs/*
+!server/api/docs_web/client_api_docs/source/
+server/api/docs_web/client_api_docs/source/*
+!server/api/docs_web/client_api_docs/source/includes/
 
-#contains class for experiment purpose
-demo
+
+demo/dir_structure
 
 #logs files
 logs
 
-#files only for local environments
-/server/datasources.local.json
+#client folder
+client
+
+#config files only for local environments
+#**/datasources.development.json
+#.env.development
 
 #uploads dir
-upload
+server/api/upload/api
+
+#vendors third-parties that was customized
+server/vendors
+# server/docs_web/*
+# !*/**/*.md
+
+
+#aws
+/**/*aws*
+
+#yarn.lock
+yarn.lock

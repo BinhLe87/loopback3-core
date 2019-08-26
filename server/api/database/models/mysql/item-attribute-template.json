@@ -1,0 +1,46 @@
+{
+  "name": "item_attribute_template",
+  "plural": "item_attribute_templates",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "indexes": {
+    "item_type_attribute_idx": {
+      "keys": {
+        "item_typeId": 1,
+        "attributeId": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true,
+    "ActiveStatusDb": true,
+    "BelongsToIntegrityCheck": false
+  },
+  "properties": {
+    "display_index": {
+      "type": "number",
+      "default": 0,
+      "description": ["the display order index of the attribute in a item"]
+    }
+  },
+  "validations": [],
+  "relations": {
+    "itemtype": {
+      "type": "belongsTo",
+      "model": "item_type",
+      "foreignKey": "item_typeId"
+    },
+    "attribute": {
+      "type": "belongsTo",
+      "model": "attribute"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

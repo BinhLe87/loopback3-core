@@ -1,0 +1,50 @@
+{
+  "name": "workbook_share",
+  "plural": "workbook_shares",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "TimeStamp": true,
+    "BelongsToIntegrityCheck": false
+  },
+  "properties": {
+    "userId": {
+      "type": "number",
+      "required": true
+    },
+    "workbookId": {
+      "type": "number",
+      "required": true
+    },
+    "shared_by": {
+      "type": "number",
+      "required": true,
+      "description": "user_id owns workbook that shared it"
+    }
+  },
+  "indexes": {
+    "user_workbook_idx": {
+      "keys": {
+        "userId": 1,
+        "workbookId": 1,
+        "shared_by": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

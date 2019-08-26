@@ -1,33 +1,35 @@
 var util = require('util');
 var exec = require('child_process').exec;
+const debug = require('debug')('debug_exec');
 
-var commands = {
-
-    get_programs: `curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ \ 
- "name": "program_1", \ 
- "libraryId": "200" \ 
- }' 'http://localhost:8080/api/programs'`,
-}
-
+var commands = {};
+commands.l1 = `curl -X GET --header 'Accept: application/json' 'http://localhost:8080/api/item_types/1'`;
+commands.l2 = `curl -X GET --header 'Accept: application/json' 'http://localhost:8080/api/item_types/1/attributes'`;
+commands.l3 = `curl -X GET --header 'Accept: application/json' 'http://localhost:8080/api/item_types/1?filter[include][attributes]'`;
+commands.l4 = `curl -X GET --header 'Accept: application/json' 'http://localhost:8080/api/item_types/1?filter={"include":"attributes"}'`;
 
 var command = commands[process.env.npm_package_config_debug_api];
 
-console.log(`will run curl command: ${command}`);
+if (typeof command == 'undefined') {
+  debug(
+    `Can not specify URL to run curl command ${
+      process.env.npm_package_config_debug_api
+    }`
+  );
+} else {
+  debug(`will run curl command: ${command}`);
+
+  //delay send request until the api completed loading
+  setTimeout(execCommand, 4000);
+}
 
 function execCommand() {
+  exec(command, function(error, stdout, stderr) {
+    debug('stdout: ' + stdout);
+    debug('stderr: ' + stderr);
 
-    exec(command, function (error, stdout, stderr) {
-
-        console.log('stdout: ' + stdout);
-        console.log('stderr: ' + stderr);
-
-        if (error !== null) {
-            console.log('exec error: ' + error);
-        }
-    });
-};
-
-//delay send request until the api completed loading
-setTimeout(execCommand, 3000);
-
-
+    if (error !== null) {
+      debug('exec error: ' + error);
+    }
+  });
+}
