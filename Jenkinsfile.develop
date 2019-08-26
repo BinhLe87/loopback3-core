@@ -5,9 +5,15 @@ pipeline {
         stage('buildIMG') {
             agent {label 'master'}
             steps {
-                slackSend (color: '#FFFF00', message: "STARTED: Job APC MASTER '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+                //slackSend (color: '#FFFF00', message: "STARTED: Job APC MASTER '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
                 script {
                     try {
+                        sh' COMMIT=`git rev-parse --short HEAD`; echo `git log --format=%B -n 1 $COMMIT` > COMMIT_DESC_FILE; echo $COMMIT > COMMIT_FILE'
+                        def COMMIT_DESCRIPTION = readFile 'COMMIT_DESC_FILE'
+                        def COMMIT_F = readFile 'COMMIT_FILE'
+                        env.COMMIT_DESC = COMMIT_DESCRIPTION
+                        env.COMMIT = COMMIT_F
+                        slackSend (color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})\nCommit Description: ${env.COMMIT_DESC}")
                         //login to docker hub
                         sh 'sudo docker login -u ccjenkins -p 38YahXW4iRaHets6'
                         sh 'sleep 5'
