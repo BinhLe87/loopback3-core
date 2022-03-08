@@ -81,7 +81,7 @@
     "serve-favicon": "^2.0.1",
     "sharp": "^0.22.1",
     "strong-error-handler": "^2.0.0",
-    "urijs": "^1.19.1",
+    "urijs": "^1.19.10",
     "winston-daily-rotate-file": "^3.3.2"
   },
   "devDependencies": {
