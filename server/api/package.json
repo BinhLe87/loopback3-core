@@ -85,7 +85,7 @@
     "winston-daily-rotate-file": "^3.3.2"
   },
   "devDependencies": {
-    "copy-webpack-plugin": "^4.5.3",
+    "copy-webpack-plugin": "^11.0.0",
     "eslint": "^3.17.1",
     "eslint-config-loopback": "^8.0.0",
     "eslint-config-prettier": "^2.9.0",
